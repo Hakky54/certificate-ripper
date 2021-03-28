@@ -1,4 +1,4 @@
-[![Actions Status](https://github.com/Hakky54/java-tutorials/workflows/Build/badge.svg)](https://github.com/Hakky54/java-tutorials/actions)
+[![Actions Status](https://github.com/Hakky54/certificate-ripper/workflows/Build/badge.svg)](https://github.com/Hakky54/certificate-ripper/actions)
 
 # Certificate Ripper 🔐
 A tool to extract server certificates
@@ -15,6 +15,7 @@ A tool to extract server certificates
 mvn clean package
 java -jar target/certificate-ripper.jar url=https://stackoverflow.com/
 ```
+![alt text](https://github.com/Hakky54/certificate-ripper/blob/master/images/demo.gif?raw=true)
 
 #### Run with a maven plugin
 ```text
