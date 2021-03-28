@@ -12,10 +12,13 @@ A tool to extract server certificates
 ![alt text](https://github.com/Hakky54/certificate-ripper/blob/master/images/demo.gif?raw=true)
 
 ## Usage
+### Setup
+1. Clone the project `git clone https://github.com/Hakky54/certificate-ripper.git`
+2. Run once `mvn clean package` to download the required dependencies
+
 ### Extract certificates as x509 format
 #### Run with an executable jar
 ```text
-mvn clean package
 java -jar target/certificate-ripper.jar url=https://stackoverflow.com/
 ```
 
