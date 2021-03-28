@@ -8,6 +8,9 @@ A tool to extract server certificates
 2. Maven 3.5.0
 3. A terminal
 
+## Demo
+![alt text](https://github.com/Hakky54/certificate-ripper/blob/master/images/demo.gif?raw=true)
+
 ## Usage
 ### Extract certificates as x509 format
 #### Run with an executable jar
@@ -15,7 +18,6 @@ A tool to extract server certificates
 mvn clean package
 java -jar target/certificate-ripper.jar url=https://stackoverflow.com/
 ```
-![alt text](https://github.com/Hakky54/certificate-ripper/blob/master/images/demo.gif?raw=true)
 
 #### Run with a maven plugin
 ```text
