@@ -35,6 +35,7 @@
         <version.maven-compiler-plugin>3.8.1</version.maven-compiler-plugin>
         <version.exec-maven-plugin>1.6.0</version.exec-maven-plugin>
         <version.maven-shade-plugin>3.2.4</version.maven-shade-plugin>
+        <version.graalvm>21.0.0.2</version.graalvm>
         <application-main-class>nl.altindag.ssl.CertificateRipper</application-main-class>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -103,5 +104,39 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>native-image</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.graalvm.nativeimage</groupId>
+                        <artifactId>native-image-maven-plugin</artifactId>
+                        <version>${version.graalvm}</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>native-image</goal>
+                                </goals>
+                                <phase>package</phase>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <skip>false</skip>
+                            <imageName>certificate-ripper</imageName>
+                            <buildArgs>
+                                --no-fallback
+                                -H:EnableURLProtocols=https
+                            </buildArgs>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>
