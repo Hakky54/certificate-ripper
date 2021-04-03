@@ -5,7 +5,6 @@ A tool to extract server certificates
 
 **Minimum requirements:**
 1. Java 8
-2. Maven 3.5.0
 3. A terminal
 
 ## Demo
@@ -14,7 +13,7 @@ A tool to extract server certificates
 ## Usage
 ### Setup
 1. Clone the project `git clone https://github.com/Hakky54/certificate-ripper.git`
-2. Run once `mvn clean package` to download the required dependencies
+2. Run once `./mvnw clean package` to download the required dependencies
 
 ### Extract certificates as x509 format
 #### Run with an executable jar
@@ -24,7 +23,7 @@ java -jar target/certificate-ripper.jar url=https://stackoverflow.com/
 
 #### Run with a maven plugin
 ```text
-mvn exec:java -Dexec.args="url=https://stackoverflow.com/" 
+./mvnw exec:java -Dexec.args="url=https://stackoverflow.com/" 
 ```
 
 ### Extract certificates as pem format
@@ -34,5 +33,5 @@ java -jar target/certificate-ripper.jar url=https://stackoverflow.com/ format=pe
 ```
 #### Run with a maven plugin
 ```text
-mvn exec:java -Dexec.args="url=https://stackoverflow.com/ format=pem" 
+./mvnw exec:java -Dexec.args="url=https://stackoverflow.com/ format=pem" 
 ```
