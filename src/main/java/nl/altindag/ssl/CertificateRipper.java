@@ -1,6 +1,8 @@
 package nl.altindag.ssl;
 
 import nl.altindag.ssl.util.CertificateUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.security.cert.Certificate;
 import java.util.Arrays;
@@ -12,6 +14,8 @@ import java.util.stream.Collectors;
 
 public class CertificateRipper {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(CertificateRipper.class);
+
     private static final String NEW_LINE = System.lineSeparator();
     private static final String CERTIFICATE_DELIMITER = NEW_LINE + NEW_LINE + "========== NEXT CERTIFICATE FOR %s ==========" + NEW_LINE + NEW_LINE;
 
@@ -22,12 +26,12 @@ public class CertificateRipper {
 
         if (shouldBePemFormatted) {
             extractAndConsumerCertificates(applicationArguments, CertificateUtils::getCertificateAsPem, (key, value) ->
-                    System.out.printf("Url = %s%n%n%s%n%n",
+                    LOGGER.debug("Url = {}\n\n{}\n\n",
                             key,
                             String.join(String.format(CERTIFICATE_DELIMITER, key), value)));
         } else {
-            extractAndConsumerCertificates(applicationArguments, CertificateUtils::getCertificate, (key, value) -> System.out.printf(
-                    "Url = %s%n%n%s%n%n",
+            extractAndConsumerCertificates(applicationArguments, CertificateUtils::getCertificate, (key, value) -> LOGGER.debug(
+                    "Url = {}\n\n{}\n\n",
                     key,
                     value.stream()
                             .map(Certificate::toString)
