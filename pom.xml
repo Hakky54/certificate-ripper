@@ -86,7 +86,7 @@
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>${version.maven-shade-plugin}</version>
                 <configuration>
-                    <finalName>certificate-ripper</finalName>
+                    <finalName>cerip</finalName>
                     <transformers>
                         <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                             <mainClass>${application-main-class}</mainClass>
