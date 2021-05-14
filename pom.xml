@@ -30,7 +30,7 @@
 
     <properties>
         <version.java>1.8</version.java>
-        <version.sslcontext-kickstart>6.6.0</version.sslcontext-kickstart>
+        <version.sslcontext-kickstart>6.6.1</version.sslcontext-kickstart>
         <version.slf4j>1.7.30</version.slf4j>
         <version.maven-compiler-plugin>3.8.1</version.maven-compiler-plugin>
         <version.exec-maven-plugin>1.6.0</version.exec-maven-plugin>
