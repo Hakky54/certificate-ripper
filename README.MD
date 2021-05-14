@@ -32,3 +32,11 @@ cerip url=https://stackoverflow.com/
 
 ### CLI Options
 - format=pem
+
+## Contributing
+
+There are plenty of ways to contribute to this project:
+
+* Give it a star
+* Share it with a [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=Easily%20extract%20server%20certificates&url=https://github.com/Hakky54/certificate-ripper&via=hakky541&hashtags=certificate,security,https,ssl,tls,developer,java)
+* Submit a PR
