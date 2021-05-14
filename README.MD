@@ -9,15 +9,15 @@ A CLI tool to extract server certificates
 ## Usage
 ### Mac OS X - Homebrew 🍺
 ```bash
-brew tap hakky/cerip
+brew tap hakky54/cerip
 brew install cerip
 cerip url=https://stackoverflow.com/
 ```
 ### Windows
-TODO
+<sub><sup>TODO</sub></sup>
 
 ### Linux
-TODO
+<sub><sup>TODO</sub></sup>
 
 ### Using Executable JAR
 **Minimum requirements:**
