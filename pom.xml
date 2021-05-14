@@ -103,6 +103,15 @@
                 </executions>
             </plugin>
         </plugins>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>simplelogger.properties</include>
+                </includes>
+            </resource>
+        </resources>
     </build>
 
     <profiles>
@@ -127,10 +136,12 @@
                         </executions>
                         <configuration>
                             <skip>false</skip>
-                            <imageName>certificate-ripper</imageName>
                             <buildArgs>
                                 --no-fallback
+                                -H:IncludeResources=simplelogger.properties
                                 -H:EnableURLProtocols=https
+                                -H:EnableURLProtocols=http
+                                -H:Name=certificate-ripper
                             </buildArgs>
                         </configuration>
                     </plugin>
