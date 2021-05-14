@@ -26,11 +26,11 @@ public class CertificateRipper {
 
         if (shouldBePemFormatted) {
             extractAndConsumerCertificates(applicationArguments, CertificateUtils::getCertificateAsPem, (key, value) ->
-                    LOGGER.debug("Url = {}\n\n{}\n\n",
+                    LOGGER.info("Url = {}\n\n{}\n\n",
                             key,
                             String.join(String.format(CERTIFICATE_DELIMITER, key), value)));
         } else {
-            extractAndConsumerCertificates(applicationArguments, CertificateUtils::getCertificate, (key, value) -> LOGGER.debug(
+            extractAndConsumerCertificates(applicationArguments, CertificateUtils::getCertificate, (key, value) -> LOGGER.info(
                     "Url = {}\n\n{}\n\n",
                     key,
                     value.stream()
