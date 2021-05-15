@@ -9,9 +9,9 @@ A CLI tool to extract server certificates
 ## Usage
 ### Mac OS X - Homebrew 🍺
 ```bash
-brew tap hakky54/cerip
-brew install cerip
-cerip url=https://stackoverflow.com/
+brew tap hakky54/crip
+brew install crip
+crip url=https://stackoverflow.com/
 ```
 ### Windows
 <sub><sup>TODO</sub></sup>
@@ -28,7 +28,7 @@ cerip url=https://stackoverflow.com/
 1. Clone the project `git clone https://github.com/Hakky54/certificate-ripper.git`
 2. Run once `./mvnw clean package` to download the required dependencies
 3. Go the to executable jar with `cd target/`
-4. Run it with `java -jar cerip.jar url=https://stackoverflow.com/`
+4. Run it with `java -jar crip.jar url=https://stackoverflow.com/`
 
 ### CLI Options
 - format=pem

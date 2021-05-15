@@ -86,7 +86,7 @@
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>${version.maven-shade-plugin}</version>
                 <configuration>
-                    <finalName>cerip</finalName>
+                    <finalName>crip</finalName>
                     <transformers>
                         <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                             <mainClass>${application-main-class}</mainClass>
@@ -141,7 +141,7 @@
                                 -H:IncludeResources=simplelogger.properties
                                 -H:EnableURLProtocols=https
                                 -H:EnableURLProtocols=http
-                                -H:Name=certificate-ripper
+                                -H:Name=crip
                             </buildArgs>
                         </configuration>
                     </plugin>
