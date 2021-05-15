@@ -31,6 +31,8 @@ crip url=https://stackoverflow.com/
 4. Run it with `java -jar crip.jar url=https://stackoverflow.com/`
 
 ### CLI Options
+- url=https://google.com
+  - url can be supplied multiple times during a single execution to execute a bulk request, for example: `crip url=https://google.com url=https://github.com url=https://reddit.com url=https://stackoverflow.com url=https://facebook.com`
 - format=pem
 
 ## Contributing
