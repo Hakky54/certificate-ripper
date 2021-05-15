@@ -25,12 +25,12 @@ public class CertificateRipper {
                 .anyMatch(argument -> argument.contains("format=pem"));
 
         if (shouldBePemFormatted) {
-            extractAndConsumerCertificates(applicationArguments, CertificateUtils::getCertificateAsPem, (key, value) ->
+            extractAndConsumeCertificates(applicationArguments, CertificateUtils::getCertificateAsPem, (key, value) ->
                     LOGGER.info("Url = {}\n\n{}\n\n",
                             key,
                             String.join(String.format(CERTIFICATE_DELIMITER, key), value)));
         } else {
-            extractAndConsumerCertificates(applicationArguments, CertificateUtils::getCertificate, (key, value) -> LOGGER.info(
+            extractAndConsumeCertificates(applicationArguments, CertificateUtils::getCertificate, (key, value) -> LOGGER.info(
                     "Url = {}\n\n{}\n\n",
                     key,
                     value.stream()
@@ -41,9 +41,9 @@ public class CertificateRipper {
         }
     }
 
-    private static <T> void extractAndConsumerCertificates(String[] applicationArguments,
-                                                           Function<List<String>, Map<String, List<T>>> urlsToCertificates,
-                                                           BiConsumer<String, List<T>> certificateConsumer) {
+    private static <T> void extractAndConsumeCertificates(String[] applicationArguments,
+                                                          Function<List<String>, Map<String, List<T>>> urlsToCertificates,
+                                                          BiConsumer<String, List<T>> certificateConsumer) {
         Arrays.stream(applicationArguments)
                 .map(String::toLowerCase)
                 .filter(argument -> argument.contains("url="))
