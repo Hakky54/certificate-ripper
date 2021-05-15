@@ -30,13 +30,13 @@ public class CertificateRipper {
                             key,
                             String.join(String.format(CERTIFICATE_DELIMITER, key), value)));
         } else {
-            extractAndConsumeCertificates(applicationArguments, CertificateUtils::getCertificate, (key, value) -> LOGGER.info(
-                    "Url = {}\n\n{}\n\n",
-                    key,
-                    value.stream()
-                            .map(Certificate::toString)
-                            .collect(Collectors.joining(String.format(CERTIFICATE_DELIMITER, key)))
-                    )
+            extractAndConsumeCertificates(applicationArguments, CertificateUtils::getCertificate, (key, value) ->
+                    LOGGER.info("Url = {}\n\n{}\n\n",
+                            key,
+                            value.stream()
+                                    .map(Certificate::toString)
+                                    .collect(Collectors.joining(String.format(CERTIFICATE_DELIMITER, key)))
+                            )
             );
         }
     }
