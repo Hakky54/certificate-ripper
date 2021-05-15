@@ -25,10 +25,8 @@ crip url=https://stackoverflow.com/
 3. A terminal
 
 **Setup**
-1. Clone the project `git clone https://github.com/Hakky54/certificate-ripper.git`
-2. Run once `./mvnw clean package` to download the required dependencies
-3. Go the to executable jar with `cd target/`
-4. Run it with `java -jar crip.jar url=https://stackoverflow.com/`
+1. Download the JAR here: [crip.jar](https://github.com/Hakky54/certificate-ripper/releases/download/0.0.1/crip.jar)
+2. Run it with `java -jar crip.jar url=https://youtube.com/`
 
 ### CLI Options
 - url=https://google.com
