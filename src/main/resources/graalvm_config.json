@@ -1,0 +1,46 @@
+[
+  {
+    "name": "nl.altindag.ssl.command.CertificateRipper",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true
+  },
+  {
+    "name": "nl.altindag.ssl.command.SharedProperties",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true
+  },
+  {
+    "name": "nl.altindag.ssl.command.PrintCommand",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "fields": [
+      {
+        "name": "sharedProperties"
+      },
+      {
+        "name": "format"
+      }
+    ]
+  },
+  {
+    "name": "nl.altindag.ssl.command.ExportCommand",
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "fields": [
+      {
+        "name": "sharedProperties"
+      },
+      {
+        "name": "password"
+      }
+    ]
+  }
+]

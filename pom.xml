@@ -32,11 +32,12 @@
         <version.java>1.8</version.java>
         <version.sslcontext-kickstart>6.6.1</version.sslcontext-kickstart>
         <version.slf4j>1.7.30</version.slf4j>
+        <version.picocli>4.6.1</version.picocli>
         <version.maven-compiler-plugin>3.8.1</version.maven-compiler-plugin>
         <version.exec-maven-plugin>1.6.0</version.exec-maven-plugin>
         <version.maven-shade-plugin>3.2.4</version.maven-shade-plugin>
         <version.graalvm>21.0.0.2</version.graalvm>
-        <application-main-class>nl.altindag.ssl.CertificateRipper</application-main-class>
+        <application-main-class>nl.altindag.ssl.App</application-main-class>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -50,6 +51,12 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
             <version>${version.slf4j}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>info.picocli</groupId>
+            <artifactId>picocli</artifactId>
+            <version>${version.picocli}</version>
         </dependency>
     </dependencies>
 
@@ -109,6 +116,7 @@
                 <directory>src/main/resources</directory>
                 <includes>
                     <include>simplelogger.properties</include>
+                    <include>graalvm_config.json</include>
                 </includes>
             </resource>
         </resources>
@@ -139,6 +147,7 @@
                             <buildArgs>
                                 --no-fallback
                                 -H:IncludeResources=simplelogger.properties
+                                -H:ReflectionConfigurationResources=graalvm_config.json
                                 -H:EnableURLProtocols=https
                                 -H:EnableURLProtocols=http
                                 -H:Name=crip
@@ -146,6 +155,15 @@
                         </configuration>
                     </plugin>
                 </plugins>
+
+                <resources>
+                    <resource>
+                        <directory>src/main/resources</directory>
+                        <includes>
+                            <include>graalvm_config.json</include>
+                        </includes>
+                    </resource>
+                </resources>
             </build>
         </profile>
     </profiles>
