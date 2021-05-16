@@ -11,7 +11,7 @@ A CLI tool to extract server certificates
 ```bash
 brew tap hakky54/crip
 brew install crip
-crip url=https://stackoverflow.com/
+crip print --url=https://stackoverflow.com/
 ```
 ### Windows
 <sub><sup>TODO</sub></sup>
@@ -26,12 +26,25 @@ crip url=https://stackoverflow.com/
 
 **Setup**
 1. Download the JAR here: [crip.jar](https://github.com/Hakky54/certificate-ripper/releases/download/0.0.1/crip.jar)
-2. Run it with `java -jar crip.jar url=https://youtube.com/`
+2. Run it with `java -jar crip.jar print --url=https://youtube.com/`
 
 ### CLI Options
-- url=https://google.com
-  - url can be supplied multiple times during a single execution to execute a bulk request, for example: `crip url=https://google.com url=https://github.com url=https://reddit.com url=https://stackoverflow.com url=https://facebook.com`
-- format=pem
+```text
+Usage: crip [COMMAND]
+Commands:
+  print   Prints the extracted certificates to the console
+  export  Export the extracted certificate to a PKCS12/p12 type truststore
+  
+Usage: crip print [-f=<format>] -u=<urls> [-u=<urls>]...
+Prints the extracted certificates to the console
+  -f, --format=<format>         To be printed certificate format. This option is not required. Default is human-readable.
+  -u, --url=<urls>              Url of the target server to extract the certificates. Can be provided multiple times.
+  
+Usage: crip export [-p=<password>] -u=<urls> [-u=<urls>]...
+Export the extracted certificate to a PKCS12/p12 type truststore
+  -p, --password=<password>     TrustStore password. This option is not required. Default is changeit.
+  -u, --url=<urls>              Url of the target server to extract the certificates
+```
 
 ## Contributing
 
