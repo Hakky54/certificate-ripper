@@ -6,7 +6,7 @@ A CLI tool to extract server certificates
 ## Demo
 ![alt text](https://github.com/Hakky54/certificate-ripper/blob/master/images/demo.gif?raw=true)
 
-## Usage
+## Installing & Usage
 ### Mac OS X - Homebrew 🍺
 ```bash
 brew tap hakky54/crip
@@ -17,7 +17,10 @@ crip print --url=https://stackoverflow.com/
 <sub><sup>TODO</sub></sup>
 
 ### Linux
-<sub><sup>TODO</sub></sup>
+1. Download the latest binary here: [Releases](https://github.com/Hakky54/certificate-ripper/releases)
+2. Extract the compressed file
+3. Add the reference to your environment variables: `export CRIP_HOME=/path/to/crip/binary`
+4. Run `crip print --url=https://stackoverflow.com/`
 
 ### Using Executable JAR
 **Minimum requirements:**
@@ -25,7 +28,7 @@ crip print --url=https://stackoverflow.com/
 3. A terminal
 
 **Setup**
-1. Download the JAR here: [crip.jar](https://github.com/Hakky54/certificate-ripper/releases/download/0.0.1/crip.jar)
+1. Download the latest JAR here: [Releases](https://github.com/Hakky54/certificate-ripper/releases)
 2. Run it with `java -jar crip.jar print --url=https://youtube.com/`
 
 ### CLI Options
@@ -37,13 +40,13 @@ Commands:
   
 Usage: crip print [-f=<format>] -u=<urls> [-u=<urls>]...
 Prints the extracted certificates to the console
-  -f, --format=<format>         To be printed certificate format. This option is not required. Default is human-readable.
-  -u, --url=<urls>              Url of the target server to extract the certificates. Can be provided multiple times.
+  -f, --format              To be printed certificate format. This option is not required. Default is human-readable.
+  -u, --url                 Url of the target server to extract the certificates. Can be provided multiple times.
   
 Usage: crip export [-p=<password>] -u=<urls> [-u=<urls>]...
 Export the extracted certificate to a PKCS12/p12 type truststore
-  -p, --password=<password>     TrustStore password. This option is not required. Default is changeit.
-  -u, --url=<urls>              Url of the target server to extract the certificates
+  -p, --password            TrustStore password. This option is not required. Default is changeit.
+  -u, --url                 Url of the target server to extract the certificates. Can be provided multiple times.
 ```
 
 ## Contributing
