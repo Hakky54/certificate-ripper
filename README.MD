@@ -6,6 +6,17 @@ A CLI tool to extract server certificates
 ## Demo
 ![alt text](https://github.com/Hakky54/certificate-ripper/blob/master/images/demo.gif?raw=true)
 
+## Advantages
+- It is fast
+- Easy to use
+- No openssl required
+- Runs on any Operating System
+- Can be used with or without Java, native executables are present in the releases
+- Extracts all the sub-fields of the certificate
+- Certificates can be formatted to PEM format
+- Bulk extraction of multiple different urls with a single command is possible
+- Extracted certificates can be stored automatically into a p12 truststore
+
 ## Installing & Usage
 ### Mac OS X - Homebrew 🍺
 ```bash
