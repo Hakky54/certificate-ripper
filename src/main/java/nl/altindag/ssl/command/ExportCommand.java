@@ -1,8 +1,6 @@
 package nl.altindag.ssl.command;
 
 import nl.altindag.ssl.util.KeyStoreUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Mixin;
 import picocli.CommandLine.Option;
@@ -24,8 +22,6 @@ import java.util.stream.Collectors;
 @Command(name = "export", description = "Export the extracted certificate to a PKCS12/p12 type truststore")
 public class ExportCommand implements Runnable {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ExportCommand.class);
-
     @Mixin
     private SharedProperties sharedProperties;
 
@@ -43,9 +39,9 @@ public class ExportCommand implements Runnable {
 
         try(OutputStream outputStream = Files.newOutputStream(trustStorePath, StandardOpenOption.CREATE)) {
             trustStore.store(outputStream, password.toCharArray());
-            LOGGER.info("Exported certificates to {}", trustStorePath.toAbsolutePath());
+            System.out.printf("Exported certificates to %s", trustStorePath.toAbsolutePath());
         } catch (IOException | CertificateException | NoSuchAlgorithmException | KeyStoreException e) {
-            LOGGER.warn("Failed to export the certificates", e);
+            System.err.printf("Failed to export the certificates. Error message: %s", e.getMessage());
         }
     }
 

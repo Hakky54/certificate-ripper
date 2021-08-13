@@ -1,8 +1,6 @@
 package nl.altindag.ssl.command;
 
 import nl.altindag.ssl.util.CertificateUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Mixin;
 import picocli.CommandLine.Option;
@@ -16,7 +14,6 @@ import java.util.stream.Collectors;
 @Command(name = "print", description = "Prints the extracted certificates to the console")
 public class PrintCommand implements Runnable {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PrintCommand.class);
     private static final String CERTIFICATE_DELIMITER = "%n%n========== NEXT CERTIFICATE FOR %s ==========%n%n";
 
     @Mixin
@@ -29,7 +26,7 @@ public class PrintCommand implements Runnable {
     public void run() {
         if (format == Format.X509) {
             sharedProperties.getUrlsToCertificates().forEach((String url, List<Certificate> certificates) ->
-                    LOGGER.info("Certificates for url = {}\n\n{}\n\n",
+                    System.out.printf("Certificates for url = %s%n%n%s%n%n%n",
                             url,
                             certificates.stream()
                                     .map(Certificate::toString)
@@ -42,7 +39,7 @@ public class PrintCommand implements Runnable {
                             Map.Entry::getKey,
                             certificates -> CertificateUtils.convertToPem(certificates.getValue())))
                     .forEach((String path, List<String> certificate) ->
-                            LOGGER.info("Certificates for url = {}\n\n{}\n\n",
+                            System.out.printf("Certificates for url = %s%n%n%s%n%n",
                                     path,
                                     String.join(String.format(CERTIFICATE_DELIMITER, path), certificate)));
         }

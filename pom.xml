@@ -30,13 +30,13 @@
 
     <properties>
         <version.java>1.8</version.java>
-        <version.sslcontext-kickstart>6.6.1</version.sslcontext-kickstart>
-        <version.slf4j>1.7.30</version.slf4j>
+        <version.sslcontext-kickstart>6.8.0</version.sslcontext-kickstart>
+        <version.slf4j>1.7.32</version.slf4j>
         <version.picocli>4.6.1</version.picocli>
         <version.maven-compiler-plugin>3.8.1</version.maven-compiler-plugin>
         <version.exec-maven-plugin>1.6.0</version.exec-maven-plugin>
         <version.maven-shade-plugin>3.2.4</version.maven-shade-plugin>
-        <version.graalvm>21.0.0.2</version.graalvm>
+        <version.graalvm>21.2.0</version.graalvm>
         <application-main-class>nl.altindag.ssl.App</application-main-class>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -44,7 +44,7 @@
     <dependencies>
         <dependency>
             <groupId>io.github.hakky54</groupId>
-            <artifactId>sslcontext-kickstart</artifactId>
+            <artifactId>sslcontext-kickstart-for-netty</artifactId>
             <version>${version.sslcontext-kickstart}</version>
         </dependency>
         <dependency>
