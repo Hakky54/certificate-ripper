@@ -28,6 +28,9 @@ public class ExportCommand implements Runnable {
     @Option(names = {"-p", "--password"}, description = "TrustStore password. Default is changeit if none is provided.")
     private String password = "changeit";
 
+    @Option(names = {"-d", "--destination"}, description = "Destination of the to be stored truststore file. Default is current directory if none is provided.")
+    private String destination = System.getProperty("user.dir");
+
     @Override
     public void run() {
         KeyStore trustStore = sharedProperties.getUrlsToCertificates().values().stream()
@@ -35,7 +38,7 @@ public class ExportCommand implements Runnable {
                 .distinct()
                 .collect(Collectors.collectingAndThen(Collectors.toList(), KeyStoreUtils::createTrustStore));
 
-        Path trustStorePath = Paths.get(System.getProperty("user.dir"), "truststore.p12");
+        Path trustStorePath = Paths.get(destination, "truststore.p12");
 
         try(OutputStream outputStream = Files.newOutputStream(trustStorePath, StandardOpenOption.CREATE)) {
             trustStore.store(outputStream, password.toCharArray());
