@@ -61,6 +61,7 @@ Usage: crip export [-p=<password>] -u=<urls> [-u=<urls>]...
 Export the extracted certificate to a PKCS12/p12 type truststore
   -p, --password            TrustStore password. This option is not required. Default is changeit.
   -u, --url                 Url of the target server to extract the certificates. Can be provided multiple times.
+  -d, --destination         Destination of the to be stored truststore file. Default is current directory if none is provided.
 ```
 
 ## Contributing
