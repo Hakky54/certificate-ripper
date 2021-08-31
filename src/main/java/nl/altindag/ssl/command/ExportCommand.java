@@ -42,9 +42,9 @@ public class ExportCommand implements Runnable {
 
         try(OutputStream outputStream = Files.newOutputStream(trustStorePath, StandardOpenOption.CREATE)) {
             trustStore.store(outputStream, password.toCharArray());
-            System.out.printf("Exported certificates to %s", trustStorePath.toAbsolutePath());
+            System.out.println("Exported certificates to " + trustStorePath.toAbsolutePath());
         } catch (IOException | CertificateException | NoSuchAlgorithmException | KeyStoreException e) {
-            System.err.printf("Failed to export the certificates. Error message: %s", e.getMessage());
+            System.err.println("Failed to export the certificates. Error message: " + e.getMessage());
         }
     }
 
