@@ -64,6 +64,45 @@ Export the extracted certificate to a PKCS12/p12 type truststore
   -d, --destination         Destination of the to be stored truststore file. Default is current directory if none is provided.
 ```
 
+## Example usages
+### Single export
+```bash
+crip export -u=https://github.com
+```
+
+### Bulk export
+```bash
+crip export \
+-u=https://youtube.com \
+-u=https://github.com \
+-u=https://stackoverflow.com \
+-u=https://facebook.com
+```
+
+### Specify custom truststore destination path
+```bash
+crip export -u=https://github.com -d=/path/to/directory
+```
+
+### Print in human-readable format 
+```bash
+crip print -u=https://github.com
+```
+
+### Print in PEM format
+```bash
+crip print -u=https://github.com -f=pem
+```
+
+### Batch print in PEM format
+```bash
+crip print -f=pem \
+-u=https://youtube.com \
+-u=https://github.com \
+-u=https://stackoverflow.com \
+-u=https://facebook.com
+```
+
 ## Contributing
 
 There are plenty of ways to contribute to this project:
