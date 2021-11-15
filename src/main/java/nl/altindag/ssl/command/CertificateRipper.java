@@ -4,7 +4,7 @@ import picocli.CommandLine.Command;
 
 @Command(
         name = "crip",
-        version = "crip v0.0.2",
+        version = "crip v1.0.0",
         description = "CLI tool to extracts server certificates",
         subcommands = {
                 PrintCommand.class,
