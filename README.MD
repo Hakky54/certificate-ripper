@@ -37,10 +37,10 @@ crip print --url=https://stackoverflow.com/
 2. Run `crip print --url=https://stackoverflow.com/`
 
 #### From Source
-4. Download the latest binary here: [Releases](https://github.com/Hakky54/certificate-ripper/releases)
-5. Extract the compressed file
-6. Add the reference to your environment variables: `export CRIP_HOME=/path/to/crip/binary`
-7. Run `crip print --url=https://stackoverflow.com/`
+1. Download the latest binary here: [Releases](https://github.com/Hakky54/certificate-ripper/releases)
+2. Extract the compressed file
+3. Add the reference to your environment variables: `export CRIP_HOME=/path/to/crip/binary`
+4. Run `crip print --url=https://stackoverflow.com/`
 
 ### Using Executable JAR
 **Minimum requirements:**
