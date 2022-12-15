@@ -5,7 +5,7 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Mixin;
 import picocli.CommandLine.Option;
 
-import java.security.cert.Certificate;
+import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -25,11 +25,11 @@ public class PrintCommand implements Runnable {
     @Override
     public void run() {
         if (format == Format.X509) {
-            sharedProperties.getUrlsToCertificates().forEach((String url, List<Certificate> certificates) ->
+            sharedProperties.getUrlsToCertificates().forEach((String url, List<X509Certificate> certificates) ->
                     System.out.printf("Certificates for url = %s%n%n%s%n%n%n",
                             url,
                             certificates.stream()
-                                    .map(Certificate::toString)
+                                    .map(X509Certificate::toString)
                                     .collect(Collectors.joining(String.format(CERTIFICATE_DELIMITER, url)))
                     ));
 

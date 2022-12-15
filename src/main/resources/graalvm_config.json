@@ -15,6 +15,18 @@
     "fields": [
       {
         "name": "urls"
+      },
+      {
+        "name": "proxyUrl"
+      },
+      {
+        "name": "proxyPort"
+      },
+      {
+        "name": "proxyUser"
+      },
+      {
+        "name": "proxyPassword"
       }
     ]
   },
