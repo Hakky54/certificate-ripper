@@ -5,6 +5,7 @@ getBinaries() {
   curl -sL https://dlcdn.apache.org/maven/maven-3/3.8.6/binaries/apache-maven-3.8.6-bin.tar.gz | tar -xzf - -C bin/maven --strip-components=1
 }
 
+#xcode-select --install
 mkdir -p bin/graalvm
 mkdir -p bin/maven
 getBinaries
