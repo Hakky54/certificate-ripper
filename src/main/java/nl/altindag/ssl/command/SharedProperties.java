@@ -27,7 +27,7 @@ class SharedProperties {
     @Option(names = {"--proxy-user"}, description = "User for authenticating the user for the given proxy")
     private String proxyUser;
 
-    @Option(names = {"--proxy-password"}, description = "Password for authenticating the user for the given proxy")
+    @Option(names = {"--proxy-password"}, interactive = true, description = "Password for authenticating the user for the given proxy")
     private String proxyPassword;
 
     public Map<String, List<X509Certificate>> getUrlsToCertificates() {
