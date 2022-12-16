@@ -121,7 +121,7 @@ crip print -f=pem \
 
 ### Extracting behind a proxy
 ```bash
-crip print -u=https://stackoverflow.com --proxy-host=my-host.com --proxy-port=1234 --proxy-user=foo --proxy-password=bar
+crip print -u=https://stackoverflow.com --proxy-host=my-host.com --proxy-port=1234 --proxy-user=foo --proxy-password
 ```
 
 ## Contributing
