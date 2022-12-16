@@ -11,4 +11,6 @@ getBinaries
 JAVA_HOME=`pwd`"/bin/graalvm/Contents/Home"
 bin/graalvm/Contents/Home/bin/gu install native-image
 bin/maven/bin/mvn clean install -Pnative-image
-cp target/crip bin/crip
+cp target/crip crip
+tar -czf bin/crip-macos-amd64.tar.gz crip
+rm crip
