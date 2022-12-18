@@ -18,8 +18,8 @@ class SharedProperties {
     @Option(names = {"-u", "--url"}, description = "Url of the target server to extract the certificates", required = true)
     private String[] urls;
 
-    @Option(names = {"--proxy-host"}, description = "Proxy url")
-    private String proxyUrl;
+    @Option(names = {"--proxy-host"}, description = "Proxy host")
+    private String proxyHost;
 
     @Option(names = {"--proxy-port"}, description = "Proxy port")
     private Integer proxyPort;
@@ -31,14 +31,14 @@ class SharedProperties {
     private String proxyPassword;
 
     public Map<String, List<X509Certificate>> getUrlsToCertificates() {
-        if (isNotBlank(proxyUrl) && proxyPort != null && isNotBlank(proxyUser) && isNotBlank(proxyPassword)) {
-            Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyUrl, proxyPort));
+        if (isNotBlank(proxyHost) && proxyPort != null && isNotBlank(proxyUser) && isNotBlank(proxyPassword)) {
+            Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, proxyPort));
             PasswordAuthentication passwordAuthentication = new PasswordAuthentication(proxyUser, proxyPassword.toCharArray());
             return CertificateUtils.getCertificatesFromExternalSources(proxy, passwordAuthentication, urls);
         }
 
-        if (isNotBlank(proxyUrl) && proxyPort != null) {
-            Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyUrl, proxyPort));
+        if (isNotBlank(proxyHost) && proxyPort != null) {
+            Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, proxyPort));
             return CertificateUtils.getCertificatesFromExternalSources(proxy, urls);
         }
 

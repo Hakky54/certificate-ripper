@@ -5,12 +5,12 @@ getBinaries() {
   curl -sL https://dlcdn.apache.org/maven/maven-3/3.8.6/binaries/apache-maven-3.8.6-bin.tar.gz | tar -xzf - -C bin/maven --strip-components=1
 }
 
-#sudo apt-get install build-essential libz-dev zlib1g-dev -y
+sudo apt-get update && sudo apt-get install build-essential libz-dev zlib1g-dev -y
 mkdir -p bin/graalvm
 mkdir -p bin/maven
 getBinaries
 JAVA_HOME=`pwd`"/bin/graalvm"
-bin/graalvm/Contents/Home/bin/gu install native-image
+bin/graalvm/bin/gu install native-image
 bin/maven/bin/mvn clean install -Pnative-image
 cp target/crip crip
 tar -czf bin/crip-linux-amd64.tar.gz crip

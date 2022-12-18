@@ -65,7 +65,7 @@ Usage: crip print [-f=<format>] -u=<urls> [-u=<urls>]...
 Prints the extracted certificates to the console
   -f, --format              To be printed certificate format. This option is not required. Default is human-readable.
   -u, --url                 Url of the target server to extract the certificates. Can be provided multiple times.
-      --proxy-host          Proxy url
+      --proxy-host          Proxy host
       --proxy-port          Proxy port
       --proxy-password      Password for authenticating the user for the given proxy
       --proxy-user          User for authenticating the user for the given proxy
@@ -74,7 +74,7 @@ Export the extracted certificate to a PKCS12/p12 type truststore
   -p, --password            TrustStore password. This option is not required. Default is changeit.
   -u, --url                 Url of the target server to extract the certificates. Can be provided multiple times.
   -d, --destination         Destination of the to be stored truststore file. Default is current directory if none is provided.
-      --proxy-host          Proxy url
+      --proxy-host          Proxy host
       --proxy-port          Proxy port
       --proxy-password      Password for authenticating the user for the given proxy
       --proxy-user          User for authenticating the user for the given proxy
