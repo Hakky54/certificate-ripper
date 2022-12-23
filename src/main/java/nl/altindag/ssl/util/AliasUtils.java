@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public final class Utils {
+public final class AliasUtils {
 
-    private Utils() {
+    private AliasUtils() {
 
     }
 

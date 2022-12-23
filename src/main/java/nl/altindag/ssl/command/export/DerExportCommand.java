@@ -1,7 +1,7 @@
 package nl.altindag.ssl.command.export;
 
 import nl.altindag.ssl.command.SharedProperties;
-import nl.altindag.ssl.util.Utils;
+import nl.altindag.ssl.util.AliasUtils;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Mixin;
 import picocli.CommandLine.Option;
@@ -34,7 +34,7 @@ public class DerExportCommand implements Runnable {
     public void run() {
         Map<String, X509Certificate> aliasToCertificate = sharedProperties.getUrlsToCertificates().values().stream()
                 .flatMap(Collection::stream)
-                .collect(collectingAndThen(toList(), Utils::generateAliases));
+                .collect(collectingAndThen(toList(), AliasUtils::generateAliases));
 
         for (Entry<String, X509Certificate> certificateEntry : aliasToCertificate.entrySet()) {
             Path certificatePath = Paths.get(destination, certificateEntry.getKey() + ".crt");

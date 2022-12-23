@@ -2,7 +2,7 @@ package nl.altindag.ssl.command.export;
 
 import nl.altindag.ssl.command.SharedProperties;
 import nl.altindag.ssl.util.CertificateUtils;
-import nl.altindag.ssl.util.Utils;
+import nl.altindag.ssl.util.AliasUtils;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Mixin;
 import picocli.CommandLine.Option;
@@ -33,7 +33,7 @@ public class PemExportCommand implements Runnable {
     public void run() {
         Map<String, String> aliasToCertificate = sharedProperties.getUrlsToCertificates().values().stream()
                 .flatMap(Collection::stream)
-                .collect(collectingAndThen(collectingAndThen(toList(), Utils::generateAliases),
+                .collect(collectingAndThen(collectingAndThen(toList(), AliasUtils::generateAliases),
                         entry -> entry.entrySet().stream().collect(toMap(Entry::getKey, element -> CertificateUtils.convertToPem(element.getValue())))));
 
         for (Entry<String, String> certificateEntry : aliasToCertificate.entrySet()) {
