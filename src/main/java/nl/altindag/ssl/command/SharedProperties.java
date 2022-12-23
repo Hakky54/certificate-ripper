@@ -13,7 +13,7 @@ import java.util.Map;
 import static nl.altindag.ssl.util.StringUtils.isNotBlank;
 
 @SuppressWarnings("unused")
-class SharedProperties {
+public class SharedProperties {
 
     @Option(names = {"-u", "--url"}, description = "Url of the target server to extract the certificates", required = true)
     private String[] urls;
