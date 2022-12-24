@@ -38,6 +38,8 @@
         <version.maven-shade-plugin>3.2.4</version.maven-shade-plugin>
         <version.graalvm>21.2.0</version.graalvm>
         <application-main-class>nl.altindag.crip.App</application-main-class>
+        <version.license-maven-plugin>4.2.rc3</version.license-maven-plugin>
+        <license.git.copyrightYears>2021</license.git.copyrightYears>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -105,6 +107,46 @@
                         <phase>package</phase>
                         <goals>
                             <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>com.mycila</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>${version.license-maven-plugin}</version>
+                <configuration>
+                    <inlineHeader>
+                        <![CDATA[
+Copyright ${license.git.copyrightYears} Thunderberry.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     https://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+]]>
+                    </inlineHeader>
+                    <includes>
+                        <include>**/*.java</include>
+                    </includes>
+                    <strictCheck>true</strictCheck>
+                    <mapping>
+                        <java>SLASHSTAR_STYLE</java>
+                    </mapping>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>check</goal>
                         </goals>
                     </execution>
                 </executions>
