@@ -12,7 +12,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.security.cert.X509Certificate;
-import java.util.AbstractMap;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -30,8 +30,8 @@ public class PemExportCommand extends CombinableFileExport implements Runnable {
 
         if (combined) {
             filenameToCertificate = urlsToCertificates.entrySet().stream()
-                    .map(entry -> new AbstractMap.SimpleEntry<>(HostnameUtils.extractHostFromUrl(entry.getKey()) + ".pem", CertificateUtils.convertToPem(entry.getValue())))
-                    .collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, entry -> String.join(System.lineSeparator(), entry.getValue())));
+                    .map(entry -> new SimpleEntry<>(HostnameUtils.extractHostFromUrl(entry.getKey()) + ".pem", CertificateUtils.convertToPem(entry.getValue())))
+                    .collect(Collectors.toMap(SimpleEntry::getKey, entry -> String.join(System.lineSeparator(), entry.getValue())));
         } else {
             filenameToCertificate = urlsToCertificates.values().stream()
                     .flatMap(Collection::stream)
