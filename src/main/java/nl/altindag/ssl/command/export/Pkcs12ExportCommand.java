@@ -23,16 +23,10 @@ import static java.util.stream.Collectors.toList;
 
 @SuppressWarnings({"FieldCanBeLocal", "FieldMayBeFinal"})
 @Command(name = "pkcs12", description = "Export the extracted certificate to a PKCS12/p12 type truststore")
-public class Pkcs12ExportCommand implements Runnable {
-
-    @Mixin
-    private SharedProperties sharedProperties;
+public class Pkcs12ExportCommand extends FileExport implements Runnable {
 
     @Option(names = {"-p", "--password"}, description = "TrustStore password. Default is changeit if none is provided.")
     private String password = "changeit";
-
-    @Option(names = {"-d", "--destination"}, description = "Destination of the to be stored truststore file. Default is current directory if none is provided.")
-    private String destination = System.getProperty("user.dir");
 
     @Override
     public void run() {
