@@ -38,7 +38,7 @@ public class DerExportCommand extends CombinableFileExport implements Runnable {
                     String host = HostnameUtils.extractHostFromUrl(entry.getKey());
                     CertPath certPath = certificateFactory.generateCertPath(entry.getValue());
 
-                    filenameToFileContent.put(host + ".crt", certPath.getEncoded("PKCS7"));
+                    filenameToFileContent.put(host + ".p7b", certPath.getEncoded("PKCS7"));
                 }
             } else {
                 Map<String, X509Certificate> aliasToCertificate = urlsToCertificates.values().stream()
