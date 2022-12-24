@@ -1,9 +1,7 @@
 package nl.altindag.ssl.command.export;
 
-import nl.altindag.ssl.command.SharedProperties;
 import nl.altindag.ssl.util.KeyStoreUtils;
 import picocli.CommandLine.Command;
-import picocli.CommandLine.Mixin;
 import picocli.CommandLine.Option;
 
 import java.io.IOException;

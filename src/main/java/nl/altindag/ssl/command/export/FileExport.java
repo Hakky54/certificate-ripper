@@ -4,9 +4,6 @@ import nl.altindag.ssl.command.SharedProperties;
 import picocli.CommandLine.Mixin;
 import picocli.CommandLine.Option;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
 public class FileExport {
 
     @Mixin
