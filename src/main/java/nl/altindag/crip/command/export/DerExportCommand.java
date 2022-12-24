@@ -1,7 +1,7 @@
-package nl.altindag.ssl.command.export;
+package nl.altindag.crip.command.export;
 
-import nl.altindag.ssl.util.AliasUtils;
-import nl.altindag.ssl.util.HostnameUtils;
+import nl.altindag.crip.util.HostnameUtils;
+import nl.altindag.crip.util.AliasUtils;
 import picocli.CommandLine.Command;
 
 import java.io.IOException;

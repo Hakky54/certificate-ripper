@@ -1,6 +1,6 @@
-package nl.altindag.ssl;
+package nl.altindag.crip;
 
-import nl.altindag.ssl.command.CertificateRipper;
+import nl.altindag.crip.command.CertificateRipper;
 import picocli.CommandLine;
 
 public class App {

@@ -37,7 +37,7 @@
         <version.exec-maven-plugin>1.6.0</version.exec-maven-plugin>
         <version.maven-shade-plugin>3.2.4</version.maven-shade-plugin>
         <version.graalvm>21.2.0</version.graalvm>
-        <application-main-class>nl.altindag.ssl.App</application-main-class>
+        <application-main-class>nl.altindag.crip.App</application-main-class>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 

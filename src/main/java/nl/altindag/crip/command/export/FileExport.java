@@ -1,6 +1,6 @@
-package nl.altindag.ssl.command.export;
+package nl.altindag.crip.command.export;
 
-import nl.altindag.ssl.command.SharedProperties;
+import nl.altindag.crip.command.SharedProperties;
 import picocli.CommandLine.Mixin;
 import picocli.CommandLine.Option;
 

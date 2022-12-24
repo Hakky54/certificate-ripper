@@ -1,13 +1,13 @@
 [
   {
-    "name": "nl.altindag.ssl.command.CertificateRipper",
+    "name": "nl.altindag.crip.command.CertificateRipper",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
     "allPublicMethods": true
   },
   {
-    "name": "nl.altindag.ssl.command.SharedProperties",
+    "name": "nl.altindag.crip.command.SharedProperties",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -31,7 +31,7 @@
     ]
   },
   {
-    "name": "nl.altindag.ssl.command.PrintCommand",
+    "name": "nl.altindag.crip.command.PrintCommand",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -46,14 +46,14 @@
     ]
   },
   {
-    "name": "nl.altindag.ssl.command.export.ExportCommand",
+    "name": "nl.altindag.crip.command.export.ExportCommand",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
     "allPublicMethods": true
   },
   {
-    "name": "nl.altindag.ssl.command.export.FileExport",
+    "name": "nl.altindag.crip.command.export.FileExport",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -68,7 +68,7 @@
     ]
   },
   {
-    "name": "nl.altindag.ssl.command.export.CombinableFileExport",
+    "name": "nl.altindag.crip.command.export.CombinableFileExport",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -80,7 +80,7 @@
     ]
   },
   {
-    "name": "nl.altindag.ssl.command.export.Pkcs12ExportCommand",
+    "name": "nl.altindag.crip.command.export.Pkcs12ExportCommand",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
@@ -92,14 +92,14 @@
     ]
   },
   {
-    "name": "nl.altindag.ssl.command.export.DerExportCommand",
+    "name": "nl.altindag.crip.command.export.DerExportCommand",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
     "allPublicMethods": true
   },
   {
-    "name": "nl.altindag.ssl.command.export.PemExportCommand",
+    "name": "nl.altindag.crip.command.export.PemExportCommand",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,

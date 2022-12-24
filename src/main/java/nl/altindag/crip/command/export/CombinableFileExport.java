@@ -1,4 +1,4 @@
-package nl.altindag.ssl.command.export;
+package nl.altindag.crip.command.export;
 
 import picocli.CommandLine.Option;
 

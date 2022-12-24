@@ -1,4 +1,4 @@
-package nl.altindag.ssl.command;
+package nl.altindag.crip.command;
 
 import nl.altindag.ssl.util.CertificateUtils;
 import picocli.CommandLine.Command;

@@ -1,4 +1,6 @@
-package nl.altindag.ssl.util;
+package nl.altindag.crip.util;
+
+import nl.altindag.ssl.util.CertificateUtils;
 
 import java.security.cert.X509Certificate;
 import java.util.HashMap;

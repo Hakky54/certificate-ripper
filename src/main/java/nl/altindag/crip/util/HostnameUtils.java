@@ -1,4 +1,4 @@
-package nl.altindag.ssl.util;
+package nl.altindag.crip.util;
 
 import java.net.MalformedURLException;
 import java.net.URL;
