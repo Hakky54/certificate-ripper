@@ -58,22 +58,35 @@ crip print --url=https://stackoverflow.com/
 ```text
 Usage: crip [COMMAND]
 Commands:
-  print   Prints the extracted certificates to the console
-  export  Export the extracted certificate to a PKCS12/p12 type truststore
+  print             Prints the extracted certificates to the console
+  export pkcs12     Export the extracted certificate to a PKCS12/p12 type truststore
+  export der        Export the extracted certificate to a binary form also known as DER
+  export pem        Export the extracted certificate to a base64 encoded string also known as PEM
   
-Usage: crip print [-f=<format>] -u=<urls> [-u=<urls>]...
+Usage: crip print
 Prints the extracted certificates to the console
   -f, --format              To be printed certificate format. This option is not required. Default is human-readable.
   -u, --url                 Url of the target server to extract the certificates. Can be provided multiple times.
-      --proxy-host          Proxy host
-      --proxy-port          Proxy port
-      --proxy-password      Password for authenticating the user for the given proxy
-      --proxy-user          User for authenticating the user for the given proxy
-Usage: crip export [-p=<password>] -u=<urls> [-u=<urls>]...
+
+Usage: crip export pkcs12
 Export the extracted certificate to a PKCS12/p12 type truststore
   -p, --password            TrustStore password. This option is not required. Default is changeit.
   -u, --url                 Url of the target server to extract the certificates. Can be provided multiple times.
-  -d, --destination         Destination of the to be stored truststore file. Default is current directory if none is provided.
+  -d, --destination         Destination of the to be stored file. Default is current directory if none is provided.
+      
+Usage: crip export der
+Export the extracted certificate to a binary form also known as DER
+  -u, --url                 Url of the target server to extract the certificates. Can be provided multiple times.
+  -c, --combined            Indicator to either combine all of the certificate into one file for a given url or export into individual files.
+  -d, --destination         Destination of the to be stored file. Default is current directory if none is provided.
+
+Usage: crip export pem
+Export the extracted certificate to a base64 encoded string also known as PEM
+  -u, --url                 Url of the target server to extract the certificates. Can be provided multiple times.
+  -c, --combined            Indicator to either combine all of the certificate into one file for a given url or export into individual files.
+  -d, --destination         Destination of the to be stored file. Default is current directory if none is provided.
+      
+Proxy options applicable for all commands
       --proxy-host          Proxy host
       --proxy-port          Proxy port
       --proxy-password      Password for authenticating the user for the given proxy
@@ -83,12 +96,12 @@ Export the extracted certificate to a PKCS12/p12 type truststore
 ## Example usages
 ### Single export
 ```bash
-crip export -u=https://github.com
+crip export pkcs12 -u=https://github.com
 ```
 
 ### Bulk export
 ```bash
-crip export \
+crip export pkcs12 \
 -u=https://youtube.com \
 -u=https://github.com \
 -u=https://stackoverflow.com \
