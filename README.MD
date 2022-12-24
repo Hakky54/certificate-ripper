@@ -110,7 +110,7 @@ crip export pkcs12 \
 
 ### Specify custom truststore destination path
 ```bash
-crip export -u=https://github.com -d=/path/to/directory
+crip export pkcs12 -u=https://github.com -d=/path/to/directory
 ```
 
 ### Print in human-readable format 
