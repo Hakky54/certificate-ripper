@@ -1,6 +1,7 @@
 package nl.altindag.ssl.command.export;
 
 import nl.altindag.ssl.util.AliasUtils;
+import nl.altindag.ssl.util.HostnameUtils;
 import picocli.CommandLine.Command;
 
 import java.io.IOException;
@@ -34,7 +35,7 @@ public class DerExportCommand extends CombinableFileExport implements Runnable {
                 CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
 
                 for (Entry<String, List<X509Certificate>> entry : urlsToCertificates.entrySet()) {
-                    String host = extractHostFromUrl(entry.getKey());
+                    String host = HostnameUtils.extractHostFromUrl(entry.getKey());
                     CertPath certPath = certificateFactory.generateCertPath(entry.getValue());
 
                     filenameToFileContent.put(host + ".crt", certPath.getEncoded("PKCS7"));

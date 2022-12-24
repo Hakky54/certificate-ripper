@@ -2,6 +2,7 @@ package nl.altindag.ssl.command.export;
 
 import nl.altindag.ssl.util.AliasUtils;
 import nl.altindag.ssl.util.CertificateUtils;
+import nl.altindag.ssl.util.HostnameUtils;
 import picocli.CommandLine.Command;
 
 import java.io.IOException;
@@ -29,7 +30,7 @@ public class PemExportCommand extends CombinableFileExport implements Runnable {
 
         if (combined) {
             filenameToCertificate = urlsToCertificates.entrySet().stream()
-                    .map(entry -> new AbstractMap.SimpleEntry<>(extractHostFromUrl(entry.getKey()) + ".pem", CertificateUtils.convertToPem(entry.getValue())))
+                    .map(entry -> new AbstractMap.SimpleEntry<>(HostnameUtils.extractHostFromUrl(entry.getKey()) + ".pem", CertificateUtils.convertToPem(entry.getValue())))
                     .collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, entry -> String.join(System.lineSeparator(), entry.getValue())));
         } else {
             filenameToCertificate = urlsToCertificates.values().stream()
