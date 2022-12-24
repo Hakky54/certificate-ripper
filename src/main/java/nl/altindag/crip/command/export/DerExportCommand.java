@@ -15,8 +15,7 @@
  */
 package nl.altindag.crip.command.export;
 
-import nl.altindag.crip.util.HostnameUtils;
-import nl.altindag.crip.util.AliasUtils;
+import nl.altindag.crip.util.CertificateUtils;
 import picocli.CommandLine.Command;
 
 import java.io.IOException;
@@ -50,7 +49,7 @@ public class DerExportCommand extends CombinableFileExport implements Runnable {
                 CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
 
                 for (Entry<String, List<X509Certificate>> entry : urlsToCertificates.entrySet()) {
-                    String host = HostnameUtils.extractHostFromUrl(entry.getKey());
+                    String host = CertificateUtils.extractHostFromUrl(entry.getKey());
                     CertPath certPath = certificateFactory.generateCertPath(entry.getValue());
 
                     filenameToFileContent.put(host + ".p7b", certPath.getEncoded("PKCS7"));
@@ -58,7 +57,7 @@ public class DerExportCommand extends CombinableFileExport implements Runnable {
             } else {
                 Map<String, X509Certificate> aliasToCertificate = urlsToCertificates.values().stream()
                         .flatMap(Collection::stream)
-                        .collect(collectingAndThen(toList(), AliasUtils::generateAliases));
+                        .collect(collectingAndThen(toList(), CertificateUtils::generateAliases));
 
                 for (Entry<String, X509Certificate> entry : aliasToCertificate.entrySet()) {
                     filenameToFileContent.put(entry.getKey() + ".crt", entry.getValue().getEncoded());

@@ -15,9 +15,7 @@
  */
 package nl.altindag.crip.command.export;
 
-import nl.altindag.crip.util.HostnameUtils;
-import nl.altindag.crip.util.AliasUtils;
-import nl.altindag.ssl.util.CertificateUtils;
+import nl.altindag.crip.util.CertificateUtils;
 import picocli.CommandLine.Command;
 
 import java.io.IOException;
@@ -34,7 +32,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.collectingAndThen;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
 @Command(name = "pem", description = "Export the extracted certificate to a base64 encoded string also known as PEM")
 public class PemExportCommand extends CombinableFileExport implements Runnable {
@@ -45,13 +45,13 @@ public class PemExportCommand extends CombinableFileExport implements Runnable {
 
         if (combined) {
             filenameToCertificate = urlsToCertificates.entrySet().stream()
-                    .map(entry -> new SimpleEntry<>(HostnameUtils.extractHostFromUrl(entry.getKey()) + ".pem", CertificateUtils.convertToPem(entry.getValue())))
+                    .map(entry -> new SimpleEntry<>(CertificateUtils.extractHostFromUrl(entry.getKey()) + ".pem", nl.altindag.ssl.util.CertificateUtils.convertToPem(entry.getValue())))
                     .collect(Collectors.toMap(SimpleEntry::getKey, entry -> String.join(System.lineSeparator(), entry.getValue())));
         } else {
             filenameToCertificate = urlsToCertificates.values().stream()
                     .flatMap(Collection::stream)
-                    .collect(collectingAndThen(collectingAndThen(toList(), AliasUtils::generateAliases),
-                            entry -> entry.entrySet().stream().collect(toMap(element -> element.getKey() + ".pem", element -> CertificateUtils.convertToPem(element.getValue())))));
+                    .collect(collectingAndThen(collectingAndThen(toList(), CertificateUtils::generateAliases),
+                            entry -> entry.entrySet().stream().collect(toMap(element -> element.getKey() + ".pem", element -> nl.altindag.ssl.util.CertificateUtils.convertToPem(element.getValue())))));
         }
 
         for (Entry<String, String> certificateEntry : filenameToCertificate.entrySet()) {

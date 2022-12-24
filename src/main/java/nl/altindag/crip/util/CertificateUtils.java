@@ -15,24 +15,24 @@
  */
 package nl.altindag.crip.util;
 
-import nl.altindag.ssl.util.CertificateUtils;
-
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public final class AliasUtils {
+public final class CertificateUtils {
 
-    private AliasUtils() {
+    private CertificateUtils() {
 
     }
 
     public static Map<String, X509Certificate> generateAliases(List<X509Certificate> certificates) {
         Map<String, X509Certificate> aliasToCertificate = new HashMap<>();
         for (X509Certificate certificate : certificates) {
-            String alias = CertificateUtils.generateAlias(certificate)
+            String alias = nl.altindag.ssl.util.CertificateUtils.generateAlias(certificate)
                     .toLowerCase(Locale.US)
                     .replaceAll(" ", "-")
                     .replaceAll(",", "_")
@@ -59,6 +59,15 @@ public final class AliasUtils {
             }
         }
         return aliasToCertificate;
+    }
+
+    public static String extractHostFromUrl(String value) {
+        try {
+            URL url = new URL(value);
+            return url.getHost();
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
