@@ -46,7 +46,7 @@
     <dependencies>
         <dependency>
             <groupId>io.github.hakky54</groupId>
-            <artifactId>sslcontext-kickstart-for-netty</artifactId>
+            <artifactId>sslcontext-kickstart</artifactId>
             <version>${version.sslcontext-kickstart}</version>
         </dependency>
         <dependency>
@@ -188,7 +188,6 @@ limitations under the License.
                             <skip>false</skip>
                             <buildArgs>
                                 --no-fallback
-                                -H:IncludeResources=simplelogger.properties
                                 -H:ReflectionConfigurationResources=graalvm_config.json
                                 -H:EnableURLProtocols=https
                                 -H:EnableURLProtocols=http

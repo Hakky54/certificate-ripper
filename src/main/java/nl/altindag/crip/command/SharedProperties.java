@@ -22,6 +22,7 @@ import java.net.InetSocketAddress;
 import java.net.PasswordAuthentication;
 import java.net.Proxy;
 import java.security.cert.X509Certificate;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -58,6 +59,27 @@ public class SharedProperties {
         }
 
         return CertificateUtils.getCertificatesFromExternalSources(urls);
+    }
+
+    public List<X509Certificate> getCertificates() {
+        String url = urls[0];
+
+        if (isNotBlank(proxyHost) && proxyPort != null && isNotBlank(proxyUser) && isNotBlank(proxyPassword)) {
+            Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, proxyPort));
+            PasswordAuthentication passwordAuthentication = new PasswordAuthentication(proxyUser, proxyPassword.toCharArray());
+            return CertificateUtils.getCertificatesFromExternalSource(proxy, passwordAuthentication, url);
+        }
+
+        if (isNotBlank(proxyHost) && proxyPort != null) {
+            Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, proxyPort));
+            return CertificateUtils.getCertificatesFromExternalSource(proxy, url);
+        }
+
+        return CertificateUtils.getCertificatesFromExternalSource(url);
+    }
+
+    public List<String> getUrls() {
+        return Arrays.asList(urls);
     }
 
 }

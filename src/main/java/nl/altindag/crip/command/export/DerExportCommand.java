@@ -18,11 +18,7 @@ package nl.altindag.crip.command.export;
 import nl.altindag.crip.util.CertificateUtils;
 import picocli.CommandLine.Command;
 
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.security.cert.CertPath;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
@@ -42,20 +38,31 @@ public class DerExportCommand extends CombinableFileExport implements Runnable {
     @Override
     public void run() {
         try {
-            Map<String, List<X509Certificate>> urlsToCertificates = sharedProperties.getUrlsToCertificates();
             Map<String, byte[]> filenameToFileContent = new HashMap<>();
 
             if (combined) {
                 CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
 
-                for (Entry<String, List<X509Certificate>> entry : urlsToCertificates.entrySet()) {
+                if (sharedProperties.getUrls().size() == 1) {
+                    List<X509Certificate> certificates = sharedProperties.getCertificates();
+                    CertPath certPath = certificateFactory.generateCertPath(certificates);
+
+                    Path destination = getDestination()
+                            .orElseGet(() -> getCurrentDirectory().resolve(CertificateUtils.extractHostFromUrl(sharedProperties.getUrls().get(0)) + ".p7b"));
+
+                    write(destination, certPath.getEncoded("PKCS7"));
+                    System.out.println("Successfully Exported certificates");
+                    return;
+                }
+
+                for (Entry<String, List<X509Certificate>> entry : sharedProperties.getUrlsToCertificates().entrySet()) {
                     String host = CertificateUtils.extractHostFromUrl(entry.getKey());
                     CertPath certPath = certificateFactory.generateCertPath(entry.getValue());
 
                     filenameToFileContent.put(host + ".p7b", certPath.getEncoded("PKCS7"));
                 }
             } else {
-                Map<String, X509Certificate> aliasToCertificate = urlsToCertificates.values().stream()
+                Map<String, X509Certificate> aliasToCertificate = sharedProperties.getUrlsToCertificates().values().stream()
                         .flatMap(Collection::stream)
                         .collect(collectingAndThen(toList(), CertificateUtils::generateAliases));
 
@@ -65,15 +72,15 @@ public class DerExportCommand extends CombinableFileExport implements Runnable {
             }
 
             for (Entry<String, byte[]> certificateEntry : filenameToFileContent.entrySet()) {
-                Path certificatePath = Paths.get(destination, certificateEntry.getKey());
-                Files.write(certificatePath, certificateEntry.getValue(), StandardOpenOption.CREATE);
+                Path destination = getDestination().orElseGet(this::getCurrentDirectory).resolve(certificateEntry.getKey());
+                write(destination, certificateEntry.getValue());
             }
 
-        } catch (CertificateException | IOException e) {
+        } catch (CertificateException e) {
             System.err.println("Failed to export the certificates. Error message: " + e.getMessage());
         }
 
-        System.out.println("Exported certificates to " + Paths.get(destination).toAbsolutePath());
+        System.out.println("Successfully Exported certificates");
     }
 
 }

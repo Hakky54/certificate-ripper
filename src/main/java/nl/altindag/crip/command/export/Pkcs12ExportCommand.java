@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -48,7 +47,7 @@ public class Pkcs12ExportCommand extends FileExport implements Runnable {
                 .distinct()
                 .collect(collectingAndThen(toList(), KeyStoreUtils::createTrustStore));
 
-        Path trustStorePath = Paths.get(destination, "truststore.p12");
+        Path trustStorePath = getDestination().orElseGet(this::getCurrentDirectory).resolve("truststore.p12");
 
         try(OutputStream outputStream = Files.newOutputStream(trustStorePath, StandardOpenOption.CREATE)) {
             trustStore.store(outputStream, password.toCharArray());
