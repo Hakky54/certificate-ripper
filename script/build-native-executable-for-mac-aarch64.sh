@@ -9,7 +9,7 @@ getBinaries() {
 mkdir -p bin/graalvm
 mkdir -p bin/maven
 getBinaries
-JAVA_HOME=`pwd`"/bin/graalvm/Contents/Home"
+export JAVA_HOME=`pwd`"/bin/graalvm/Contents/Home"
 bin/graalvm/Contents/Home/bin/gu install native-image
 bin/maven/bin/mvn clean install -Pnative-image
 cp target/crip crip
