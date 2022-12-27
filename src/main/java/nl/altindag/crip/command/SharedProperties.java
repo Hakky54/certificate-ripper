@@ -25,6 +25,8 @@ import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import static nl.altindag.ssl.util.StringUtils.isNotBlank;
 
@@ -47,39 +49,45 @@ public class SharedProperties {
     private String proxyPassword;
 
     public Map<String, List<X509Certificate>> getUrlsToCertificates() {
-        if (isNotBlank(proxyHost) && proxyPort != null && isNotBlank(proxyUser) && isNotBlank(proxyPassword)) {
-            Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, proxyPort));
-            PasswordAuthentication passwordAuthentication = new PasswordAuthentication(proxyUser, proxyPassword.toCharArray());
-            return CertificateUtils.getCertificatesFromExternalSources(proxy, passwordAuthentication, urls);
-        }
-
-        if (isNotBlank(proxyHost) && proxyPort != null) {
-            Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, proxyPort));
-            return CertificateUtils.getCertificatesFromExternalSources(proxy, urls);
-        }
-
-        return CertificateUtils.getCertificatesFromExternalSources(urls);
+        return getCertificates(urls,
+                CertificateUtils::getCertificatesFromExternalSources,
+                CertificateUtils::getCertificatesFromExternalSources,
+                CertificateUtils::getCertificatesFromExternalSources);
     }
 
     public List<X509Certificate> getCertificates() {
-        String url = urls[0];
+        return getCertificates(urls[0],
+                CertificateUtils::getCertificatesFromExternalSource,
+                CertificateUtils::getCertificatesFromExternalSource,
+                CertificateUtils::getCertificatesFromExternalSource);
+    }
+
+    private <T, R> R getCertificates(T sourceProvider,
+                                     Function<T, R> certificateExtractor,
+                                     BiFunction<Proxy, T, R> certificateExtractorWithProxy,
+                                     TriFunction<Proxy, PasswordAuthentication, T, R> certificateExtractorWithProxyAndAuthentication) {
 
         if (isNotBlank(proxyHost) && proxyPort != null && isNotBlank(proxyUser) && isNotBlank(proxyPassword)) {
             Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, proxyPort));
             PasswordAuthentication passwordAuthentication = new PasswordAuthentication(proxyUser, proxyPassword.toCharArray());
-            return CertificateUtils.getCertificatesFromExternalSource(proxy, passwordAuthentication, url);
+            return certificateExtractorWithProxyAndAuthentication.apply(proxy, passwordAuthentication, sourceProvider);
         }
 
         if (isNotBlank(proxyHost) && proxyPort != null) {
             Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, proxyPort));
-            return CertificateUtils.getCertificatesFromExternalSource(proxy, url);
+            return certificateExtractorWithProxy.apply(proxy, sourceProvider);
         }
 
-        return CertificateUtils.getCertificatesFromExternalSource(url);
+        return certificateExtractor.apply(sourceProvider);
     }
 
     public List<String> getUrls() {
         return Arrays.asList(urls);
+    }
+
+    @FunctionalInterface
+    private interface TriFunction<T, U, V, R> {
+        R apply(T t, U u, V v);
     }
 
 }

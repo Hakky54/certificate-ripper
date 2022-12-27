@@ -16,6 +16,7 @@
 package nl.altindag.crip.command.export;
 
 import nl.altindag.crip.util.CertificateUtils;
+import nl.altindag.crip.util.IOUtils;
 import picocli.CommandLine.Command;
 
 import java.nio.file.Path;
@@ -48,9 +49,9 @@ public class DerExportCommand extends CombinableFileExport implements Runnable {
                     CertPath certPath = certificateFactory.generateCertPath(certificates);
 
                     Path destination = getDestination()
-                            .orElseGet(() -> getCurrentDirectory().resolve(CertificateUtils.extractHostFromUrl(sharedProperties.getUrls().get(0)) + ".p7b"));
+                            .orElseGet(() -> IOUtils.getCurrentDirectory().resolve(CertificateUtils.extractHostFromUrl(sharedProperties.getUrls().get(0)) + ".p7b"));
 
-                    write(destination, certPath.getEncoded("PKCS7"));
+                    IOUtils.write(destination, certPath.getEncoded("PKCS7"));
                     System.out.println("Successfully Exported certificates");
                     return;
                 }
@@ -72,8 +73,8 @@ public class DerExportCommand extends CombinableFileExport implements Runnable {
             }
 
             for (Entry<String, byte[]> certificateEntry : filenameToFileContent.entrySet()) {
-                Path destination = getDestination().orElseGet(this::getCurrentDirectory).resolve(certificateEntry.getKey());
-                write(destination, certificateEntry.getValue());
+                Path destination = getDestination().orElseGet(IOUtils::getCurrentDirectory).resolve(certificateEntry.getKey());
+                IOUtils.write(destination, certificateEntry.getValue());
             }
 
         } catch (CertificateException e) {

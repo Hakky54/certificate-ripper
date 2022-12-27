@@ -16,9 +16,9 @@
 package nl.altindag.crip.command.export;
 
 import nl.altindag.crip.util.CertificateUtils;
+import nl.altindag.crip.util.IOUtils;
 import picocli.CommandLine.Command;
 
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.security.cert.X509Certificate;
 import java.util.AbstractMap.SimpleEntry;
@@ -47,9 +47,9 @@ public class PemExportCommand extends CombinableFileExport implements Runnable {
                         .collect(Collectors.joining(System.lineSeparator()));
 
                 Path destination = getDestination()
-                        .orElseGet(() -> getCurrentDirectory().resolve(CertificateUtils.extractHostFromUrl(sharedProperties.getUrls().get(0)) + ".crt"));
+                        .orElseGet(() -> IOUtils.getCurrentDirectory().resolve(CertificateUtils.extractHostFromUrl(sharedProperties.getUrls().get(0)) + ".crt"));
 
-                write(destination, certificatesAsPem.getBytes(StandardCharsets.UTF_8));
+                IOUtils.write(destination, certificatesAsPem);
                 System.out.println("Successfully Exported certificates");
                 return;
             }
@@ -65,8 +65,8 @@ public class PemExportCommand extends CombinableFileExport implements Runnable {
         }
 
         for (Entry<String, String> certificateEntry : filenameToCertificate.entrySet()) {
-            Path certificatePath = getDestination().orElseGet(this::getCurrentDirectory).resolve(certificateEntry.getKey());
-            write(certificatePath, certificateEntry.getValue().getBytes(StandardCharsets.UTF_8));
+            Path certificatePath = getDestination().orElseGet(IOUtils::getCurrentDirectory).resolve(certificateEntry.getKey());
+            IOUtils.write(certificatePath, certificateEntry.getValue());
         }
 
         System.out.println("Successfully Exported certificates");

@@ -19,11 +19,8 @@ import nl.altindag.crip.command.SharedProperties;
 import picocli.CommandLine.Mixin;
 import picocli.CommandLine.Option;
 
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.Optional;
 
 public class FileExport {
@@ -40,18 +37,6 @@ public class FileExport {
         }
 
         return Optional.of(Paths.get(destination));
-    }
-
-    protected Path getCurrentDirectory() {
-        return Paths.get(System.getProperty("user.dir"));
-    }
-
-    protected void write(Path path, byte[] bytes) {
-        try {
-            Files.write(path, bytes, StandardOpenOption.CREATE);
-        } catch (IOException e) {
-            System.err.println("Failed to export the certificates. Error message: " + e.getMessage());
-        }
     }
 
 }

@@ -15,6 +15,7 @@
  */
 package nl.altindag.crip.command.export;
 
+import nl.altindag.crip.util.IOUtils;
 import nl.altindag.ssl.util.KeyStoreUtils;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -47,7 +48,7 @@ public class Pkcs12ExportCommand extends FileExport implements Runnable {
                 .distinct()
                 .collect(collectingAndThen(toList(), KeyStoreUtils::createTrustStore));
 
-        Path trustStorePath = getDestination().orElseGet(this::getCurrentDirectory).resolve("truststore.p12");
+        Path trustStorePath = getDestination().orElseGet(IOUtils::getCurrentDirectory).resolve("truststore.p12");
 
         try(OutputStream outputStream = Files.newOutputStream(trustStorePath, StandardOpenOption.CREATE)) {
             trustStore.store(outputStream, password.toCharArray());
