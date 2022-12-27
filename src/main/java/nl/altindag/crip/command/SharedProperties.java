@@ -15,6 +15,7 @@
  */
 package nl.altindag.crip.command;
 
+import nl.altindag.crip.util.TriFunction;
 import nl.altindag.ssl.util.CertificateUtils;
 import picocli.CommandLine.Option;
 
@@ -83,11 +84,6 @@ public class SharedProperties {
 
     public List<String> getUrls() {
         return Arrays.asList(urls);
-    }
-
-    @FunctionalInterface
-    private interface TriFunction<T, U, V, R> {
-        R apply(T t, U u, V v);
     }
 
 }
