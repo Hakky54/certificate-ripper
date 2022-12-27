@@ -137,6 +137,17 @@ crip print -f=pem \
 crip print -u=https://stackoverflow.com --proxy-host=my-host.com --proxy-port=1234 --proxy-user=foo --proxy-password
 ```
 
+### Combining certificates
+```bash
+crip export pem -u=https://github.com --combined=true
+```
+
+### Defining custom file name
+Works only with the combined option while only specifying a single url.
+```bash
+crip export pem -u=https://github.com --combined=true --destionation=/path/to/export/github-chain.crt
+```
+
 ## Contributing
 
 There are plenty of ways to contribute to this project:
