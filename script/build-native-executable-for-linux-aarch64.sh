@@ -9,7 +9,7 @@ sudo apt-get update && sudo apt-get install build-essential libz-dev zlib1g-dev 
 mkdir -p bin/graalvm
 mkdir -p bin/maven
 getBinaries
-JAVA_HOME=`pwd`"/bin/graalvm"
+export JAVA_HOME=`pwd`"/bin/graalvm"
 bin/graalvm/bin/gu install native-image
 bin/maven/bin/mvn clean install -Pnative-image
 cp target/crip crip
