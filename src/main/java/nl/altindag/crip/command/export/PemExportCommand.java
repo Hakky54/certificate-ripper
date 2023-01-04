@@ -23,12 +23,12 @@ import picocli.CommandLine.Option;
 import java.nio.file.Path;
 import java.security.cert.X509Certificate;
 import java.util.AbstractMap.SimpleEntry;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toList;
@@ -84,7 +84,7 @@ public class PemExportCommand extends CombinableFileExport implements Runnable {
     }
 
     private static String removeHeader(String value) {
-        return Arrays.stream(value.split(System.lineSeparator()))
+        return Stream.of(value.split(System.lineSeparator()))
                 .skip(2)
                 .collect(Collectors.joining(System.lineSeparator()));
     }
