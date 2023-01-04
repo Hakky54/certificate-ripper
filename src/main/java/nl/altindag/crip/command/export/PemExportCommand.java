@@ -37,8 +37,8 @@ import static java.util.stream.Collectors.toMap;
 @Command(name = "pem", description = "Export the extracted certificate to a base64 encoded string also known as PEM")
 public class PemExportCommand extends CombinableFileExport implements Runnable {
 
-    @Option(names = {"-h", "--with-header"}, description = "Indicator to either include or omit the additional headers.")
-    protected Boolean withHeader = true;
+    @Option(names = {"-p", "--pristine"}, description = "Indicator to either omit or include additional information above the BEGIN statement.")
+    protected Boolean pristine = false;
 
     public void run() {
         Map<String, String> filenameToCertificate;
@@ -49,7 +49,7 @@ public class PemExportCommand extends CombinableFileExport implements Runnable {
 
                 String certificatesAsPem = certificates.stream()
                         .map(nl.altindag.ssl.util.CertificateUtils::convertToPem)
-                        .map(certificate -> withHeader ? certificate : removeHeader(certificate))
+                        .map(certificate -> pristine ? removeHeader(certificate) : certificate)
                         .collect(Collectors.joining(System.lineSeparator()));
 
                 Path destination = getDestination()
@@ -70,7 +70,7 @@ public class PemExportCommand extends CombinableFileExport implements Runnable {
                             entry -> entry.entrySet().stream().collect(toMap(element -> element.getKey() + ".crt", element -> nl.altindag.ssl.util.CertificateUtils.convertToPem(element.getValue())))));
         }
 
-        if (!withHeader) {
+        if (pristine) {
             filenameToCertificate = filenameToCertificate.entrySet().stream()
                     .map(entry -> new SimpleEntry<>(entry.getKey(), removeHeader(entry.getValue())))
                     .collect(Collectors.toMap(Entry::getKey, Entry::getValue));

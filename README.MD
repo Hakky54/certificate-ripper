@@ -84,7 +84,7 @@ Usage: crip export pem
 Export the extracted certificate to a base64 encoded string also known as PEM
   -u, --url                 Url of the target server to extract the certificates. Can be provided multiple times.
   -c, --combined            Indicator to either combine all of the certificate into one file for a given url or export into individual files.
-  -h, --with-header         Indicator to either include or omit the additional headers.
+  -p, --pristine            Indicator to either omit or include additional information above the BEGIN statement.
   -d, --destination         Destination of the to be stored file. Default is current directory if none is provided.
       
 Proxy options applicable for all commands
