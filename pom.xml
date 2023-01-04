@@ -33,7 +33,12 @@
         <version.sslcontext-kickstart>7.4.9</version.sslcontext-kickstart>
         <version.slf4j>2.0.5</version.slf4j>
         <version.picocli>4.7.0</version.picocli>
+        <version.junit>5.9.1</version.junit>
+        <version.assertj-core>3.23.1</version.assertj-core>
+        <version.consolecaptor>1.0.3-SNAPSHOT</version.consolecaptor>
+        <version.memoryfilesystem>2.4.0</version.memoryfilesystem>
         <version.maven-compiler-plugin>3.8.1</version.maven-compiler-plugin>
+        <version.maven-surefire-plugin>3.0.0-M7</version.maven-surefire-plugin>
         <version.exec-maven-plugin>1.6.0</version.exec-maven-plugin>
         <version.maven-shade-plugin>3.2.4</version.maven-shade-plugin>
         <version.graalvm>21.2.0</version.graalvm>
@@ -60,6 +65,40 @@
             <artifactId>picocli</artifactId>
             <version>${version.picocli}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${version.junit}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${version.junit}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>${version.assertj-core}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.hakky54</groupId>
+            <artifactId>consolecaptor</artifactId>
+            <version>${version.consolecaptor}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.marschall</groupId>
+            <artifactId>memoryfilesystem</artifactId>
+            <version>${version.memoryfilesystem}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -71,6 +110,17 @@
                 <configuration>
                     <source>${version.java}</source>
                     <target>${version.java}</target>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${version.maven-surefire-plugin}</version>
+                <configuration>
+                    <includes>
+                        <include>%regex[.*Should.*]</include>
+                    </includes>
                 </configuration>
             </plugin>
 
