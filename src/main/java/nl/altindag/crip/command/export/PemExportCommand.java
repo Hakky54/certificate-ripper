@@ -18,10 +18,12 @@ package nl.altindag.crip.command.export;
 import nl.altindag.crip.util.CertificateUtils;
 import nl.altindag.crip.util.IOUtils;
 import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
 
 import java.nio.file.Path;
 import java.security.cert.X509Certificate;
 import java.util.AbstractMap.SimpleEntry;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +37,9 @@ import static java.util.stream.Collectors.toMap;
 @Command(name = "pem", description = "Export the extracted certificate to a base64 encoded string also known as PEM")
 public class PemExportCommand extends CombinableFileExport implements Runnable {
 
+    @Option(names = {"-h", "--with-header"}, description = "Indicator to either include or omit the additional headers.")
+    protected Boolean withHeader = true;
+
     public void run() {
         Map<String, String> filenameToCertificate;
 
@@ -44,6 +49,7 @@ public class PemExportCommand extends CombinableFileExport implements Runnable {
 
                 String certificatesAsPem = certificates.stream()
                         .map(nl.altindag.ssl.util.CertificateUtils::convertToPem)
+                        .map(certificate -> withHeader ? certificate : removeHeader(certificate))
                         .collect(Collectors.joining(System.lineSeparator()));
 
                 Path destination = getDestination()
@@ -64,12 +70,23 @@ public class PemExportCommand extends CombinableFileExport implements Runnable {
                             entry -> entry.entrySet().stream().collect(toMap(element -> element.getKey() + ".crt", element -> nl.altindag.ssl.util.CertificateUtils.convertToPem(element.getValue())))));
         }
 
+        if (!withHeader) {
+            filenameToCertificate = filenameToCertificate.entrySet().stream()
+                    .collect(Collectors.toMap(Entry::getKey, entry -> removeHeader(entry.getValue())));
+        }
+
         for (Entry<String, String> certificateEntry : filenameToCertificate.entrySet()) {
             Path certificatePath = getDestination().orElseGet(IOUtils::getCurrentDirectory).resolve(certificateEntry.getKey());
             IOUtils.write(certificatePath, certificateEntry.getValue());
         }
 
         System.out.println("Successfully Exported certificates");
+    }
+
+    private static String removeHeader(String value) {
+        return Arrays.stream(value.split(System.lineSeparator()))
+                .skip(2)
+                .collect(Collectors.joining(System.lineSeparator()));
     }
 
 }
