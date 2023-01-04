@@ -72,7 +72,8 @@ public class PemExportCommand extends CombinableFileExport implements Runnable {
 
         if (!withHeader) {
             filenameToCertificate = filenameToCertificate.entrySet().stream()
-                    .collect(Collectors.toMap(Entry::getKey, entry -> removeHeader(entry.getValue())));
+                    .map(entry -> new SimpleEntry<>(entry.getKey(), removeHeader(entry.getValue())))
+                    .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
         }
 
         for (Entry<String, String> certificateEntry : filenameToCertificate.entrySet()) {
