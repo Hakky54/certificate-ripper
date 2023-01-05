@@ -37,7 +37,10 @@ public class BaseTest {
         CertificateRipper certificateRipper = new CertificateRipper();
         cmd = new CommandLine(certificateRipper)
                 .setCaseInsensitiveEnumValuesAllowed(true);
-        consoleCaptor = new ConsoleCaptor();
+        consoleCaptor = ConsoleCaptor.builder()
+                .allowEmptyLines(true)
+                .allowTrimmingWhiteSpace(false)
+                .build();
 
         serverOne = ServerUtils.createServerOne();
         serverOne.start();
@@ -59,3 +62,4 @@ public class BaseTest {
     }
 
 }
+
