@@ -1,70 +1,47 @@
+/*
+ * Copyright 2021 Thunderberry.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package nl.altindag.crip.command.export;
 
-import nl.altindag.console.ConsoleCaptor;
-import nl.altindag.crip.command.CertificateRipper;
-import nl.altindag.ssl.util.CertificateUtils;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
+import nl.altindag.crip.command.FileBaseTest;
 import org.junit.jupiter.api.Test;
-import picocli.CommandLine;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.security.cert.X509Certificate;
-import java.util.AbstractMap.SimpleEntry;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
+import static nl.altindag.crip.IOTestUtils.getResourceContent;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class PemExportCommandShould {
-
-    private static final Path TEMP_DIRECTORY = Paths.get(System.getProperty("user.home"), "certificate-ripper-temp");
-
-    private static CommandLine cmd;
-    private static ConsoleCaptor consoleCaptor;
-
-    @BeforeAll
-    static void setupCertificateRipperAndConsoleCaptor() {
-        CertificateRipper certificateRipper = new CertificateRipper();
-        cmd = new CommandLine(certificateRipper)
-                .setCaseInsensitiveEnumValuesAllowed(true);
-        consoleCaptor = new ConsoleCaptor();
-    }
-
-    @BeforeEach
-    void CreateTempDirAndClearConsoleCaptor() throws IOException {
-        if (Files.exists(TEMP_DIRECTORY)) {
-            List<Path> files = Files.walk(TEMP_DIRECTORY, 1)
-                    .filter(Files::isRegularFile)
-                    .collect(Collectors.toList());
-
-            for (Path file : files) {
-                Files.delete(file);
-            }
-
-            Files.deleteIfExists(TEMP_DIRECTORY);
-        }
-
-        Files.createDirectories(TEMP_DIRECTORY);
-        consoleCaptor.clearOutput();
-    }
+public class PemExportCommandShould extends FileBaseTest {
 
     @Test
     void exportMultipleCertificateFromChainAsIndividualFiles() throws IOException {
-        List<X509Certificate> expectedCertificates = CertificateUtils.getCertificatesFromExternalSource("https://google.com");
-        List<String> expectedCertificatesAsPem = expectedCertificates.stream()
-                .map(CertificateUtils::convertToPem)
-                .collect(Collectors.toList());
+        List<String> expectedCertificates = Arrays.asList(
+                getResourceContent("reference-files/pem/server-one/cn=certificate-ripper-server-one_ou=amsterdam_o=thunderberry_c=nl_with_header.crt"),
+                getResourceContent("reference-files/pem/server-one/cn=root-ca_ou=certificate-authority_o=thunderberry_c=nl_with_header.crt")
+        );
 
         assertThat(expectedCertificates).isNotEmpty();
 
-        cmd.execute("export", "pem", "--url=https://google.com", "--destination=" + TEMP_DIRECTORY.toAbsolutePath());
+        cmd.execute("export", "pem", "--url=https://localhost:8443", "--destination=" + TEMP_DIRECTORY.toAbsolutePath());
 
         assertThat(consoleCaptor.getStandardOutput()).contains("Successfully Exported certificates");
 
@@ -77,20 +54,16 @@ public class PemExportCommandShould {
 
         for (Path file : files) {
             String content = Files.lines(file).collect(Collectors.joining(System.lineSeparator()));
-            assertThat(expectedCertificatesAsPem).contains(content);
+            assertThat(expectedCertificates).contains(content);
         }
     }
 
     @Test
     void exportMultipleCertificateFromChainAsSingleCombinedFile() throws IOException {
-        List<X509Certificate> expectedCertificates = CertificateUtils.getCertificatesFromExternalSource("https://google.com");
-        String expectedCertificatesAsPem = expectedCertificates.stream()
-                .map(CertificateUtils::convertToPem)
-                .collect(Collectors.joining(System.lineSeparator()));
+        String expectedCertificate = getResourceContent("reference-files/pem/server-one/cn=certificate-ripper-server-one_ou=amsterdam_o=thunderberry_c=nl_with_header_combined.crt");
+        assertThat(expectedCertificate).isNotEmpty();
 
-        assertThat(expectedCertificates).isNotEmpty();
-
-        cmd.execute("export", "pem", "--url=https://google.com", "--combined=true", "--destination=" + TEMP_DIRECTORY.toAbsolutePath().resolve("google.crt"));
+        cmd.execute("export", "pem", "--url=https://localhost:8443", "--combined=true", "--destination=" + TEMP_DIRECTORY.toAbsolutePath().resolve("localhost.crt"));
 
         assertThat(consoleCaptor.getStandardOutput()).contains("Successfully Exported certificates");
 
@@ -98,25 +71,20 @@ public class PemExportCommandShould {
                 .filter(Files::isRegularFile)
                 .collect(Collectors.toList());
 
-        assertThat(files.size()).isNotEqualTo(expectedCertificates.size());
         assertThat(files.size()).isEqualTo(1);
         assertThat(files).allMatch(path -> path.toString().endsWith(".crt"));
 
         String content = Files.lines(files.get(0)).collect(Collectors.joining(System.lineSeparator()));
-        assertThat(content).isEqualTo(expectedCertificatesAsPem);
+        assertThat(content).isEqualTo(expectedCertificate);
     }
 
     @Test
     void exportMultipleCertificateFromChainAsSingleCombinedFileWithMultipleUrls() throws IOException {
-        Map<String, List<X509Certificate>> expectedCertificates = CertificateUtils.getCertificatesFromExternalSources("https://google.com", "https://github.com");
-        Map<String, String> expectedCertificatesAsPem = expectedCertificates.entrySet().stream()
-                .map(entry -> new SimpleEntry<>(entry.getKey(), CertificateUtils.convertToPem(entry.getValue())))
-                .map(entry -> new SimpleEntry<>(entry.getKey(), String.join(System.lineSeparator(), entry.getValue())))
-                .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+        Map<String, String> expectedCertificatesAsPem = new HashMap<>();
+        expectedCertificatesAsPem.put("localhost-1", getResourceContent("reference-files/pem/server-one/cn=certificate-ripper-server-one_ou=amsterdam_o=thunderberry_c=nl_with_header_combined.crt"));
+        expectedCertificatesAsPem.put("localhost-2", getResourceContent("reference-files/pem/server-two/cn=certificate-ripper-server-two_ou=amsterdam_o=thunderberry_c=nl_with_header_combined.crt"));
 
-        assertThat(expectedCertificates).isNotEmpty();
-
-        cmd.execute("export", "pem", "--url=https://google.com", "--url=https://github.com", "--combined=true", "--destination=" + TEMP_DIRECTORY.toAbsolutePath());
+        cmd.execute("export", "pem", "--url=https://localhost:8443", "--url=https://localhost:8444", "--combined=true", "--destination=" + TEMP_DIRECTORY.toAbsolutePath());
 
         assertThat(consoleCaptor.getStandardOutput()).contains("Successfully Exported certificates");
 
@@ -135,15 +103,14 @@ public class PemExportCommandShould {
 
     @Test
     void exportMultipleCertificateFromChainAsIndividualFilesWithoutHeaders() throws IOException {
-        List<X509Certificate> expectedCertificates = CertificateUtils.getCertificatesFromExternalSource("https://google.com");
-        List<String> expectedCertificatesAsPem = expectedCertificates.stream()
-                .map(CertificateUtils::convertToPem)
-                .map(pem -> Stream.of(pem.split(System.lineSeparator())).skip(2).collect(Collectors.joining(System.lineSeparator())))
-                .collect(Collectors.toList());
+        List<String> expectedCertificates = Arrays.asList(
+                getResourceContent("reference-files/pem/server-one/cn=certificate-ripper-server-one_ou=amsterdam_o=thunderberry_c=nl_without_header.crt"),
+                getResourceContent("reference-files/pem/server-one/cn=root-ca_ou=certificate-authority_o=thunderberry_c=nl_without_header.crt")
+        );
 
         assertThat(expectedCertificates).isNotEmpty();
 
-        cmd.execute("export", "pem", "--url=https://google.com", "--destination=" + TEMP_DIRECTORY.toAbsolutePath(), "--pristine=true");
+        cmd.execute("export", "pem", "--url=https://localhost:8443", "--destination=" + TEMP_DIRECTORY.toAbsolutePath(), "--include-header=false");
 
         assertThat(consoleCaptor.getStandardOutput()).contains("Successfully Exported certificates");
 
@@ -151,26 +118,21 @@ public class PemExportCommandShould {
                 .filter(Files::isRegularFile)
                 .collect(Collectors.toList());
 
-        assertThat(files.size()).isEqualTo(expectedCertificates.size());
         assertThat(files).allMatch(path -> path.toString().endsWith(".crt"));
 
         for (Path file : files) {
             String content = Files.lines(file).collect(Collectors.joining(System.lineSeparator()));
-            assertThat(expectedCertificatesAsPem).contains(content);
+            assertThat(expectedCertificates).contains(content);
         }
     }
 
     @Test
     void exportMultipleCertificateFromChainAsSingleCombinedFileWithoutHeaders() throws IOException {
-        List<X509Certificate> expectedCertificates = CertificateUtils.getCertificatesFromExternalSource("https://google.com");
-        String expectedCertificatesAsPem = expectedCertificates.stream()
-                .map(CertificateUtils::convertToPem)
-                .map(pem -> Stream.of(pem.split(System.lineSeparator())).skip(2).collect(Collectors.joining(System.lineSeparator())))
-                .collect(Collectors.joining(System.lineSeparator()));
+        String expectedCertificate = getResourceContent("reference-files/pem/server-one/cn=certificate-ripper-server-one_ou=amsterdam_o=thunderberry_c=nl_without_header_combined.crt");
 
-        assertThat(expectedCertificates).isNotEmpty();
+        assertThat(expectedCertificate).isNotEmpty();
 
-        cmd.execute("export", "pem", "--url=https://google.com", "--combined=true", "--destination=" + TEMP_DIRECTORY.toAbsolutePath().resolve("google.crt"), "--pristine=true");
+        cmd.execute("export", "pem", "--url=https://localhost:8443", "--combined=true", "--destination=" + TEMP_DIRECTORY.toAbsolutePath().resolve("thunderberry.crt"), "--include-header=false");
 
         assertThat(consoleCaptor.getStandardOutput()).contains("Successfully Exported certificates");
 
@@ -178,12 +140,11 @@ public class PemExportCommandShould {
                 .filter(Files::isRegularFile)
                 .collect(Collectors.toList());
 
-        assertThat(files.size()).isNotEqualTo(expectedCertificates.size());
         assertThat(files.size()).isEqualTo(1);
         assertThat(files).allMatch(path -> path.toString().endsWith(".crt"));
 
         String content = Files.lines(files.get(0)).collect(Collectors.joining(System.lineSeparator()));
-        assertThat(content).isEqualTo(expectedCertificatesAsPem);
+        assertThat(content).isEqualTo(expectedCertificate);
     }
 
 }

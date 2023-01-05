@@ -29,12 +29,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toList;
 
 @Command(name = "der", description = "Export the extracted certificate to a binary form also known as DER")
 public class DerExportCommand extends CombinableFileExport implements Runnable {
+
+    private int counter = 0;
 
     @Override
     public void run() {
@@ -57,11 +60,17 @@ public class DerExportCommand extends CombinableFileExport implements Runnable {
                 }
 
                 for (Entry<String, List<X509Certificate>> entry : sharedProperties.getUrlsToCertificates().entrySet()) {
-                    String host = CertificateUtils.extractHostFromUrl(entry.getKey());
+                    String fileName = CertificateUtils.extractHostFromUrl(entry.getKey());
+                    if (filenameToFileContent.containsKey(fileName)) {
+                        fileName = fileName + "-" + counter++;
+                    }
                     CertPath certPath = certificateFactory.generateCertPath(entry.getValue());
 
-                    filenameToFileContent.put(host + ".p7b", certPath.getEncoded("PKCS7"));
+                    filenameToFileContent.put(fileName, certPath.getEncoded("PKCS7"));
                 }
+
+                filenameToFileContent = filenameToFileContent.entrySet().stream()
+                        .collect(Collectors.toMap(entry -> entry.getKey() + ".p7b", Map.Entry::getValue));
             } else {
                 Map<String, X509Certificate> aliasToCertificate = sharedProperties.getUrlsToCertificates().values().stream()
                         .flatMap(Collection::stream)

@@ -24,6 +24,7 @@ import java.nio.file.Path;
 import java.security.cert.X509Certificate;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -37,8 +38,10 @@ import static java.util.stream.Collectors.toMap;
 @Command(name = "pem", description = "Export the extracted certificate to a base64 encoded string also known as PEM")
 public class PemExportCommand extends CombinableFileExport implements Runnable {
 
-    @Option(names = {"-p", "--pristine"}, description = "Indicator to either omit or include additional information above the BEGIN statement.")
-    protected Boolean pristine = false;
+    @Option(names = {"--include-header"}, description = "Indicator to either omit or include additional information above the BEGIN statement.")
+    protected Boolean includeHeader = true;
+
+    private int counter = 0;
 
     public void run() {
         Map<String, String> filenameToCertificate;
@@ -49,7 +52,7 @@ public class PemExportCommand extends CombinableFileExport implements Runnable {
 
                 String certificatesAsPem = certificates.stream()
                         .map(nl.altindag.ssl.util.CertificateUtils::convertToPem)
-                        .map(certificate -> pristine ? removeHeader(certificate) : certificate)
+                        .map(certificate -> includeHeader ? certificate : removeHeader(certificate))
                         .collect(Collectors.joining(System.lineSeparator()));
 
                 Path destination = getDestination()
@@ -60,24 +63,30 @@ public class PemExportCommand extends CombinableFileExport implements Runnable {
                 return;
             }
 
-            filenameToCertificate = sharedProperties.getUrlsToCertificates().entrySet().stream()
-                    .map(entry -> new SimpleEntry<>(CertificateUtils.extractHostFromUrl(entry.getKey()) + ".crt", nl.altindag.ssl.util.CertificateUtils.convertToPem(entry.getValue())))
-                    .collect(Collectors.toMap(SimpleEntry::getKey, entry -> String.join(System.lineSeparator(), entry.getValue())));
+            filenameToCertificate = new HashMap<>();
+            for (Entry<String, List<X509Certificate>> entry : sharedProperties.getUrlsToCertificates().entrySet()) {
+                String fileName = CertificateUtils.extractHostFromUrl(entry.getKey());
+                if (filenameToCertificate.containsKey(fileName)) {
+                    fileName = fileName + "-" + counter++;
+                }
+                String certificateAsPem = String.join(System.lineSeparator(), nl.altindag.ssl.util.CertificateUtils.convertToPem(entry.getValue()));
+                filenameToCertificate.put(fileName, certificateAsPem);
+            }
         } else {
             filenameToCertificate = sharedProperties.getUrlsToCertificates().values().stream()
                     .flatMap(Collection::stream)
                     .collect(collectingAndThen(collectingAndThen(toList(), CertificateUtils::generateAliases),
-                            entry -> entry.entrySet().stream().collect(toMap(element -> element.getKey() + ".crt", element -> nl.altindag.ssl.util.CertificateUtils.convertToPem(element.getValue())))));
+                            entry -> entry.entrySet().stream().collect(toMap(Entry::getKey, element -> nl.altindag.ssl.util.CertificateUtils.convertToPem(element.getValue())))));
         }
 
-        if (pristine) {
+        if (!includeHeader) {
             filenameToCertificate = filenameToCertificate.entrySet().stream()
                     .map(entry -> new SimpleEntry<>(entry.getKey(), removeHeader(entry.getValue())))
                     .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
         }
 
         for (Entry<String, String> certificateEntry : filenameToCertificate.entrySet()) {
-            Path certificatePath = getDestination().orElseGet(IOUtils::getCurrentDirectory).resolve(certificateEntry.getKey());
+            Path certificatePath = getDestination().orElseGet(IOUtils::getCurrentDirectory).resolve(certificateEntry.getKey() + ".crt");
             IOUtils.write(certificatePath, certificateEntry.getValue());
         }
 

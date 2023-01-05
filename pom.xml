@@ -36,7 +36,6 @@
         <version.junit>5.9.1</version.junit>
         <version.assertj-core>3.23.1</version.assertj-core>
         <version.consolecaptor>1.0.3-SNAPSHOT</version.consolecaptor>
-        <version.memoryfilesystem>2.4.0</version.memoryfilesystem>
         <version.maven-compiler-plugin>3.8.1</version.maven-compiler-plugin>
         <version.maven-surefire-plugin>3.0.0-M7</version.maven-surefire-plugin>
         <version.exec-maven-plugin>1.6.0</version.exec-maven-plugin>
@@ -90,13 +89,6 @@
             <groupId>io.github.hakky54</groupId>
             <artifactId>consolecaptor</artifactId>
             <version>${version.consolecaptor}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.github.marschall</groupId>
-            <artifactId>memoryfilesystem</artifactId>
-            <version>${version.memoryfilesystem}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

@@ -1,80 +1,99 @@
+/*
+ * Copyright 2021 Thunderberry.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package nl.altindag.crip.command;
 
-import nl.altindag.console.ConsoleCaptor;
 import nl.altindag.ssl.util.CertificateUtils;
 import org.assertj.core.api.Condition;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import picocli.CommandLine;
 
-import java.security.cert.X509Certificate;
+import java.security.cert.Certificate;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import static nl.altindag.crip.IOTestUtils.getResourceContent;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class PrintCommandShould {
-
-    private static CommandLine cmd;
-    private static ConsoleCaptor consoleCaptor;
-
-    @BeforeAll
-    static void setupCertificateRipperAndConsoleCaptor() {
-        CertificateRipper certificateRipper = new CertificateRipper();
-        cmd = new CommandLine(certificateRipper)
-                .setCaseInsensitiveEnumValuesAllowed(true);
-        consoleCaptor = new ConsoleCaptor();
-    }
-
-    @BeforeEach
-    void clearConsoleCaptor() {
-        consoleCaptor.clearOutput();
-    }
+public class PrintCommandShould extends BaseTest {
 
     @Test
     void printUrlHeaderAndDelimiter() {
-        List<X509Certificate> expectedCertificates = CertificateUtils.getCertificatesFromExternalSource("https://google.com");
-        assertThat(expectedCertificates).isNotEmpty();
+        List<Certificate> expectedCertificates = Stream.concat(
+                        CertificateUtils.loadCertificate("reference-files/der/server-one/cn=certificate-ripper-server-one_ou=amsterdam_o=thunderberry_c=nl.crt").stream(),
+                        CertificateUtils.loadCertificate("reference-files/der/server-one/cn=root-ca_ou=certificate-authority_o=thunderberry_c=nl.crt").stream())
+                .collect(Collectors.toList());
 
-        cmd.execute("print", "-u=https://google.com");
+        assertThat(expectedCertificates).hasSize(2);
 
-        assertThat(consoleCaptor.getStandardOutput()).areExactly(1, new Condition<>("Certificates for url = https://google.com"::equals, null));
-        assertThat(consoleCaptor.getStandardOutput()).areExactly(expectedCertificates.size() -1, new Condition<>("========== NEXT CERTIFICATE FOR https://google.com =========="::equals, null));
+        cmd.execute("print", "-u=https://localhost:8443");
+
+        assertThat(consoleCaptor.getStandardOutput()).areExactly(1, new Condition<>("Certificates for url = https://localhost:8443"::equals, null));
+        assertThat(consoleCaptor.getStandardOutput()).areExactly(expectedCertificates.size() -1, new Condition<>("========== NEXT CERTIFICATE FOR https://localhost:8443 =========="::equals, null));
     }
 
     @Test
     void printUrlHeaderMultipleTimesWhenMultipleUrlsArePresent() {
-        Map<String, List<X509Certificate>> expectedCertificates = CertificateUtils.getCertificatesFromExternalSources("https://google.com", "https://github.com");
-        assertThat(expectedCertificates).isNotEmpty();
+        List<Certificate> expectedCertificatesForServerOne = Stream.concat(
+                        CertificateUtils.loadCertificate("reference-files/der/server-one/cn=certificate-ripper-server-one_ou=amsterdam_o=thunderberry_c=nl.crt").stream(),
+                        CertificateUtils.loadCertificate("reference-files/der/server-one/cn=root-ca_ou=certificate-authority_o=thunderberry_c=nl.crt").stream())
+                .collect(Collectors.toList());
+        assertThat(expectedCertificatesForServerOne).hasSize(2);
 
-        cmd.execute("print", "-u=https://google.com", "-u=https://github.com");
+        List<Certificate> expectedCertificatesForServerTwo = Stream.concat(
+                        CertificateUtils.loadCertificate("reference-files/der/server-two/cn=certificate-ripper-server-two_ou=amsterdam_o=thunderberry_c=nl.crt").stream(),
+                        CertificateUtils.loadCertificate("reference-files/der/server-two/cn=root-ca_ou=certificate-authority_o=thunderberry_c=nl.crt").stream())
+                .collect(Collectors.toList());
+        assertThat(expectedCertificatesForServerTwo).hasSize(2);
 
-        assertThat(consoleCaptor.getStandardOutput()).areExactly(1, new Condition<>("Certificates for url = https://google.com"::equals, null));
-        assertThat(consoleCaptor.getStandardOutput()).areExactly(1, new Condition<>("Certificates for url = https://github.com"::equals, null));
-        assertThat(consoleCaptor.getStandardOutput()).areExactly(expectedCertificates.get("https://google.com").size() -1, new Condition<>("========== NEXT CERTIFICATE FOR https://google.com =========="::equals, null));
-        assertThat(consoleCaptor.getStandardOutput()).areExactly(expectedCertificates.get("https://github.com").size() -1, new Condition<>("========== NEXT CERTIFICATE FOR https://github.com =========="::equals, null));
+        cmd.execute("print", "-u=https://localhost:8443", "-u=https://localhost:8444");
+
+        assertThat(consoleCaptor.getStandardOutput()).areExactly(1, new Condition<>("Certificates for url = https://localhost:8443"::equals, null));
+        assertThat(consoleCaptor.getStandardOutput()).areExactly(1, new Condition<>("Certificates for url = https://localhost:8444"::equals, null));
+        assertThat(consoleCaptor.getStandardOutput()).areExactly(expectedCertificatesForServerOne.size() -1, new Condition<>("========== NEXT CERTIFICATE FOR https://localhost:8443 =========="::equals, null));
+        assertThat(consoleCaptor.getStandardOutput()).areExactly(expectedCertificatesForServerTwo.size() -1, new Condition<>("========== NEXT CERTIFICATE FOR https://localhost:8444 =========="::equals, null));
     }
 
     @Test
     void printCertificateInX509Format() {
-        List<X509Certificate> expectedCertificates = CertificateUtils.getCertificatesFromExternalSource("https://google.com");
-        assertThat(expectedCertificates).isNotEmpty();
+        List<Certificate> expectedCertificates = Stream.concat(
+                        CertificateUtils.loadCertificate("reference-files/der/server-one/cn=certificate-ripper-server-one_ou=amsterdam_o=thunderberry_c=nl.crt").stream(),
+                        CertificateUtils.loadCertificate("reference-files/der/server-one/cn=root-ca_ou=certificate-authority_o=thunderberry_c=nl.crt").stream())
+                .collect(Collectors.toList());
 
-        cmd.execute("print", "-u=https://google.com");
+        assertThat(expectedCertificates).hasSize(2);
+
+        cmd.execute("print", "-u=https://localhost:8443");
 
         String output = String.join(System.lineSeparator(), consoleCaptor.getStandardOutput());
-        for (X509Certificate expectedCertificate : expectedCertificates) {
+        for (Certificate expectedCertificate : expectedCertificates) {
             assertThat(output).contains(expectedCertificate.toString());
         }
     }
 
     @Test
     void printCertificateInPemFormat() {
-        List<String> expectedCertificates = CertificateUtils.getCertificatesFromExternalSourceAsPem("https://google.com");
+        List<String> expectedCertificates = Arrays.asList(
+                getResourceContent("reference-files/pem/server-one/cn=certificate-ripper-server-one_ou=amsterdam_o=thunderberry_c=nl_with_header.crt"),
+                getResourceContent("reference-files/pem/server-one/cn=root-ca_ou=certificate-authority_o=thunderberry_c=nl_with_header.crt")
+        );
+
         assertThat(expectedCertificates).isNotEmpty();
 
-        cmd.execute("print", "-u=https://google.com", "-f=pem");
+        cmd.execute("print", "-u=https://localhost:8443", "-f=pem");
 
         String output = String.join(System.lineSeparator(), consoleCaptor.getStandardOutput());
         for (String expectedCertificate : expectedCertificates) {
