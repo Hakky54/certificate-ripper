@@ -15,6 +15,8 @@
  */
 package nl.altindag.crip.util;
 
+import nl.altindag.crip.exception.CertificateRipperException;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.cert.X509Certificate;
@@ -34,10 +36,10 @@ public final class CertificateUtils {
         for (X509Certificate certificate : certificates) {
             String alias = nl.altindag.ssl.util.CertificateUtils.generateAlias(certificate)
                     .toLowerCase(Locale.US)
-                    .replaceAll(" ", "-")
-                    .replaceAll(",", "_")
-                    .replaceAll("\\*", "")
-                    .replaceAll("\\.", "");
+                    .replace(" ", "-")
+                    .replace(",", "_")
+                    .replace("\\*", "")
+                    .replace("\\.", "");
 
             boolean shouldAddCertificate = true;
 
@@ -66,7 +68,7 @@ public final class CertificateUtils {
             URL url = new URL(value);
             return url.getHost();
         } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
+            throw new CertificateRipperException(e);
         }
     }
 

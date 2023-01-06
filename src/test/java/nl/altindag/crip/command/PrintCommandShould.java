@@ -28,7 +28,7 @@ import java.util.stream.Stream;
 import static nl.altindag.crip.IOTestUtils.getResourceContent;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class PrintCommandShould extends BaseTest {
+class PrintCommandShould extends BaseTest {
 
     @Test
     void printUrlHeaderAndDelimiter() {

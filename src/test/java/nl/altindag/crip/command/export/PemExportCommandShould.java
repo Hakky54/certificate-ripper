@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 import static nl.altindag.crip.IOTestUtils.getResourceContent;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class PemExportCommandShould extends FileBaseTest {
+class PemExportCommandShould extends FileBaseTest {
 
     @Test
     void exportMultipleCertificateFromChainAsIndividualFiles() throws IOException {
@@ -49,8 +49,9 @@ public class PemExportCommandShould extends FileBaseTest {
                 .filter(Files::isRegularFile)
                 .collect(Collectors.toList());
 
-        assertThat(files.size()).isEqualTo(expectedCertificates.size());
-        assertThat(files).allMatch(path -> path.toString().endsWith(".crt"));
+        assertThat(files)
+                .hasSize(expectedCertificates.size())
+                .allMatch(path -> path.toString().endsWith(".crt"));
 
         for (Path file : files) {
             String content = Files.lines(file).collect(Collectors.joining(System.lineSeparator()));
@@ -71,8 +72,9 @@ public class PemExportCommandShould extends FileBaseTest {
                 .filter(Files::isRegularFile)
                 .collect(Collectors.toList());
 
-        assertThat(files.size()).isEqualTo(1);
-        assertThat(files).allMatch(path -> path.toString().endsWith(".crt"));
+        assertThat(files)
+                .hasSize(1)
+                .allMatch(path -> path.toString().endsWith(".crt"));
 
         String content = Files.lines(files.get(0)).collect(Collectors.joining(System.lineSeparator()));
         assertThat(content).isEqualTo(expectedCertificate);
@@ -92,12 +94,13 @@ public class PemExportCommandShould extends FileBaseTest {
                 .filter(Files::isRegularFile)
                 .collect(Collectors.toList());
 
-        assertThat(files.size()).isEqualTo(2);
-        assertThat(files).allMatch(path -> path.toString().endsWith(".crt"));
+        assertThat(files)
+                .hasSize(2)
+                .allMatch(path -> path.toString().endsWith(".crt"));
 
         for (Path file : files) {
             String content = Files.lines(file).collect(Collectors.joining(System.lineSeparator()));
-            assertThat(expectedCertificatesAsPem.values()).contains(content);
+            assertThat(expectedCertificatesAsPem).containsValue(content);
         }
     }
 
@@ -140,8 +143,9 @@ public class PemExportCommandShould extends FileBaseTest {
                 .filter(Files::isRegularFile)
                 .collect(Collectors.toList());
 
-        assertThat(files.size()).isEqualTo(1);
-        assertThat(files).allMatch(path -> path.toString().endsWith(".crt"));
+        assertThat(files)
+                .hasSize(1)
+                .allMatch(path -> path.toString().endsWith(".crt"));
 
         String content = Files.lines(files.get(0)).collect(Collectors.joining(System.lineSeparator()));
         assertThat(content).isEqualTo(expectedCertificate);

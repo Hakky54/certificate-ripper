@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 import static nl.altindag.crip.IOTestUtils.getResource;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class Pkcs12ExportCommandShould extends FileBaseTest {
+class Pkcs12ExportCommandShould extends FileBaseTest {
 
     @Test
     void exportMultipleCertificateFromChainToACustomFilename() throws IOException, KeyStoreException {
@@ -44,7 +44,7 @@ public class Pkcs12ExportCommandShould extends FileBaseTest {
                 .filter(Files::isRegularFile)
                 .collect(Collectors.toList());
 
-        assertThat(files.size()).isEqualTo(1);
+        assertThat(files).hasSize(1);
         assertThat(consoleCaptor.getStandardOutput()).contains("Exported certificates to " + files.get(0));
         assertThat(files).allMatch(path -> path.toString().endsWith("my-truststore.p12"));
 
