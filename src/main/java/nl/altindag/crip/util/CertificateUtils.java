@@ -38,6 +38,7 @@ public final class CertificateUtils {
                     .toLowerCase(Locale.US)
                     .replaceAll(" ", "-")
                     .replaceAll(",", "_")
+                    .replaceAll("\\\\", "")
                     .replaceAll("\\*", "")
                     .replaceAll("\\.", "");
 
