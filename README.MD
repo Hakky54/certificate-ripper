@@ -1,4 +1,11 @@
 [![Actions Status](https://github.com/Hakky54/certificate-ripper/workflows/Build/badge.svg)](https://github.com/Hakky54/certificate-ripper/actions)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=io.github.hakky54%3Acertificate-ripper&metric=security_rating)](https://sonarcloud.io/dashboard?id=io.github.hakky54%3Acertificate-ripper)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=io.github.hakky54%3Acertificate-ripper&metric=coverage)](https://sonarcloud.io/dashboard?id=io.github.hakky54%3Acertificate-ripper)
+[![Apache2 license](https://img.shields.io/badge/license-Aache2.0-blue.svg)](https://github.com/Hakky54/sslcontext-kickstart/blob/master/LICENSE)
+[![GitHub stars chart](https://img.shields.io/badge/github%20stars-chart-blue.svg)](https://seladb.github.io/StarTrack-js/#/preload?r=hakky54,certificate-ripper)
+
+[![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-white.svg)](https://sonarcloud.io/dashboard?id=io.github.hakky54%3Acertificate-ripper)
+
 
 # Certificate Ripper 🔐
 A CLI tool to extract server certificates
