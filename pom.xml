@@ -48,6 +48,13 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <scm>
+        <url>https://github.com/Hakky54/certificate-ripper</url>
+        <connection>scm:git:git@github.com:Hakky54/certificate-ripper.git</connection>
+        <developerConnection>scm:git:git@github.com:Hakky54/certificate-ripper.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+
     <dependencies>
         <dependency>
             <groupId>io.github.hakky54</groupId>
