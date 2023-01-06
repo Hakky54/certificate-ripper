@@ -48,7 +48,7 @@ public class Pkcs12ExportCommand extends FileExport implements Runnable {
                 .distinct()
                 .collect(collectingAndThen(toList(), KeyStoreUtils::createTrustStore));
 
-        Path trustStorePath = getDestination().orElseGet(IOUtils::getCurrentDirectory).resolve("truststore.p12");
+        Path trustStorePath = getDestination().orElseGet(() -> IOUtils.getCurrentDirectory().resolve("truststore.p12"));
 
         try(OutputStream outputStream = Files.newOutputStream(trustStorePath, StandardOpenOption.CREATE)) {
             trustStore.store(outputStream, password.toCharArray());
