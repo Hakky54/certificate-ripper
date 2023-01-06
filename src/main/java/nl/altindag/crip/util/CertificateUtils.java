@@ -36,10 +36,10 @@ public final class CertificateUtils {
         for (X509Certificate certificate : certificates) {
             String alias = nl.altindag.ssl.util.CertificateUtils.generateAlias(certificate)
                     .toLowerCase(Locale.US)
-                    .replace(" ", "-")
-                    .replace(",", "_")
-                    .replace("\\*", "")
-                    .replace("\\.", "");
+                    .replaceAll(" ", "-")
+                    .replaceAll(",", "_")
+                    .replaceAll("\\*", "")
+                    .replaceAll("\\.", "");
 
             boolean shouldAddCertificate = true;
 
