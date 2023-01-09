@@ -85,8 +85,9 @@ public class PemExportCommand extends CombinableFileExport implements Runnable {
                     .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
         }
 
+        Path directory = getDestination().orElseGet(IOUtils::getCurrentDirectory);
         for (Entry<String, String> certificateEntry : filenameToCertificate.entrySet()) {
-            Path certificatePath = getDestination().orElseGet(IOUtils::getCurrentDirectory).resolve(certificateEntry.getKey() + ".crt");
+            Path certificatePath = directory.resolve(certificateEntry.getKey() + ".crt");
             IOUtils.write(certificatePath, certificateEntry.getValue());
         }
 

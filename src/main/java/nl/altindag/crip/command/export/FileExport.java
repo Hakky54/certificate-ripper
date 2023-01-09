@@ -23,7 +23,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
-public class FileExport {
+class FileExport {
 
     @Mixin
     protected SharedProperties sharedProperties;
