@@ -15,8 +15,9 @@
  */
 package nl.altindag.crip.command.export;
 
-import nl.altindag.crip.util.CertificateUtils;
 import nl.altindag.crip.util.IOUtils;
+import nl.altindag.ssl.util.CertificateUtils;
+import nl.altindag.ssl.util.UriUtils;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
@@ -51,12 +52,12 @@ public class PemExportCommand extends CombinableFileExport implements Runnable {
                 List<X509Certificate> certificates = sharedProperties.getCertificates();
 
                 String certificatesAsPem = certificates.stream()
-                        .map(nl.altindag.ssl.util.CertificateUtils::convertToPem)
+                        .map(CertificateUtils::convertToPem)
                         .map(certificate -> includeHeader ? certificate : removeHeader(certificate))
                         .collect(Collectors.joining(System.lineSeparator()));
 
                 Path destination = getDestination()
-                        .orElseGet(() -> IOUtils.getCurrentDirectory().resolve(CertificateUtils.extractHostFromUrl(sharedProperties.getUrls().get(0)) + ".crt"));
+                        .orElseGet(() -> IOUtils.getCurrentDirectory().resolve(UriUtils.extractHostFromUrl(sharedProperties.getUrls().get(0)) + ".crt"));
 
                 IOUtils.write(destination, certificatesAsPem);
                 System.out.println("Successfully Exported certificates");
@@ -65,18 +66,18 @@ public class PemExportCommand extends CombinableFileExport implements Runnable {
 
             filenameToCertificate = new HashMap<>();
             for (Entry<String, List<X509Certificate>> entry : sharedProperties.getUrlsToCertificates().entrySet()) {
-                String fileName = CertificateUtils.extractHostFromUrl(entry.getKey());
+                String fileName = UriUtils.extractHostFromUrl(entry.getKey());
                 if (filenameToCertificate.containsKey(fileName)) {
                     fileName = fileName + "-" + counter++;
                 }
-                String certificateAsPem = String.join(System.lineSeparator(), nl.altindag.ssl.util.CertificateUtils.convertToPem(entry.getValue()));
+                String certificateAsPem = String.join(System.lineSeparator(), CertificateUtils.convertToPem(entry.getValue()));
                 filenameToCertificate.put(fileName, certificateAsPem);
             }
         } else {
             filenameToCertificate = sharedProperties.getUrlsToCertificates().values().stream()
                     .flatMap(Collection::stream)
                     .collect(collectingAndThen(collectingAndThen(toList(), CertificateUtils::generateAliases),
-                            entry -> entry.entrySet().stream().collect(toMap(Entry::getKey, element -> nl.altindag.ssl.util.CertificateUtils.convertToPem(element.getValue())))));
+                            entry -> entry.entrySet().stream().collect(toMap(Entry::getKey, element -> CertificateUtils.convertToPem(element.getValue())))));
         }
 
         if (!includeHeader) {
