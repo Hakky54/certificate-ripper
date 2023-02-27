@@ -20,15 +20,8 @@ import nl.altindag.ssl.util.KeyStoreUtils;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
 import java.util.Collection;
 
 import static java.util.stream.Collectors.collectingAndThen;
@@ -50,12 +43,8 @@ public class Pkcs12ExportCommand extends FileExport implements Runnable {
 
         Path trustStorePath = getDestination().orElseGet(() -> IOUtils.getCurrentDirectory().resolve("truststore.p12"));
 
-        try(OutputStream outputStream = Files.newOutputStream(trustStorePath, StandardOpenOption.CREATE)) {
-            trustStore.store(outputStream, password.toCharArray());
-            System.out.println("Exported certificates to " + trustStorePath.toAbsolutePath());
-        } catch (IOException | CertificateException | NoSuchAlgorithmException | KeyStoreException e) {
-            System.err.println("Failed to export the certificates. Error message: " + e.getMessage());
-        }
+        KeyStoreUtils.write(trustStorePath, trustStore, password.toCharArray());
+        System.out.println("Exported certificates to " + trustStorePath.toAbsolutePath());
     }
 
 }
