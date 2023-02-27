@@ -43,7 +43,7 @@ public class Pkcs12ExportCommand extends FileExport implements Runnable {
 
         Path trustStorePath = getDestination().orElseGet(() -> IOUtils.getCurrentDirectory().resolve("truststore.p12"));
 
-        KeyStoreUtils.write(trustStore, trustStorePath, password.toCharArray());
+        KeyStoreUtils.write(trustStorePath, trustStore, password.toCharArray());
         System.out.println("Exported certificates to " + trustStorePath.toAbsolutePath());
     }
 

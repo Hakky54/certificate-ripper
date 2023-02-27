@@ -57,7 +57,7 @@ public class PemExportCommand extends CombinableFileExport implements Runnable {
                         .collect(Collectors.joining(System.lineSeparator()));
 
                 Path destination = getDestination()
-                        .orElseGet(() -> IOUtils.getCurrentDirectory().resolve(UriUtils.extractHostFromUrl(sharedProperties.getUrls().get(0)) + ".crt"));
+                        .orElseGet(() -> IOUtils.getCurrentDirectory().resolve(UriUtils.extractHost(sharedProperties.getUrls().get(0)) + ".crt"));
 
                 IOUtils.write(destination, certificatesAsPem);
                 System.out.println("Successfully Exported certificates");
@@ -66,7 +66,7 @@ public class PemExportCommand extends CombinableFileExport implements Runnable {
 
             filenameToCertificate = new HashMap<>();
             for (Entry<String, List<X509Certificate>> entry : sharedProperties.getUrlsToCertificates().entrySet()) {
-                String fileName = UriUtils.extractHostFromUrl(entry.getKey());
+                String fileName = UriUtils.extractHost(entry.getKey());
                 if (filenameToCertificate.containsKey(fileName)) {
                     fileName = fileName + "-" + counter++;
                 }

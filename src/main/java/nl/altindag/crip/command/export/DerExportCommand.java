@@ -52,8 +52,8 @@ public class DerExportCommand extends CombinableFileExport implements Runnable {
                     List<X509Certificate> certificates = sharedProperties.getCertificates();
                     CertPath certPath = certificateFactory.generateCertPath(certificates);
 
-                    Path destination = getDestination()
-                            .orElseGet(() -> IOUtils.getCurrentDirectory().resolve(UriUtils.extractHostFromUrl(sharedProperties.getUrls().get(0)) + ".p7b"));
+                    String fileName = UriUtils.extractHost(sharedProperties.getUrls().get(0)) + ".p7b";
+                    Path destination = getDestination().orElseGet(() -> IOUtils.getCurrentDirectory().resolve(fileName));
 
                     IOUtils.write(destination, certPath.getEncoded("PKCS7"));
                     System.out.println("Successfully Exported certificates");
@@ -61,7 +61,7 @@ public class DerExportCommand extends CombinableFileExport implements Runnable {
                 }
 
                 for (Entry<String, List<X509Certificate>> entry : sharedProperties.getUrlsToCertificates().entrySet()) {
-                    String fileName = UriUtils.extractHostFromUrl(entry.getKey());
+                    String fileName = UriUtils.extractHost(entry.getKey());
                     if (filenameToFileContent.containsKey(fileName)) {
                         fileName = fileName + "-" + counter++;
                     }
