@@ -21,6 +21,7 @@ import picocli.CommandLine.Command;
         description = "Export the extracted certificate to the provided output type",
         subcommands = {
                 Pkcs12ExportCommand.class,
+                JavaKeyStoreExportCommand.class,
                 DerExportCommand.class,
                 PemExportCommand.class
         })
