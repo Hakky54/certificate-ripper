@@ -17,17 +17,17 @@ package nl.altindag.crip.command.export;
 
 import picocli.CommandLine.Command;
 
-@Command(name = "pkcs12", aliases = {"p12"}, description = "Export the extracted certificate to a PKCS12/p12 type truststore")
-public class Pkcs12ExportCommand extends KeyStoreExportCommand {
+@Command(name = "jks", description = "Export the extracted certificate to a JKS (Java KeyStore) type truststore")
+public class JavaKeyStoreExportCommand extends KeyStoreExportCommand {
 
     @Override
-    String getKeyStoreType() {
-        return "PKCS12";
+    protected String getKeyStoreType() {
+        return "JKS";
     }
 
     @Override
-    String getFileExtension() {
-        return ".p12";
+    protected String getFileExtension() {
+        return ".jks";
     }
 
 }

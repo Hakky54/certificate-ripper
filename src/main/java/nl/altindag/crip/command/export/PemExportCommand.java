@@ -17,7 +17,7 @@ package nl.altindag.crip.command.export;
 
 import nl.altindag.crip.util.IOUtils;
 import nl.altindag.ssl.util.CertificateUtils;
-import nl.altindag.ssl.util.UriUtils;
+import nl.altindag.ssl.util.internal.UriUtils;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 

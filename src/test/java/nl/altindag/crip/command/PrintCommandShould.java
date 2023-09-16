@@ -42,7 +42,7 @@ class PrintCommandShould extends BaseTest {
         cmd.execute("print", "-u=https://localhost:8443");
 
         assertThat(consoleCaptor.getStandardOutput()).areExactly(1, new Condition<>("Certificates for url = https://localhost:8443"::equals, null));
-        assertThat(consoleCaptor.getStandardOutput()).areExactly(expectedCertificates.size() -1, new Condition<>("========== NEXT CERTIFICATE FOR https://localhost:8443 =========="::equals, null));
+        assertThat(consoleCaptor.getStandardOutput()).areExactly(expectedCertificates.size() -1, new Condition<>("<========== Next certificate for https://localhost:8443 ==========>"::equals, null));
     }
 
     @Test
@@ -63,8 +63,8 @@ class PrintCommandShould extends BaseTest {
 
         assertThat(consoleCaptor.getStandardOutput()).areExactly(1, new Condition<>("Certificates for url = https://localhost:8443"::equals, null));
         assertThat(consoleCaptor.getStandardOutput()).areExactly(1, new Condition<>("Certificates for url = https://localhost:8444"::equals, null));
-        assertThat(consoleCaptor.getStandardOutput()).areExactly(expectedCertificatesForServerOne.size() -1, new Condition<>("========== NEXT CERTIFICATE FOR https://localhost:8443 =========="::equals, null));
-        assertThat(consoleCaptor.getStandardOutput()).areExactly(expectedCertificatesForServerTwo.size() -1, new Condition<>("========== NEXT CERTIFICATE FOR https://localhost:8444 =========="::equals, null));
+        assertThat(consoleCaptor.getStandardOutput()).areExactly(expectedCertificatesForServerOne.size() -1, new Condition<>("<========== Next certificate for https://localhost:8443 ==========>"::equals, null));
+        assertThat(consoleCaptor.getStandardOutput()).areExactly(expectedCertificatesForServerTwo.size() -1, new Condition<>("<========== Next certificate for https://localhost:8444 ==========>"::equals, null));
     }
 
     @Test

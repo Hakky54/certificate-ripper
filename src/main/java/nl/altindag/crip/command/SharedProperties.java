@@ -29,7 +29,7 @@ import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import static nl.altindag.ssl.util.StringUtils.isNotBlank;
+import static nl.altindag.ssl.util.internal.StringUtils.isNotBlank;
 
 @SuppressWarnings("unused")
 public class SharedProperties {
