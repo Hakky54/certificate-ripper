@@ -15,6 +15,7 @@
  */
 package nl.altindag.crip.command.export;
 
+import nl.altindag.crip.model.CertificateHolder;
 import nl.altindag.crip.util.IOUtils;
 import nl.altindag.crip.util.StatisticsUtils;
 import nl.altindag.ssl.util.KeyStoreUtils;
@@ -22,11 +23,8 @@ import picocli.CommandLine.Option;
 
 import java.nio.file.Path;
 import java.security.cert.X509Certificate;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @SuppressWarnings({"FieldCanBeLocal", "FieldMayBeFinal"})
 abstract class KeyStoreExportCommand extends FileExport implements Runnable {
@@ -37,27 +35,14 @@ abstract class KeyStoreExportCommand extends FileExport implements Runnable {
     @Override
     public void run() {
         Map<String, List<X509Certificate>> urlsToCertificates = sharedProperties.getUrlsToCertificates();
-        List<X509Certificate> certificates = urlsToCertificates.values().stream()
-                .flatMap(Collection::stream)
-                .collect(Collectors.toList());
-
-        List<X509Certificate> uniqueCertificates = certificates.stream()
-                .distinct()
-                .collect(Collectors.toList());
-
-        List<X509Certificate> duplicates = certificates.stream()
-                .filter(certificate -> Collections.frequency(certificates, certificate) > 1)
-                .distinct()
-                .collect(Collectors.toList());
-
+        CertificateHolder certificateHolder = new CertificateHolder(urlsToCertificates);
         Path trustStorePath = getDestination().orElseGet(() -> IOUtils.getCurrentDirectory().resolve("truststore" + getFileExtension()));
 
-        KeyStoreUtils.add(trustStorePath, password.toCharArray(), getKeyStoreType(), uniqueCertificates);
+        KeyStoreUtils.add(trustStorePath, password.toCharArray(), getKeyStoreType(), certificateHolder.getUniqueCertificates());
         StatisticsUtils.printStatics(urlsToCertificates);
 
-        String duplicateMessage = duplicates.isEmpty() ? "" : String.format(", while also filtering out %d duplicates,", duplicates.size());
-        System.out.printf("Extracted %d certificates%s and exported it to %s%n", uniqueCertificates.size(), duplicateMessage, trustStorePath.toAbsolutePath());
-
+        String duplicateMessage = certificateHolder.getDuplicateCertificates().isEmpty() ? "" : String.format(", while also filtering out %d duplicates which resulted into %d unique certificates", certificateHolder.getDuplicateCertificates().size(), certificateHolder.getUniqueCertificates().size());
+        System.out.printf("Extracted %d certificates%s.%nIt has been exported to %s%n", certificateHolder.getAllCertificates().size(), duplicateMessage, trustStorePath.toAbsolutePath());
     }
 
     abstract String getKeyStoreType();

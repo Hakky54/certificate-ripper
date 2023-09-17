@@ -15,11 +15,10 @@
  */
 package nl.altindag.crip.util;
 
+import nl.altindag.crip.model.CertificateHolder;
 import nl.altindag.ssl.util.CertificateUtils;
 
 import java.security.cert.X509Certificate;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -39,18 +38,11 @@ public final class StatisticsUtils {
             aliasToCertificate.forEach((alias, certificate) -> System.out.printf("         [%s]%n", alias));
         });
 
-        List<X509Certificate> certificates = urlsToCertificates.values().stream()
-                .flatMap(Collection::stream)
-                .collect(Collectors.toList());
+        CertificateHolder certificateHolder = new CertificateHolder(urlsToCertificates);
 
-        List<X509Certificate> duplicates = certificates.stream()
-                .filter(certificate -> Collections.frequency(certificates, certificate) > 1)
-                .distinct()
-                .collect(Collectors.toList());
-
-        if (!duplicates.isEmpty()) {
+        if (!certificateHolder.getDuplicateCertificates().isEmpty()) {
             System.out.printf("%n- Duplicate certificate count%n%n");
-            duplicates.stream()
+            certificateHolder.getDuplicateCertificates().stream()
                     .map(CertificateUtils::generateAlias)
                     .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
                     .forEach((alias, count) -> System.out.printf("  * %d: [%s]%n", count, alias));
