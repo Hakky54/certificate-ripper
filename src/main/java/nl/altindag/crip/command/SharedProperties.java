@@ -15,6 +15,7 @@
  */
 package nl.altindag.crip.command;
 
+import nl.altindag.crip.model.CertificateHolder;
 import nl.altindag.crip.util.TriFunction;
 import nl.altindag.ssl.util.CertificateUtils;
 import picocli.CommandLine.Option;
@@ -49,14 +50,16 @@ public class SharedProperties {
     @Option(names = {"--proxy-password"}, interactive = true, description = "Password for authenticating the user for the given proxy")
     private String proxyPassword;
 
-    public Map<String, List<X509Certificate>> getUrlsToCertificates() {
-        return getCertificates(urls,
+    public CertificateHolder getCertificateHolder() {
+        Map<String, List<X509Certificate>> urlsToCertificates = getCertificates(urls,
                 CertificateUtils::getCertificatesFromExternalSources,
                 CertificateUtils::getCertificatesFromExternalSources,
                 CertificateUtils::getCertificatesFromExternalSources);
+
+        return new CertificateHolder(urlsToCertificates);
     }
 
-    public List<X509Certificate> getCertificates() {
+    public List<X509Certificate> getCertificatesFromFirstUrl() {
         return getCertificates(urls[0],
                 CertificateUtils::getCertificatesFromExternalSource,
                 CertificateUtils::getCertificatesFromExternalSource,

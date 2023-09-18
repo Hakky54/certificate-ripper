@@ -40,7 +40,7 @@ public class PrintCommand implements Runnable {
 
     @Override
     public void run() {
-        Map<String, List<X509Certificate>> urlsToCertificates = sharedProperties.getUrlsToCertificates();
+        Map<String, List<X509Certificate>> urlsToCertificates = sharedProperties.getCertificateHolder().getUrlsToCertificates();
         StatisticsUtils.printStatics(urlsToCertificates);
 
         if (format == Format.X509) {

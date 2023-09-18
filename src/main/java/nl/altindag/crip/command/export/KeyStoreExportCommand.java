@@ -34,12 +34,11 @@ abstract class KeyStoreExportCommand extends FileExport implements Runnable {
 
     @Override
     public void run() {
-        Map<String, List<X509Certificate>> urlsToCertificates = sharedProperties.getUrlsToCertificates();
-        CertificateHolder certificateHolder = new CertificateHolder(urlsToCertificates);
+        CertificateHolder certificateHolder = sharedProperties.getCertificateHolder();
         Path trustStorePath = getDestination().orElseGet(() -> IOUtils.getCurrentDirectory().resolve("truststore" + getFileExtension()));
 
         KeyStoreUtils.add(trustStorePath, password.toCharArray(), getKeyStoreType(), certificateHolder.getUniqueCertificates());
-        StatisticsUtils.printStatics(urlsToCertificates);
+        StatisticsUtils.printStatics(certificateHolder.getUrlsToCertificates());
 
         String duplicateMessage = certificateHolder.getDuplicateCertificates().isEmpty() ? "" : String.format(", while also filtering out %d duplicates which resulted into %d unique certificates", certificateHolder.getDuplicateCertificates().size(), certificateHolder.getUniqueCertificates().size());
         System.out.printf("Extracted %d certificates%s.%nIt has been exported to %s%n", certificateHolder.getAllCertificates().size(), duplicateMessage, trustStorePath.toAbsolutePath());

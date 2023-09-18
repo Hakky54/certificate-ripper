@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 
 public final class CertificateHolder {
 
+    private final Map<String, List<X509Certificate>> urlsToCertificates;
     private final List<X509Certificate> allCertificates;
     private final List<X509Certificate> uniqueCertificates;
     private final List<X509Certificate> duplicateCertificates;
@@ -45,9 +46,14 @@ public final class CertificateHolder {
             }
         }
 
+        this.urlsToCertificates = Collections.unmodifiableMap(urlsToCertificates);
         this.allCertificates = Collections.unmodifiableList(certificates);
         this.uniqueCertificates = Collections.unmodifiableList(uniqueCertificates);
         this.duplicateCertificates = Collections.unmodifiableList(duplicateCertificates);
+    }
+
+    public Map<String, List<X509Certificate>> getUrlsToCertificates() {
+        return urlsToCertificates;
     }
 
     public List<X509Certificate> getAllCertificates() {

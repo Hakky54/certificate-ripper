@@ -49,7 +49,7 @@ public class PemExportCommand extends CombinableFileExport implements Runnable {
 
         if (combined) {
             if (sharedProperties.getUrls().size() == 1) {
-                List<X509Certificate> certificates = sharedProperties.getCertificates();
+                List<X509Certificate> certificates = sharedProperties.getCertificatesFromFirstUrl();
 
                 String certificatesAsPem = certificates.stream()
                         .map(CertificateUtils::convertToPem)
@@ -65,7 +65,7 @@ public class PemExportCommand extends CombinableFileExport implements Runnable {
             }
 
             filenameToCertificate = new HashMap<>();
-            for (Entry<String, List<X509Certificate>> entry : sharedProperties.getUrlsToCertificates().entrySet()) {
+            for (Entry<String, List<X509Certificate>> entry : sharedProperties.getCertificateHolder().getUrlsToCertificates().entrySet()) {
                 String fileName = UriUtils.extractHost(entry.getKey());
                 if (filenameToCertificate.containsKey(fileName)) {
                     fileName = fileName + "-" + counter++;
@@ -74,7 +74,7 @@ public class PemExportCommand extends CombinableFileExport implements Runnable {
                 filenameToCertificate.put(fileName, certificateAsPem);
             }
         } else {
-            filenameToCertificate = sharedProperties.getUrlsToCertificates().values().stream()
+            filenameToCertificate = sharedProperties.getCertificateHolder().getUrlsToCertificates().values().stream()
                     .flatMap(Collection::stream)
                     .collect(collectingAndThen(collectingAndThen(toList(), CertificateUtils::generateAliases),
                             entry -> entry.entrySet().stream().collect(toMap(Entry::getKey, element -> CertificateUtils.convertToPem(element.getValue())))));
