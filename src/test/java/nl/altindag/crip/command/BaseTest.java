@@ -33,15 +33,7 @@ public class BaseTest {
     protected static Server serverTwo;
 
     @BeforeAll
-    static void setupCertificateRipperAndServerAndConsoleCaptor() throws IOException {
-        CertificateRipper certificateRipper = new CertificateRipper();
-        cmd = new CommandLine(certificateRipper)
-                .setCaseInsensitiveEnumValuesAllowed(true);
-        consoleCaptor = ConsoleCaptor.builder()
-                .allowEmptyLines(true)
-                .allowTrimmingWhiteSpace(false)
-                .build();
-
+    static void setupCertificateRipper() throws IOException {
         serverOne = ServerUtils.createServerOne();
         serverOne.start();
 
@@ -57,7 +49,18 @@ public class BaseTest {
     }
 
     @BeforeEach
-    void clearConsoleCaptor() {
+    void setupServerAndConsoleCaptor() {
+        CertificateRipper certificateRipper = new CertificateRipper();
+        cmd = new CommandLine(certificateRipper)
+                .setCaseInsensitiveEnumValuesAllowed(true);
+
+        if (consoleCaptor == null) {
+            consoleCaptor = ConsoleCaptor.builder()
+                    .allowEmptyLines(true)
+                    .allowTrimmingWhiteSpace(false)
+                    .build();
+        }
+
         consoleCaptor.clearOutput();
     }
 

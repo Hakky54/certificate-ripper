@@ -15,7 +15,9 @@
  */
 package nl.altindag.crip.command.export;
 
+import nl.altindag.crip.model.CertificateHolder;
 import nl.altindag.crip.util.IOUtils;
+import nl.altindag.crip.util.StatisticsUtils;
 import nl.altindag.ssl.util.CertificateUtils;
 import nl.altindag.ssl.util.internal.UriUtils;
 import picocli.CommandLine.Command;
@@ -46,6 +48,7 @@ public class PemExportCommand extends CombinableFileExport implements Runnable {
 
     public void run() {
         Map<String, String> filenameToCertificate;
+        CertificateHolder certificateHolder = sharedProperties.getCertificateHolder();
 
         if (combined) {
             if (sharedProperties.getUrls().size() == 1) {
@@ -60,12 +63,12 @@ public class PemExportCommand extends CombinableFileExport implements Runnable {
                         .orElseGet(() -> IOUtils.getCurrentDirectory().resolve(UriUtils.extractHost(sharedProperties.getUrls().get(0)) + ".crt"));
 
                 IOUtils.write(destination, certificatesAsPem);
-                System.out.println("Successfully Exported certificates");
+                StatisticsUtils.printStatics(certificateHolder, destination);
                 return;
             }
 
             filenameToCertificate = new HashMap<>();
-            for (Entry<String, List<X509Certificate>> entry : sharedProperties.getCertificateHolder().getUrlsToCertificates().entrySet()) {
+            for (Entry<String, List<X509Certificate>> entry : certificateHolder.getUrlsToCertificates().entrySet()) {
                 String fileName = UriUtils.extractHost(entry.getKey());
                 if (filenameToCertificate.containsKey(fileName)) {
                     fileName = fileName + "-" + counter++;
@@ -74,7 +77,7 @@ public class PemExportCommand extends CombinableFileExport implements Runnable {
                 filenameToCertificate.put(fileName, certificateAsPem);
             }
         } else {
-            filenameToCertificate = sharedProperties.getCertificateHolder().getUrlsToCertificates().values().stream()
+            filenameToCertificate = certificateHolder.getUrlsToCertificates().values().stream()
                     .flatMap(Collection::stream)
                     .collect(collectingAndThen(collectingAndThen(toList(), CertificateUtils::generateAliases),
                             entry -> entry.entrySet().stream().collect(toMap(Entry::getKey, element -> CertificateUtils.convertToPem(element.getValue())))));
@@ -92,7 +95,7 @@ public class PemExportCommand extends CombinableFileExport implements Runnable {
             IOUtils.write(certificatePath, certificateEntry.getValue());
         }
 
-        System.out.println("Successfully Exported certificates");
+        StatisticsUtils.printStatics(certificateHolder, directory);
     }
 
     private static String removeHeader(String value) {

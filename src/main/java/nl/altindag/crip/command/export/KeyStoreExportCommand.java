@@ -22,9 +22,6 @@ import nl.altindag.ssl.util.KeyStoreUtils;
 import picocli.CommandLine.Option;
 
 import java.nio.file.Path;
-import java.security.cert.X509Certificate;
-import java.util.List;
-import java.util.Map;
 
 @SuppressWarnings({"FieldCanBeLocal", "FieldMayBeFinal"})
 abstract class KeyStoreExportCommand extends FileExport implements Runnable {
@@ -38,10 +35,7 @@ abstract class KeyStoreExportCommand extends FileExport implements Runnable {
         Path trustStorePath = getDestination().orElseGet(() -> IOUtils.getCurrentDirectory().resolve("truststore" + getFileExtension()));
 
         KeyStoreUtils.add(trustStorePath, password.toCharArray(), getKeyStoreType(), certificateHolder.getUniqueCertificates());
-        StatisticsUtils.printStatics(certificateHolder.getUrlsToCertificates());
-
-        String duplicateMessage = certificateHolder.getDuplicateCertificates().isEmpty() ? "" : String.format(", while also filtering out %d duplicates which resulted into %d unique certificates", certificateHolder.getDuplicateCertificates().size(), certificateHolder.getUniqueCertificates().size());
-        System.out.printf("Extracted %d certificates%s.%nIt has been exported to %s%n", certificateHolder.getAllCertificates().size(), duplicateMessage, trustStorePath.toAbsolutePath());
+        StatisticsUtils.printStatics(certificateHolder, trustStorePath);
     }
 
     abstract String getKeyStoreType();

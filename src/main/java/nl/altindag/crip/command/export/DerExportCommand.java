@@ -15,7 +15,9 @@
  */
 package nl.altindag.crip.command.export;
 
+import nl.altindag.crip.model.CertificateHolder;
 import nl.altindag.crip.util.IOUtils;
+import nl.altindag.crip.util.StatisticsUtils;
 import nl.altindag.ssl.util.CertificateUtils;
 import nl.altindag.ssl.util.internal.UriUtils;
 import picocli.CommandLine.Command;
@@ -42,6 +44,7 @@ public class DerExportCommand extends CombinableFileExport implements Runnable {
 
     @Override
     public void run() {
+        CertificateHolder certificateHolder = sharedProperties.getCertificateHolder();
         try {
             Map<String, byte[]> filenameToFileContent = new HashMap<>();
 
@@ -56,7 +59,7 @@ public class DerExportCommand extends CombinableFileExport implements Runnable {
                     Path destination = getDestination().orElseGet(() -> IOUtils.getCurrentDirectory().resolve(fileName));
 
                     IOUtils.write(destination, certPath.getEncoded("PKCS7"));
-                    System.out.println("Successfully Exported certificates");
+                    StatisticsUtils.printStatics(certificateHolder, destination);
                     return;
                 }
 
@@ -88,11 +91,10 @@ public class DerExportCommand extends CombinableFileExport implements Runnable {
                 IOUtils.write(certificatePath, certificateEntry.getValue());
             }
 
+            StatisticsUtils.printStatics(certificateHolder, directory);
         } catch (CertificateException e) {
             System.err.println("Failed to export the certificates. Error message: " + e.getMessage());
         }
-
-        System.out.println("Successfully Exported certificates");
     }
 
 }

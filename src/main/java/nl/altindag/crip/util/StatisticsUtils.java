@@ -18,8 +18,8 @@ package nl.altindag.crip.util;
 import nl.altindag.crip.model.CertificateHolder;
 import nl.altindag.ssl.util.CertificateUtils;
 
+import java.nio.file.Path;
 import java.security.cert.X509Certificate;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -30,15 +30,17 @@ public final class StatisticsUtils {
 
     }
 
-    public static void printStatics(Map<String, List<X509Certificate>> urlsToCertificates) {
+    public static void printStatics(CertificateHolder certificateHolder) {
+        printStatics(certificateHolder, null);
+    }
+
+    public static void printStatics(CertificateHolder certificateHolder, Path destination) {
         System.out.printf("%nCertificate ripper statistics:%n- Certificate count%n%n");
-        urlsToCertificates.forEach((url, certificates) -> {
+        certificateHolder.getUrlsToCertificates().forEach((url, certificates) -> {
             System.out.printf("  * %d: %s%n", certificates.size(), url);
             Map<String, X509Certificate> aliasToCertificate = CertificateUtils.generateAliases(certificates);
             aliasToCertificate.forEach((alias, certificate) -> System.out.printf("         [%s]%n", alias));
         });
-
-        CertificateHolder certificateHolder = new CertificateHolder(urlsToCertificates);
 
         if (!certificateHolder.getDuplicateCertificates().isEmpty()) {
             System.out.printf("%n- Duplicate certificate count%n%n");
@@ -49,6 +51,11 @@ public final class StatisticsUtils {
         }
 
         System.out.println();
+
+        if (destination != null) {
+            String duplicateMessage = certificateHolder.getDuplicateCertificates().isEmpty() ? "" : String.format(", while also filtering out %d duplicates which resulted into %d unique certificates", certificateHolder.getDuplicateCertificates().size(), certificateHolder.getUniqueCertificates().size());
+            System.out.printf("Extracted %d certificates%s.%nIt has been exported to %s%n", certificateHolder.getAllCertificates().size(), duplicateMessage, destination.toAbsolutePath());
+        }
     }
 
 }
