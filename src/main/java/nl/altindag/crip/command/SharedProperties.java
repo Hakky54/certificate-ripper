@@ -29,11 +29,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.function.Predicate;
 
 import static nl.altindag.ssl.util.internal.StringUtils.isNotBlank;
 
@@ -100,11 +97,6 @@ public class SharedProperties {
             uniqueUrls.add(url);
         }
         return uniqueUrls;
-    }
-
-    private static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
-        Set<Object> seen = ConcurrentHashMap.newKeySet();
-        return t -> seen.add(keyExtractor.apply(t));
     }
 
     private <T, R> R getCertificates(T sourceProvider,
