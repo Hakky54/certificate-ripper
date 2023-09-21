@@ -20,7 +20,9 @@ import nl.altindag.ssl.util.CertificateUtils;
 
 import java.nio.file.Path;
 import java.security.cert.X509Certificate;
+import java.util.Comparator;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -46,7 +48,7 @@ public final class StatisticsUtils {
             System.out.printf("%n- Duplicate certificate count%n%n");
             certificateHolder.getDuplicateCertificates().stream()
                     .map(CertificateUtils::generateAlias)
-                    .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
+                    .collect(Collectors.groupingBy(Function.identity(), () -> new TreeMap<>(Comparator.comparing(String::toString)), Collectors.counting()))
                     .forEach((alias, count) -> System.out.printf("  * %d: [%s]%n", count, alias));
         }
 
