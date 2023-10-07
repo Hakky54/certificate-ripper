@@ -15,6 +15,7 @@
  */
 package nl.altindag.crip.command;
 
+import nl.altindag.crip.util.StatisticsUtils;
 import nl.altindag.ssl.util.CertificateUtils;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Mixin;
@@ -29,7 +30,7 @@ import java.util.stream.Collectors;
 @Command(name = "print", description = "Prints the extracted certificates to the console")
 public class PrintCommand implements Runnable {
 
-    private static final String CERTIFICATE_DELIMITER = "%n%n========== NEXT CERTIFICATE FOR %s ==========%n%n";
+    private static final String CERTIFICATE_DELIMITER = "%n%n<========== Next certificate for %s ==========>%n%n";
 
     @Mixin
     private SharedProperties sharedProperties;
@@ -39,8 +40,11 @@ public class PrintCommand implements Runnable {
 
     @Override
     public void run() {
+        Map<String, List<X509Certificate>> urlsToCertificates = sharedProperties.getCertificateHolder().getUrlsToCertificates();
+        StatisticsUtils.printStatics(sharedProperties.getCertificateHolder());
+
         if (format == Format.X509) {
-            sharedProperties.getUrlsToCertificates().forEach((String url, List<X509Certificate> certificates) ->
+            urlsToCertificates.forEach((String url, List<X509Certificate> certificates) ->
                     System.out.printf("Certificates for url = %s%n%n%s%n%n%n",
                             url,
                             certificates.stream()
@@ -49,7 +53,7 @@ public class PrintCommand implements Runnable {
                     ));
 
         } else if (format == Format.PEM) {
-            sharedProperties.getUrlsToCertificates().entrySet().stream()
+            urlsToCertificates.entrySet().stream()
                     .collect(Collectors.toMap(
                             Map.Entry::getKey,
                             certificates -> CertificateUtils.convertToPem(certificates.getValue())))

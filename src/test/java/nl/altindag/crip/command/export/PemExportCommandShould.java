@@ -43,7 +43,7 @@ class PemExportCommandShould extends FileBaseTest {
 
         cmd.execute("export", "pem", "--url=https://localhost:8443", "--destination=" + TEMP_DIRECTORY.toAbsolutePath());
 
-        assertThat(consoleCaptor.getStandardOutput()).contains("Successfully Exported certificates");
+        assertThat(consoleCaptor.getStandardOutput()).contains("Extracted 2 certificates.");
 
         List<Path> files = Files.walk(TEMP_DIRECTORY, 1)
                 .filter(Files::isRegularFile)
@@ -66,7 +66,7 @@ class PemExportCommandShould extends FileBaseTest {
 
         cmd.execute("export", "pem", "--url=https://localhost:8443", "--combined=true", "--destination=" + TEMP_DIRECTORY.toAbsolutePath().resolve("localhost.crt"));
 
-        assertThat(consoleCaptor.getStandardOutput()).contains("Successfully Exported certificates");
+        assertThat(consoleCaptor.getStandardOutput()).contains("Extracted 2 certificates.");
 
         List<Path> files = Files.walk(TEMP_DIRECTORY, 1)
                 .filter(Files::isRegularFile)
@@ -88,7 +88,7 @@ class PemExportCommandShould extends FileBaseTest {
 
         cmd.execute("export", "pem", "--url=https://localhost:8443", "--url=https://localhost:8444", "--combined=true", "--destination=" + TEMP_DIRECTORY.toAbsolutePath());
 
-        assertThat(consoleCaptor.getStandardOutput()).contains("Successfully Exported certificates");
+        assertThat(consoleCaptor.getStandardOutput()).contains("Extracted 4 certificates.");
 
         List<Path> files = Files.walk(TEMP_DIRECTORY, 1)
                 .filter(Files::isRegularFile)
@@ -115,7 +115,7 @@ class PemExportCommandShould extends FileBaseTest {
 
         cmd.execute("export", "pem", "--url=https://localhost:8443", "--destination=" + TEMP_DIRECTORY.toAbsolutePath(), "--include-header=false");
 
-        assertThat(consoleCaptor.getStandardOutput()).contains("Successfully Exported certificates");
+        assertThat(consoleCaptor.getStandardOutput()).contains("Extracted 2 certificates.");
 
         List<Path> files = Files.walk(TEMP_DIRECTORY, 1)
                 .filter(Files::isRegularFile)
@@ -137,7 +137,7 @@ class PemExportCommandShould extends FileBaseTest {
 
         cmd.execute("export", "pem", "--url=https://localhost:8443", "--combined=true", "--destination=" + TEMP_DIRECTORY.toAbsolutePath().resolve("thunderberry.crt"), "--include-header=false");
 
-        assertThat(consoleCaptor.getStandardOutput()).contains("Successfully Exported certificates");
+        assertThat(consoleCaptor.getStandardOutput()).contains("Extracted 2 certificates.");
 
         List<Path> files = Files.walk(TEMP_DIRECTORY, 1)
                 .filter(Files::isRegularFile)

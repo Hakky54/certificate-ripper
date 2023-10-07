@@ -45,7 +45,7 @@ class Pkcs12ExportCommandShould extends FileBaseTest {
                 .collect(Collectors.toList());
 
         assertThat(files).hasSize(1);
-        assertThat(consoleCaptor.getStandardOutput()).contains("Exported certificates to " + files.get(0));
+        assertThat(consoleCaptor.getStandardOutput()).contains("Extracted 2 certificates.", "It has been exported to " + files.get(0));
         assertThat(files).allMatch(path -> path.toString().endsWith("my-truststore.p12"));
 
         KeyStore truststore = KeyStoreUtils.loadKeyStore(files.get(0), "changeit".toCharArray());

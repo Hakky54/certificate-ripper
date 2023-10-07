@@ -66,7 +66,8 @@ crip print --url=https://stackoverflow.com/
 Usage: crip [COMMAND]
 Commands:
   print             Prints the extracted certificates to the console
-  export pkcs12     Export the extracted certificate to a PKCS12/p12 type truststore
+  export p12        Export the extracted certificate to a PKCS12/p12 type truststore
+  export jks        Export the extracted certificate to a JKS (Java KeyStore) type truststore
   export der        Export the extracted certificate to a binary form also known as DER
   export pem        Export the extracted certificate to a base64 encoded string also known as PEM
   
