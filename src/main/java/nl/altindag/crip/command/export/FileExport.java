@@ -39,4 +39,8 @@ class FileExport {
         return Optional.of(Paths.get(destination));
     }
 
+    protected String reformatFileName(String fileName) {
+        return fileName.replaceAll("[.\\\\]+", "-");
+    }
+
 }

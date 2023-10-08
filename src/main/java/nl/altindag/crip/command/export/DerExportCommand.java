@@ -64,7 +64,7 @@ public class DerExportCommand extends CombinableFileExport implements Runnable {
                 }
 
                 for (Entry<String, List<X509Certificate>> entry : sharedProperties.getCertificateHolder().getUrlsToCertificates().entrySet()) {
-                    String fileName = UriUtils.extractHost(entry.getKey());
+                    String fileName = reformatFileName(UriUtils.extractHost(entry.getKey()));
                     if (filenameToFileContent.containsKey(fileName)) {
                         fileName = fileName + "-" + counter++;
                     }
