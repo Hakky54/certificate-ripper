@@ -15,6 +15,8 @@
  */
 package nl.altindag.crip.util;
 
+import nl.altindag.crip.exception.CertificateRipperException;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -40,7 +42,7 @@ public final class IOUtils {
         try {
             Files.write(path, bytes, StandardOpenOption.CREATE);
         } catch (IOException e) {
-            System.err.println("Failed to export the certificates. Error message: " + e.getMessage());
+            throw new CertificateRipperException("Failed to export the certificates. Error message: " + e.getMessage(), e);
         }
     }
 
