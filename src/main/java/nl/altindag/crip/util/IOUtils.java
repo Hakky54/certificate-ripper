@@ -42,7 +42,7 @@ public final class IOUtils {
         try {
             Files.write(path, bytes, StandardOpenOption.CREATE);
         } catch (IOException e) {
-            throw new CertificateRipperException("Failed to export the certificates. Error message: " + e.getMessage(), e);
+            throw new CertificateRipperException(e);
         }
     }
 

@@ -21,7 +21,4 @@ public class CertificateRipperException extends RuntimeException {
         super(cause);
     }
 
-    public CertificateRipperException(String message, Throwable cause) {
-        super(message, cause);
-    }
 }
