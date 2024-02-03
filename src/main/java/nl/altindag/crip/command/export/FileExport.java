@@ -25,6 +25,8 @@ import java.util.Optional;
 
 class FileExport {
 
+    private static final Path CURRENT_DIRECTORY = Paths.get(System.getProperty("user.dir"));
+
     @Mixin
     protected SharedProperties sharedProperties;
 
@@ -43,4 +45,7 @@ class FileExport {
         return fileName.replaceAll("[.\\\\]+", "-");
     }
 
+    protected Path getCurrentDirectory() {
+        return CURRENT_DIRECTORY;
+    }
 }

@@ -154,7 +154,7 @@ crip export pem -u=https://github.com --combined=true
 ### Defining custom file name
 Works only with the combined option while only specifying a single url.
 ```bash
-crip export pem -u=https://github.com --combined=true --destionation=/path/to/export/github-chain.crt
+crip export pem -u=https://github.com --combined=true --destination=/path/to/export/github-chain.crt
 ```
 
 ## Contributing

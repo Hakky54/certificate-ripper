@@ -16,13 +16,14 @@
 package nl.altindag.crip.command.export;
 
 import nl.altindag.crip.model.CertificateHolder;
-import nl.altindag.crip.util.IOUtils;
 import nl.altindag.crip.util.StatisticsUtils;
 import nl.altindag.ssl.util.CertificateUtils;
+import nl.altindag.ssl.util.internal.IOUtils;
 import nl.altindag.ssl.util.internal.UriUtils;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.security.cert.X509Certificate;
 import java.util.AbstractMap.SimpleEntry;
@@ -62,12 +63,11 @@ public class PemExportCommand extends CombinableFileExport implements Runnable {
                             .collect(Collectors.joining(System.lineSeparator()));
 
                     destination = getDestination()
-                            .orElseGet(() -> IOUtils.getCurrentDirectory()
+                            .orElseGet(() -> getCurrentDirectory()
                                     .resolve(reformatFileName(UriUtils.extractHost(sharedProperties.getUrls().get(0))) + ".crt"));
 
-                    IOUtils.write(destination, certificatesAsPem);
+                    IOUtils.write(destination, certificatesAsPem.getBytes(StandardCharsets.UTF_8));
                 }
-
                 StatisticsUtils.printStatics(certificateHolder, destination);
                 return;
             }
@@ -98,10 +98,10 @@ public class PemExportCommand extends CombinableFileExport implements Runnable {
                     .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
         }
 
-        Path directory = getDestination().orElseGet(IOUtils::getCurrentDirectory);
+        Path directory = getDestination().orElseGet(this::getCurrentDirectory);
         for (Entry<String, String> certificateEntry : filenameToCertificate.entrySet()) {
             Path certificatePath = directory.resolve(certificateEntry.getKey() + ".crt");
-            IOUtils.write(certificatePath, certificateEntry.getValue());
+            IOUtils.write(certificatePath, certificateEntry.getValue().getBytes(StandardCharsets.UTF_8));
         }
 
         StatisticsUtils.printStatics(certificateHolder, directory);

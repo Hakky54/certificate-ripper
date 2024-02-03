@@ -16,7 +16,6 @@
 package nl.altindag.crip.command.export;
 
 import nl.altindag.crip.model.CertificateHolder;
-import nl.altindag.crip.util.IOUtils;
 import nl.altindag.crip.util.StatisticsUtils;
 import nl.altindag.ssl.util.KeyStoreUtils;
 import picocli.CommandLine.Option;
@@ -34,7 +33,7 @@ abstract class KeyStoreExportCommand extends FileExport implements Runnable {
         CertificateHolder certificateHolder = sharedProperties.getCertificateHolder();
         Path trustStorePath = null;
         if (!certificateHolder.getAllCertificates().isEmpty()) {
-            trustStorePath = getDestination().orElseGet(() -> IOUtils.getCurrentDirectory().resolve("truststore" + getFileExtension()));
+            trustStorePath = getDestination().orElseGet(() -> getCurrentDirectory().resolve("truststore" + getFileExtension()));
             KeyStoreUtils.add(trustStorePath, password.toCharArray(), getKeyStoreType(), certificateHolder.getUniqueCertificates());
         }
         StatisticsUtils.printStatics(certificateHolder, trustStorePath);
