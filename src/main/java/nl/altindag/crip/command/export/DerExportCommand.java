@@ -53,12 +53,17 @@ public class DerExportCommand extends CombinableFileExport implements Runnable {
 
                 if (sharedProperties.getUrls().size() == 1) {
                     List<X509Certificate> certificates = sharedProperties.getCertificatesFromFirstUrl();
-                    CertPath certPath = certificateFactory.generateCertPath(certificates);
+                    Path destination = null;
 
-                    String fileName = UriUtils.extractHost(sharedProperties.getUrls().get(0)) + ".p7b";
-                    Path destination = getDestination().orElseGet(() -> IOUtils.getCurrentDirectory().resolve(fileName));
+                    if (!certificates.isEmpty()) {
+                        CertPath certPath = certificateFactory.generateCertPath(certificates);
 
-                    IOUtils.write(destination, certPath.getEncoded("PKCS7"));
+                        String fileName = UriUtils.extractHost(sharedProperties.getUrls().get(0)) + ".p7b";
+                        destination = getDestination().orElseGet(() -> IOUtils.getCurrentDirectory().resolve(fileName));
+
+                        IOUtils.write(destination, certPath.getEncoded("PKCS7"));
+                    }
+
                     StatisticsUtils.printStatics(certificateHolder, destination);
                     return;
                 }
@@ -68,9 +73,12 @@ public class DerExportCommand extends CombinableFileExport implements Runnable {
                     if (filenameToFileContent.containsKey(fileName)) {
                         fileName = fileName + "-" + counter++;
                     }
-                    CertPath certPath = certificateFactory.generateCertPath(entry.getValue());
 
-                    filenameToFileContent.put(fileName, certPath.getEncoded("PKCS7"));
+                    List<X509Certificate> certificates = entry.getValue();
+                    if (!certificates.isEmpty()) {
+                        CertPath certPath = certificateFactory.generateCertPath(certificates);
+                        filenameToFileContent.put(fileName, certPath.getEncoded("PKCS7"));
+                    }
                 }
 
                 filenameToFileContent = filenameToFileContent.entrySet().stream()
