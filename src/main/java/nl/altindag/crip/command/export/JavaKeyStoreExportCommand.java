@@ -21,12 +21,12 @@ import picocli.CommandLine.Command;
 public class JavaKeyStoreExportCommand extends KeyStoreExportCommand {
 
     @Override
-    protected String getKeyStoreType() {
+    String getKeyStoreType() {
         return "JKS";
     }
 
     @Override
-    protected String getFileExtension() {
+    String getFileExtension() {
         return ".jks";
     }
 

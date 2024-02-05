@@ -93,4 +93,18 @@ class JksExportCommandShould extends FileBaseTest {
         logCaptor.close();
     }
 
+    @Test
+    void getFileExtension() {
+        JavaKeyStoreExportCommand command = new JavaKeyStoreExportCommand();
+        String fileExtension = command.getFileExtension();
+        assertThat(fileExtension).isEqualTo(".jks");
+    }
+
+    @Test
+    void getKeyStoreType() {
+        JavaKeyStoreExportCommand command = new JavaKeyStoreExportCommand();
+        String keyStoreType = command.getKeyStoreType();
+        assertThat(keyStoreType).isEqualTo("JKS");
+    }
+
 }
