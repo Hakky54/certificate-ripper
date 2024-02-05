@@ -118,10 +118,10 @@ class DerExportCommandShould extends FileBaseTest {
         LogCaptor logCaptor = LogCaptor.forRoot();
         Server server = Server.builder(sslFactoryForServerOne)
                 .withPort(8445)
-                .withDelayedResponseTime(2000)
+                .withDelayedResponseTime(500)
                 .build();
 
-        cmd.execute("export", "der", "--url=https://localhost:8445", "--destination=" + TEMP_DIRECTORY.toAbsolutePath().resolve("thunderberry.crt"), "--timeout=1000");
+        cmd.execute("export", "der", "--url=https://localhost:8445", "--destination=" + TEMP_DIRECTORY.toAbsolutePath().resolve("thunderberry.crt"), "--timeout=250");
 
         assertThat(consoleCaptor.getStandardOutput())
                 .contains(
@@ -130,7 +130,7 @@ class DerExportCommandShould extends FileBaseTest {
                         "  * 0: https://localhost:8445"
                 );
 
-        assertThat(logCaptor.getDebugLogs()).contains("The server didn't respond within the configured time-out of [1000] milliseconds");
+        assertThat(logCaptor.getDebugLogs()).contains("The server didn't respond within the configured time-out of [250] milliseconds");
 
         List<Path> files = Files.walk(TEMP_DIRECTORY, 1)
                 .filter(Files::isRegularFile)

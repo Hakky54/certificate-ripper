@@ -158,10 +158,10 @@ class PemExportCommandShould extends FileBaseTest {
         LogCaptor logCaptor = LogCaptor.forRoot();
         Server server = Server.builder(sslFactoryForServerOne)
                 .withPort(8446)
-                .withDelayedResponseTime(2000)
+                .withDelayedResponseTime(500)
                 .build();
 
-        cmd.execute("export", "pem", "--url=https://localhost:8446", "--destination=" + TEMP_DIRECTORY.toAbsolutePath().resolve("thunderberry.crt"), "--timeout=1000");
+        cmd.execute("export", "pem", "--url=https://localhost:8446", "--destination=" + TEMP_DIRECTORY.toAbsolutePath().resolve("thunderberry.crt"), "--timeout=250");
 
         assertThat(consoleCaptor.getStandardOutput())
                 .contains(
@@ -170,7 +170,7 @@ class PemExportCommandShould extends FileBaseTest {
                         "  * 0: https://localhost:8446"
                 );
 
-        assertThat(logCaptor.getDebugLogs()).contains("The server didn't respond within the configured time-out of [1000] milliseconds");
+        assertThat(logCaptor.getDebugLogs()).contains("The server didn't respond within the configured time-out of [250] milliseconds");
 
         List<Path> files = Files.walk(TEMP_DIRECTORY, 1)
                 .filter(Files::isRegularFile)
