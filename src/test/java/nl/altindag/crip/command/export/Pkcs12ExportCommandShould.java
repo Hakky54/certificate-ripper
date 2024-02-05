@@ -97,14 +97,14 @@ class Pkcs12ExportCommandShould extends FileBaseTest {
     void getFileExtension() {
         Pkcs12ExportCommand command = new Pkcs12ExportCommand();
         String fileExtension = command.getFileExtension();
-        assertThat(fileExtension).isEqualTo(".jks");
+        assertThat(fileExtension).isEqualTo(".p12");
     }
 
     @Test
     void getKeyStoreType() {
         Pkcs12ExportCommand command = new Pkcs12ExportCommand();
         String keyStoreType = command.getKeyStoreType();
-        assertThat(keyStoreType).isEqualTo("JKS");
+        assertThat(keyStoreType).isEqualTo("PKCS12");
     }
 
 }
