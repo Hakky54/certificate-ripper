@@ -35,21 +35,21 @@ public final class CertificateHolder {
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
 
-        List<X509Certificate> uniqueCertificates = new ArrayList<>();
-        List<X509Certificate> duplicateCertificates = new ArrayList<>();
+        List<X509Certificate> uniqueCerts = new ArrayList<>();
+        List<X509Certificate> duplicateCerts = new ArrayList<>();
 
         for (X509Certificate certificate : certificates) {
-            if (!uniqueCertificates.contains(certificate)) {
-                uniqueCertificates.add(certificate);
+            if (!uniqueCerts.contains(certificate)) {
+                uniqueCerts.add(certificate);
             } else {
-                duplicateCertificates.add(certificate);
+                duplicateCerts.add(certificate);
             }
         }
 
         this.urlsToCertificates = Collections.unmodifiableMap(urlsToCertificates);
         this.allCertificates = Collections.unmodifiableList(certificates);
-        this.uniqueCertificates = Collections.unmodifiableList(uniqueCertificates);
-        this.duplicateCertificates = Collections.unmodifiableList(duplicateCertificates);
+        this.uniqueCertificates = Collections.unmodifiableList(uniqueCerts);
+        this.duplicateCertificates = Collections.unmodifiableList(duplicateCerts);
     }
 
     public Map<String, List<X509Certificate>> getUrlsToCertificates() {

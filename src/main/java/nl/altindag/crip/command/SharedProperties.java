@@ -58,11 +58,11 @@ public class SharedProperties {
     private Integer timeoutInMilliseconds;
 
     public CertificateHolder getCertificateHolder() {
-        List<String> uniqueUrls = getUrls();
+        List<String> urls = getUrls();
 
         CertificateExtractingClient client = createClient();
 
-        Map<String, List<X509Certificate>> urlsToCertificates = uniqueUrls.stream()
+        Map<String, List<X509Certificate>> urlsToCertificates = urls.stream()
                 .distinct()
                 .map(url -> new AbstractMap.SimpleEntry<>(url, client.get(url)))
                 .collect(Collectors.collectingAndThen(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue, (key1, key2) -> key1, LinkedHashMap::new), Collections::unmodifiableMap));
