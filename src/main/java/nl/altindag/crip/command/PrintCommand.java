@@ -44,7 +44,7 @@ public class PrintCommand implements Runnable {
         StatisticsUtils.printStatics(sharedProperties.getCertificateHolder());
 
         switch (format) {
-            case PEM:
+            case X509:
                 urlsToCertificates.forEach((String url, List<X509Certificate> certificates) ->
                         System.out.printf("Certificates for url = %s%n%n%s%n%n%n",
                                 url,
@@ -53,7 +53,7 @@ public class PrintCommand implements Runnable {
                                         .collect(Collectors.joining(String.format(CERTIFICATE_DELIMITER, url)))
                         ));
                 break;
-            case X509:
+            case PEM:
                 urlsToCertificates.entrySet().stream()
                         .collect(Collectors.toMap(
                                 Map.Entry::getKey,
