@@ -16,6 +16,8 @@
 package nl.altindag.crip.command.export;
 
 import nl.altindag.crip.command.FileBaseTest;
+import nl.altindag.log.LogCaptor;
+import nl.altindag.ssl.server.service.Server;
 import nl.altindag.ssl.util.CertificateUtils;
 import org.junit.jupiter.api.Test;
 
@@ -109,6 +111,34 @@ class DerExportCommandShould extends FileBaseTest {
             List<Certificate> certificates = CertificateUtils.loadCertificate(new ByteArrayInputStream(content));
             assertThat(expectedCertificates).containsAll(certificates);
         }
+    }
+
+    @Test
+    void timeoutWhenServerTakesToLongToRespond() throws IOException {
+        LogCaptor logCaptor = LogCaptor.forRoot();
+        Server server = Server.builder(sslFactoryForServerOne)
+                .withPort(8445)
+                .withDelayedResponseTime(500)
+                .build();
+
+        cmd.execute("export", "der", "--url=https://localhost:8445", "--destination=" + TEMP_DIRECTORY.toAbsolutePath().resolve("thunderberry.crt"), "--timeout=250");
+
+        assertThat(consoleCaptor.getStandardOutput())
+                .contains(
+                        "Certificate ripper statistics:",
+                        "- Certificate count",
+                        "  * 0: https://localhost:8445"
+                );
+
+        assertThat(logCaptor.getDebugLogs()).contains("The server didn't respond within the configured time-out of [250] milliseconds");
+
+        List<Path> files = Files.walk(TEMP_DIRECTORY, 1)
+                .filter(Files::isRegularFile)
+                .collect(Collectors.toList());
+
+        assertThat(files).isEmpty();
+        server.stop();
+        logCaptor.close();
     }
 
 }

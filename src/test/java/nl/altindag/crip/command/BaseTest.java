@@ -16,14 +16,17 @@
 package nl.altindag.crip.command;
 
 import nl.altindag.console.ConsoleCaptor;
-import nl.altindag.crip.Server;
-import nl.altindag.crip.ServerUtils;
+import nl.altindag.log.LogCaptor;
+import nl.altindag.ssl.SSLFactory;
+import nl.altindag.ssl.server.service.Server;
+import nl.altindag.ssl.util.SSLSessionUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import picocli.CommandLine;
 
-import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 
 public class BaseTest {
 
@@ -31,14 +34,33 @@ public class BaseTest {
     protected static ConsoleCaptor consoleCaptor;
     protected static Server serverOne;
     protected static Server serverTwo;
+    protected static SSLFactory sslFactoryForServerOne;
+    protected static SSLFactory sslFactoryForServerTwo;
+    private static List<LogCaptor> mutedLogs;
 
     @BeforeAll
-    static void setupCertificateRipper() throws IOException {
-        serverOne = ServerUtils.createServerOne();
-        serverOne.start();
+    static void setupCertificateRipper() {
+        char[] keyStorePassword = "secret".toCharArray();
+        sslFactoryForServerOne = SSLFactory.builder()
+                .withIdentityMaterial("keystore/server/server-one/identity.jks", keyStorePassword)
+                .withTrustMaterial("keystore/server/server-one/truststore.jks", keyStorePassword)
+                .build();
 
-        serverTwo = ServerUtils.createServerTwo();
-        serverTwo.start();
+        sslFactoryForServerTwo = SSLFactory.builder()
+                .withIdentityMaterial("keystore/server/server-two/identity.jks", keyStorePassword)
+                .withTrustMaterial("keystore/server/server-two/truststore.jks", keyStorePassword)
+                .build();
+
+        mutedLogs = Collections.singletonList(LogCaptor.forName("io.netty"));
+        mutedLogs.forEach(LogCaptor::disableConsoleOutput);
+
+        serverOne = Server.builder(sslFactoryForServerOne)
+                .withPort(8443)
+                .build();
+
+        serverTwo = Server.builder(sslFactoryForServerTwo)
+                .withPort(8444)
+                .build();
     }
 
     @AfterAll
@@ -46,6 +68,7 @@ public class BaseTest {
         serverOne.stop();
         serverTwo.stop();
         consoleCaptor.close();
+        mutedLogs.forEach(LogCaptor::close);
     }
 
     @BeforeEach
@@ -60,6 +83,9 @@ public class BaseTest {
                     .allowTrimmingWhiteSpace(false)
                     .build();
         }
+
+        SSLSessionUtils.invalidateServerCaches(sslFactoryForServerOne);
+        SSLSessionUtils.invalidateServerCaches(sslFactoryForServerTwo);
 
         consoleCaptor.clearOutput();
     }
