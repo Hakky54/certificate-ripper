@@ -43,24 +43,26 @@ public class PrintCommand implements Runnable {
         Map<String, List<X509Certificate>> urlsToCertificates = sharedProperties.getCertificateHolder().getUrlsToCertificates();
         StatisticsUtils.printStatics(sharedProperties.getCertificateHolder());
 
-        if (format == Format.X509) {
-            urlsToCertificates.forEach((String url, List<X509Certificate> certificates) ->
-                    System.out.printf("Certificates for url = %s%n%n%s%n%n%n",
-                            url,
-                            certificates.stream()
-                                    .map(X509Certificate::toString)
-                                    .collect(Collectors.joining(String.format(CERTIFICATE_DELIMITER, url)))
-                    ));
-
-        } else if (format == Format.PEM) {
-            urlsToCertificates.entrySet().stream()
-                    .collect(Collectors.toMap(
-                            Map.Entry::getKey,
-                            certificates -> CertificateUtils.convertToPem(certificates.getValue())))
-                    .forEach((String path, List<String> certificate) ->
-                            System.out.printf("Certificates for url = %s%n%n%s%n%n",
-                                    path,
-                                    String.join(String.format(CERTIFICATE_DELIMITER, path), certificate)));
+        switch (format) {
+            case PEM:
+                urlsToCertificates.forEach((String url, List<X509Certificate> certificates) ->
+                        System.out.printf("Certificates for url = %s%n%n%s%n%n%n",
+                                url,
+                                certificates.stream()
+                                        .map(X509Certificate::toString)
+                                        .collect(Collectors.joining(String.format(CERTIFICATE_DELIMITER, url)))
+                        ));
+                break;
+            case X509:
+                urlsToCertificates.entrySet().stream()
+                        .collect(Collectors.toMap(
+                                Map.Entry::getKey,
+                                certificates -> CertificateUtils.convertToPem(certificates.getValue())))
+                        .forEach((String path, List<String> certificate) ->
+                                System.out.printf("Certificates for url = %s%n%n%s%n%n",
+                                        path,
+                                        String.join(String.format(CERTIFICATE_DELIMITER, path), certificate)));
+                break;
         }
     }
 
