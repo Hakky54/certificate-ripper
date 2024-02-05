@@ -30,12 +30,14 @@
 
     <properties>
         <version.java>1.8</version.java>
-        <version.sslcontext-kickstart>8.1.7</version.sslcontext-kickstart>
+        <version.sslcontext-kickstart>8.3.1</version.sslcontext-kickstart>
         <version.slf4j>2.0.5</version.slf4j>
         <version.picocli>4.7.0</version.picocli>
         <version.junit>5.9.1</version.junit>
         <version.assertj-core>3.23.1</version.assertj-core>
         <version.consolecaptor>1.0.3</version.consolecaptor>
+        <version.logcaptor>2.9.2</version.logcaptor>
+        <version.ssl-server>1.0.6</version.ssl-server>
         <version.maven-compiler-plugin>3.8.1</version.maven-compiler-plugin>
         <version.maven-surefire-plugin>3.0.0-M7</version.maven-surefire-plugin>
         <version.exec-maven-plugin>1.6.0</version.exec-maven-plugin>
@@ -99,6 +101,19 @@
             <version>${version.consolecaptor}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>io.github.hakky54</groupId>
+            <artifactId>logcaptor</artifactId>
+            <version>${version.logcaptor}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.hakky54</groupId>
+            <artifactId>ssl-server</artifactId>
+            <version>${version.ssl-server}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -121,6 +136,9 @@
                     <includes>
                         <include>%regex[.*Should.*]</include>
                     </includes>
+                    <classpathDependencyExcludes>
+                        <classpathDependencyExclude>org.slf4j:slf4j-simple</classpathDependencyExclude>
+                    </classpathDependencyExcludes>
                 </configuration>
             </plugin>
 

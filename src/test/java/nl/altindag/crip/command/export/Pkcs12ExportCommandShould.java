@@ -16,6 +16,8 @@
 package nl.altindag.crip.command.export;
 
 import nl.altindag.crip.command.FileBaseTest;
+import nl.altindag.log.LogCaptor;
+import nl.altindag.ssl.server.service.Server;
 import nl.altindag.ssl.util.KeyStoreUtils;
 import org.junit.jupiter.api.Test;
 
@@ -61,6 +63,34 @@ class Pkcs12ExportCommandShould extends FileBaseTest {
         }
 
         assertThat(certificateCounter).isEqualTo(2);
+    }
+
+    @Test
+    void timeoutWhenServerTakesToLongToRespond() throws IOException {
+        LogCaptor logCaptor = LogCaptor.forRoot();
+        Server server = Server.builder(sslFactoryForServerOne)
+                .withPort(8447)
+                .withDelayedResponseTime(500)
+                .build();
+
+        cmd.execute("export", "p12", "--url=https://localhost:8447", "--destination=" + TEMP_DIRECTORY.toAbsolutePath().resolve("my-truststore.p12"), "--timeout=250");
+
+        assertThat(consoleCaptor.getStandardOutput())
+                .contains(
+                        "Certificate ripper statistics:",
+                        "- Certificate count",
+                        "  * 0: https://localhost:8447"
+                );
+
+        assertThat(logCaptor.getDebugLogs()).contains("The server didn't respond within the configured time-out of [250] milliseconds");
+
+        List<Path> files = Files.walk(TEMP_DIRECTORY, 1)
+                .filter(Files::isRegularFile)
+                .collect(Collectors.toList());
+
+        assertThat(files).isEmpty();
+        server.stop();
+        logCaptor.close();
     }
 
 }

@@ -54,17 +54,20 @@ public class PemExportCommand extends CombinableFileExport implements Runnable {
         if (combined) {
             if (sharedProperties.getUrls().size() == 1) {
                 List<X509Certificate> certificates = sharedProperties.getCertificatesFromFirstUrl();
+                Path destination = null;
 
-                String certificatesAsPem = certificates.stream()
-                        .map(CertificateUtils::convertToPem)
-                        .map(certificate -> includeHeader ? certificate : removeHeader(certificate))
-                        .collect(Collectors.joining(System.lineSeparator()));
+                if (!certificates.isEmpty()) {
+                    String certificatesAsPem = certificates.stream()
+                            .map(CertificateUtils::convertToPem)
+                            .map(certificate -> includeHeader ? certificate : removeHeader(certificate))
+                            .collect(Collectors.joining(System.lineSeparator()));
 
-                Path destination = getDestination()
-                        .orElseGet(() -> getCurrentDirectory()
-                                .resolve(reformatFileName(UriUtils.extractHost(sharedProperties.getUrls().get(0))) + ".crt"));
+                    destination = getDestination()
+                            .orElseGet(() -> getCurrentDirectory()
+                                    .resolve(reformatFileName(UriUtils.extractHost(sharedProperties.getUrls().get(0))) + ".crt"));
 
-                IOUtils.write(destination, certificatesAsPem.getBytes(StandardCharsets.UTF_8));
+                    IOUtils.write(destination, certificatesAsPem.getBytes(StandardCharsets.UTF_8));
+                }
                 StatisticsUtils.printStatics(certificateHolder, destination);
                 return;
             }
@@ -75,8 +78,12 @@ public class PemExportCommand extends CombinableFileExport implements Runnable {
                 if (filenameToCertificate.containsKey(fileName)) {
                     fileName = fileName + "-" + counter++;
                 }
-                String certificateAsPem = String.join(System.lineSeparator(), CertificateUtils.convertToPem(entry.getValue()));
-                filenameToCertificate.put(fileName, certificateAsPem);
+
+                List<X509Certificate> certificates = entry.getValue();
+                if (!certificates.isEmpty()) {
+                    String certificateAsPem = String.join(System.lineSeparator(), CertificateUtils.convertToPem(certificates));
+                    filenameToCertificate.put(fileName, certificateAsPem);
+                }
             }
         } else {
             filenameToCertificate = certificateHolder.getUrlsToCertificates().values().stream()

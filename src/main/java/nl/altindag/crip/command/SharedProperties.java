@@ -16,8 +16,7 @@
 package nl.altindag.crip.command;
 
 import nl.altindag.crip.model.CertificateHolder;
-import nl.altindag.crip.util.TriFunction;
-import nl.altindag.ssl.util.CertificateUtils;
+import nl.altindag.ssl.util.CertificateExtractingClient;
 import nl.altindag.ssl.util.internal.UriUtils;
 import picocli.CommandLine.Option;
 
@@ -25,12 +24,14 @@ import java.net.InetSocketAddress;
 import java.net.PasswordAuthentication;
 import java.net.Proxy;
 import java.security.cert.X509Certificate;
+import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiFunction;
-import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static nl.altindag.ssl.util.internal.StringUtils.isNotBlank;
 
@@ -53,22 +54,42 @@ public class SharedProperties {
     @Option(names = {"--proxy-password"}, interactive = true, description = "Password for authenticating the user for the given proxy")
     private String proxyPassword;
 
+    @Option(names = {"-t", "--timeout"}, description = "Amount of milliseconds till the ripping should timeout")
+    private Integer timeoutInMilliseconds;
+
     public CertificateHolder getCertificateHolder() {
         List<String> uniqueUrls = getUrls();
 
-        Map<String, List<X509Certificate>> urlsToCertificates = getCertificates(uniqueUrls,
-                CertificateUtils::getCertificatesFromExternalSources,
-                CertificateUtils::getCertificatesFromExternalSources,
-                CertificateUtils::getCertificatesFromExternalSources);
+        CertificateExtractingClient client = createClient();
+
+        Map<String, List<X509Certificate>> urlsToCertificates = uniqueUrls.stream()
+                .distinct()
+                .map(url -> new AbstractMap.SimpleEntry<>(url, client.get(url)))
+                .collect(Collectors.collectingAndThen(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue, (key1, key2) -> key1, LinkedHashMap::new), Collections::unmodifiableMap));
 
         return new CertificateHolder(urlsToCertificates);
     }
 
     public List<X509Certificate> getCertificatesFromFirstUrl() {
-        return getCertificates(urls[0],
-                CertificateUtils::getCertificatesFromExternalSource,
-                CertificateUtils::getCertificatesFromExternalSource,
-                CertificateUtils::getCertificatesFromExternalSource);
+        CertificateExtractingClient client = createClient();
+        return client.get(urls[0]);
+    }
+
+    private CertificateExtractingClient createClient() {
+        CertificateExtractingClient.Builder clientBuilder = CertificateExtractingClient.builder();
+
+        if (isNotBlank(proxyHost) && proxyPort != null) {
+            clientBuilder.withProxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, proxyPort)));
+        }
+        if (isNotBlank(proxyUser) && isNotBlank(proxyPassword)) {
+            clientBuilder.withPasswordAuthentication(new PasswordAuthentication(proxyUser, proxyPassword.toCharArray()));
+        }
+
+        if (timeoutInMilliseconds != null && timeoutInMilliseconds > 0) {
+            clientBuilder.withTimeout(timeoutInMilliseconds);
+        }
+
+        return clientBuilder.build();
     }
 
     public List<String> getUrls() {
@@ -97,25 +118,6 @@ public class SharedProperties {
             uniqueUrls.add(url);
         }
         return uniqueUrls;
-    }
-
-    private <T, R> R getCertificates(T sourceProvider,
-                                     Function<T, R> certificateExtractor,
-                                     BiFunction<Proxy, T, R> certificateExtractorWithProxy,
-                                     TriFunction<Proxy, PasswordAuthentication, T, R> certificateExtractorWithProxyAndAuthentication) {
-
-        if (isNotBlank(proxyHost) && proxyPort != null && isNotBlank(proxyUser) && isNotBlank(proxyPassword)) {
-            Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, proxyPort));
-            PasswordAuthentication passwordAuthentication = new PasswordAuthentication(proxyUser, proxyPassword.toCharArray());
-            return certificateExtractorWithProxyAndAuthentication.apply(proxy, passwordAuthentication, sourceProvider);
-        }
-
-        if (isNotBlank(proxyHost) && proxyPort != null) {
-            Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, proxyPort));
-            return certificateExtractorWithProxy.apply(proxy, sourceProvider);
-        }
-
-        return certificateExtractor.apply(sourceProvider);
     }
 
 }

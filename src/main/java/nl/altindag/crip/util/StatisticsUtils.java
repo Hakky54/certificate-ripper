@@ -54,7 +54,7 @@ public final class StatisticsUtils {
 
         System.out.println();
 
-        if (destination != null) {
+        if (destination != null && !certificateHolder.getAllCertificates().isEmpty()) {
             String duplicateMessage = certificateHolder.getDuplicateCertificates().isEmpty() ? "" : String.format(", while also filtering out %d duplicates which resulted into %d unique certificates", certificateHolder.getDuplicateCertificates().size(), certificateHolder.getUniqueCertificates().size());
             System.out.printf("Extracted %d certificates%s.%nIt has been exported to %s%n", certificateHolder.getAllCertificates().size(), duplicateMessage, destination.toAbsolutePath());
         }
