@@ -181,4 +181,38 @@ class PemExportCommandShould extends FileBaseTest {
         logCaptor.close();
     }
 
+    @Test
+    @SuppressWarnings("UnusedLabel")
+    void resolveRootCaOnlyWhenEnabled() throws IOException {
+        resolvedRootCa: {
+            cmd.execute("export", "pem", "--url=https://google.com", "--resolve-ca=true", "--destination=" + TEMP_DIRECTORY.toAbsolutePath());
+
+            assertThat(consoleCaptor.getStandardOutput()).contains("Extracted 4 certificates.");
+
+            List<Path> files = Files.walk(TEMP_DIRECTORY, 1)
+                    .filter(Files::isRegularFile)
+                    .collect(Collectors.toList());
+
+            assertThat(files)
+                    .hasSize(4)
+                    .allMatch(path -> path.toString().endsWith(".crt"));
+        }
+
+        createTempDirAndClearConsoleCaptor();
+
+        notResolvedRootCa: {
+            cmd.execute("export", "pem", "--url=https://google.com", "--resolve-ca=false", "--destination=" + TEMP_DIRECTORY.toAbsolutePath());
+
+            assertThat(consoleCaptor.getStandardOutput()).contains("Extracted 3 certificates.");
+
+            List<Path> files = Files.walk(TEMP_DIRECTORY, 1)
+                    .filter(Files::isRegularFile)
+                    .collect(Collectors.toList());
+
+            assertThat(files)
+                    .hasSize(3)
+                    .allMatch(path -> path.toString().endsWith(".crt"));
+        }
+    }
+
 }

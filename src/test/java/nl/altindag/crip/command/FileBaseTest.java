@@ -29,7 +29,7 @@ public class FileBaseTest extends BaseTest {
     protected static final Path TEMP_DIRECTORY = Paths.get(System.getProperty("user.home"), "certificate-ripper-temp");
 
     @BeforeEach
-    void createTempDirAndClearConsoleCaptor() throws IOException {
+    protected void createTempDirAndClearConsoleCaptor() throws IOException {
         if (Files.exists(TEMP_DIRECTORY)) {
             List<Path> files = Files.walk(TEMP_DIRECTORY, 1)
                     .filter(Files::isRegularFile)

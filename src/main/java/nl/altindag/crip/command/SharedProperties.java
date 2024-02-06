@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
 
 import static nl.altindag.ssl.util.internal.StringUtils.isNotBlank;
 
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "FieldCanBeLocal", "FieldMayBeFinal"})
 public class SharedProperties {
 
     @Option(names = {"-u", "--url"}, description = "Url of the target server to extract the certificates", required = true)
@@ -57,12 +57,15 @@ public class SharedProperties {
     @Option(names = {"-t", "--timeout"}, description = "Amount of milliseconds till the ripping should timeout")
     private Integer timeoutInMilliseconds;
 
+    @Option(names = {"--resolve-ca"}, description = "Indicator to automatically resolve the root ca")
+    private Boolean resolveRootCa = true;
+
     public CertificateHolder getCertificateHolder() {
-        List<String> urls = getUrls();
+        List<String> resolvedUrls = getUrls();
 
         CertificateExtractingClient client = createClient();
 
-        Map<String, List<X509Certificate>> urlsToCertificates = urls.stream()
+        Map<String, List<X509Certificate>> urlsToCertificates = resolvedUrls.stream()
                 .distinct()
                 .map(url -> new AbstractMap.SimpleEntry<>(url, client.get(url)))
                 .collect(Collectors.collectingAndThen(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue, (key1, key2) -> key1, LinkedHashMap::new), Collections::unmodifiableMap));
@@ -76,7 +79,8 @@ public class SharedProperties {
     }
 
     private CertificateExtractingClient createClient() {
-        CertificateExtractingClient.Builder clientBuilder = CertificateExtractingClient.builder();
+        CertificateExtractingClient.Builder clientBuilder = CertificateExtractingClient.builder()
+                .withResolvedRootCa(resolveRootCa);
 
         if (isNotBlank(proxyHost) && proxyPort != null) {
             clientBuilder.withProxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, proxyPort)));
