@@ -22,6 +22,7 @@ import picocli.CommandLine.Mixin;
 import picocli.CommandLine.Option;
 
 import java.security.cert.X509Certificate;
+import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -58,13 +59,11 @@ public class PrintCommand implements Runnable {
             case PEM:
                 urlsToCertificates.entrySet().stream()
                         .filter(entry -> !entry.getValue().isEmpty())
-                        .collect(Collectors.toMap(
-                                Map.Entry::getKey,
-                                certificates -> CertificateUtils.convertToPem(certificates.getValue())))
-                        .forEach((String path, List<String> certificate) ->
+                        .map(entry -> new SimpleImmutableEntry<>(entry.getKey(), CertificateUtils.convertToPem(entry.getValue())))
+                        .forEach(entry ->
                                 System.out.printf("Certificates for url = %s%n%n%s%n%n",
-                                        path,
-                                        String.join(String.format(CERTIFICATE_DELIMITER, path), certificate)));
+                                        entry.getKey(),
+                                        String.join(String.format(CERTIFICATE_DELIMITER, entry.getKey()), entry.getValue())));
                 break;
         }
     }
