@@ -45,16 +45,19 @@ public class PrintCommand implements Runnable {
 
         switch (format) {
             case X509:
-                urlsToCertificates.forEach((String url, List<X509Certificate> certificates) ->
-                        System.out.printf("Certificates for url = %s%n%n%s%n%n%n",
-                                url,
-                                certificates.stream()
-                                        .map(X509Certificate::toString)
-                                        .collect(Collectors.joining(String.format(CERTIFICATE_DELIMITER, url)))
-                        ));
+                urlsToCertificates.entrySet().stream()
+                        .filter(entry -> !entry.getValue().isEmpty())
+                        .forEach(entry ->
+                                System.out.printf("Certificates for url = %s%n%n%s%n%n%n",
+                                        entry.getKey(),
+                                        entry.getValue().stream()
+                                                .map(X509Certificate::toString)
+                                                .collect(Collectors.joining(String.format(CERTIFICATE_DELIMITER, entry.getKey())))
+                                ));
                 break;
             case PEM:
                 urlsToCertificates.entrySet().stream()
+                        .filter(entry -> !entry.getValue().isEmpty())
                         .collect(Collectors.toMap(
                                 Map.Entry::getKey,
                                 certificates -> CertificateUtils.convertToPem(certificates.getValue())))
