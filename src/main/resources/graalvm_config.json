@@ -30,6 +30,9 @@
       },
       {
         "name": "timeoutInMilliseconds"
+      },
+      {
+        "name": "resolveRootCa"
       }
     ]
   },
