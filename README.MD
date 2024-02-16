@@ -52,6 +52,10 @@ crip print --url=https://stackoverflow.com/
 1. Install the [certificate-ripper-bin](https://aur.archlinux.org/packages/certificate-ripper-bin) AUR package
 2. Run `crip print --url=https://stackoverflow.com/`
 
+##### NixOs
+1. Run `nix-env -f https://github.com/NixOS/nixpkgs/archive/master.tar.gz -iA certificate-ripper`
+2. Run `crip print --url=https://stackoverflow.com/`
+
 ### Using Executable JAR
 **Minimum requirements:**
 1. Java 8
