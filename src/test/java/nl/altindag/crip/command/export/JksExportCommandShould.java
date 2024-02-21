@@ -82,7 +82,7 @@ class JksExportCommandShould extends FileBaseTest {
                         "  * 0: https://localhost:8448"
                 );
 
-        assertThat(logCaptor.getDebugLogs()).contains("The server didn't respond within the configured time-out of [250] milliseconds");
+        assertThat(logCaptor.getDebugLogs()).contains("The client didn't get a respond within the configured time-out of [250] milliseconds from: [https://localhost:8448]");
 
         List<Path> files = Files.walk(TEMP_DIRECTORY, 1)
                 .filter(Files::isRegularFile)
