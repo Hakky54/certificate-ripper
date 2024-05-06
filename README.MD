@@ -45,7 +45,7 @@ A CLI tool to extract server certificates
 2. Maven
 3. Terminal
 
-**Additional OS specific steps**
+**Additional OS specific requirements**
 - Linux: `sudo apt-get update && sudo apt-get install build-essential libz-dev zlib1g-dev -y`
 - Mac: `xcode-select --install`
 - Windows: Visual Studio app
