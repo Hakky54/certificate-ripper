@@ -25,47 +25,52 @@ A CLI tool to extract server certificates
 - Extracted certificates can be stored automatically into a p12 truststore
 - Works also behind a proxy
 
-## Installing & Usage
-### Mac OS X - Homebrew 🍺
-```bash
-brew tap hakky54/crip
-brew install crip
-crip print --url=https://stackoverflow.com/
-```
-### Windows
-1. Download the latest binary here: [Releases](https://github.com/Hakky54/certificate-ripper/releases)
-2. Extract the compressed file
-3. Start cmd and `cd` to the extracted file
-4. Run `start /b "" "crip.exe" print --url=https://stackoverflow.com/`
+## Installing
 
-### Linux
-
-#### From Source
-1. Download the latest binary here: [Releases](https://github.com/Hakky54/certificate-ripper/releases)
-2. Extract the compressed file
-3. Add the reference to your environment variables: `export CRIP_HOME=/path/to/crip/binary`
-4. Run `crip print --url=https://stackoverflow.com/`
+- Mac OS X - Homebrew 🍺
+  - Run `brew tap hakky54/crip && brew install crip`
+- Linux & Windows
+  - Download the latest binary here: [Releases](https://github.com/Hakky54/certificate-ripper/releases)
 
 #### Contributed/Unofficial Installation Methods
+- Arch-Linux (AUR)
+  - Install the [certificate-ripper-bin](https://aur.archlinux.org/packages/certificate-ripper-bin) AUR package
+- NixOS (nixpkgs)
+  - Run `nix-shell -p certificate-ripper` or add `pkgs.certificate-ripper` to your `configuration.nix` file
 
-##### Arch-Linux (AUR)
-1. Install the [certificate-ripper-bin](https://aur.archlinux.org/packages/certificate-ripper-bin) AUR package
-2. Run `crip print --url=https://stackoverflow.com/`
+## Build locally
+### Build native image locally
+**Minimum requirements:**
+1. GraalVM 17 with Native Image
+2. Maven
+3. Terminal
 
-##### NixOS (nixpkgs)
-1. Run `nix-shell -p certificate-ripper` or add `pkgs.certificate-ripper` to your `configuration.nix` file
-2. Run `crip print --url=https://stackoverflow.com/`
+**Additional OS specific steps**
+- Linux: `sudo apt-get update && sudo apt-get install build-essential libz-dev zlib1g-dev -y`
+- Mac: `xcode-select --install`
+- Windows: Visual Studio app
 
-### Using Executable JAR
+```text
+mvn clean install -Pnative-image \
+ && ./crip print --url=https://youtube.com/
+```
+
+The os native executable binary will be available under the target directory having the file name `crip`
+
+### Build fat jar
 **Minimum requirements:**
 1. Java 8
-3. A terminal
+2. Maven
+3. Terminal
 
-**Setup**
-1. Download the latest JAR here: [Releases](https://github.com/Hakky54/certificate-ripper/releases)
-2. Run it with `java -jar crip.jar print --url=https://youtube.com/`
+```text
+mvn clean install -Pnative-image \
+ && java -jar target/crip.jar print --url=https://youtube.com/
+```
 
-### CLI Options
+The fat jar will be available under the target directory having the file name `crip.jar`
+
+## CLI Options
 ```text
 Usage: crip [COMMAND]
 Commands:
