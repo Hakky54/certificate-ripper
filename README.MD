@@ -52,7 +52,7 @@ A CLI tool to extract server certificates
 
 ```text
 mvn clean install -Pnative-image \
- && ./crip print --url=https://youtube.com/
+ && ./target/crip print --url=https://youtube.com/
 ```
 
 The os native executable binary will be available under the target directory having the file name `crip`
