@@ -39,36 +39,44 @@ A CLI tool to extract server certificates
   - Run `nix-shell -p certificate-ripper` or add `pkgs.certificate-ripper` to your `configuration.nix` file
 
 ## Build locally
-### Build native image locally
-**Minimum requirements:**
-1. GraalVM 17 with Native Image
-2. Maven
-3. Terminal
+<details>
+  <summary>Build native executable</summary>
 
-**Additional OS specific requirements**
-- Linux: `sudo apt-get update && sudo apt-get install build-essential libz-dev zlib1g-dev -y`
-- Mac: `xcode-select --install`
-- Windows: Visual Studio app
+  **Minimum requirements:**
+  1. GraalVM 17 with Native Image
+  2. Maven
+  3. Terminal
+  
+  **Additional OS specific requirements**
+  - Linux: `sudo apt-get update && sudo apt-get install build-essential libz-dev zlib1g-dev -y`
+  - Mac: `xcode-select --install`
+  - Windows: Visual Studio app
+  
+  ```text
+  mvn clean install -Pnative-image \
+   && ./target/crip print --url=https://youtube.com/
+  ```
+  
+  The os native executable binary will be available under the target directory having the file name `crip`
 
-```text
-mvn clean install -Pnative-image \
- && ./target/crip print --url=https://youtube.com/
-```
+</details>
 
-The os native executable binary will be available under the target directory having the file name `crip`
+<details>
+  <summary>Build java fat jar</summary>
 
-### Build fat jar
-**Minimum requirements:**
-1. Java 8
-2. Maven
-3. Terminal
+  **Minimum requirements:**
+  1. Java 8
+  2. Maven
+  3. Terminal
 
-```text
-mvn clean install -Pnative-image \
- && java -jar target/crip.jar print --url=https://youtube.com/
-```
+  ```text
+  mvn clean install -Pnative-image \
+   && java -jar target/crip.jar print --url=https://youtube.com/
+  ```
 
-The fat jar will be available under the target directory having the file name `crip.jar`
+  The fat jar will be available under the target directory having the file name `crip.jar`
+
+</details>
 
 ## CLI Options
 ```text
