@@ -70,7 +70,7 @@ A CLI tool to extract server certificates
   3. Terminal
 
   ```text
-  mvn clean install -Pnative-image \
+  mvn clean install \
    && java -jar target/crip.jar print --url=https://youtube.com/
   ```
 
