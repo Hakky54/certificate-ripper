@@ -42,7 +42,7 @@
         <version.maven-surefire-plugin>3.0.0-M7</version.maven-surefire-plugin>
         <version.exec-maven-plugin>1.6.0</version.exec-maven-plugin>
         <version.maven-shade-plugin>3.2.4</version.maven-shade-plugin>
-        <version.jacoco-maven-plugin>0.8.8</version.jacoco-maven-plugin>
+        <version.jacoco-maven-plugin>0.8.12</version.jacoco-maven-plugin>
         <version.graalvm>21.2.0</version.graalvm>
         <application-main-class>nl.altindag.crip.App</application-main-class>
         <version.license-maven-plugin>4.5</version.license-maven-plugin>
