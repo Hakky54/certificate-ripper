@@ -38,7 +38,7 @@
         <version.consolecaptor>1.0.3</version.consolecaptor>
         <version.logcaptor>2.9.3</version.logcaptor>
         <version.ssl-server>1.0.6</version.ssl-server>
-        <version.maven-compiler-plugin>3.8.1</version.maven-compiler-plugin>
+        <version.maven-compiler-plugin>3.13.0</version.maven-compiler-plugin>
         <version.maven-surefire-plugin>3.0.0-M7</version.maven-surefire-plugin>
         <version.exec-maven-plugin>1.6.0</version.exec-maven-plugin>
         <version.maven-shade-plugin>3.2.4</version.maven-shade-plugin>
