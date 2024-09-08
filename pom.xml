@@ -31,7 +31,7 @@
     <properties>
         <version.java>1.8</version.java>
         <version.sslcontext-kickstart>8.3.5</version.sslcontext-kickstart>
-        <version.slf4j>2.0.5</version.slf4j>
+        <version.slf4j>2.0.16</version.slf4j>
         <version.picocli>4.7.6</version.picocli>
         <version.junit>5.9.1</version.junit>
         <version.assertj-core>3.26.3</version.assertj-core>
