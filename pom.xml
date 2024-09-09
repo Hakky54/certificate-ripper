@@ -33,7 +33,7 @@
         <version.sslcontext-kickstart>8.3.6</version.sslcontext-kickstart>
         <version.slf4j>2.0.16</version.slf4j>
         <version.picocli>4.7.6</version.picocli>
-        <version.junit>5.9.1</version.junit>
+        <version.junit>5.11.0</version.junit>
         <version.assertj-core>3.26.3</version.assertj-core>
         <version.consolecaptor>1.0.3</version.consolecaptor>
         <version.logcaptor>2.9.3</version.logcaptor>
