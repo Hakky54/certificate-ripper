@@ -28,7 +28,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("FieldMayBeFinal")
-@Command(name = "print", description = "Prints the extracted certificates to the console")
+@Command(name = "print",
+        description = "Prints the extracted certificates to the console",
+        mixinStandardHelpOptions = true)
 public class PrintCommand implements Runnable {
 
     private static final String CERTIFICATE_DELIMITER = "%n%n<========== Next certificate for %s ==========>%n%n";
