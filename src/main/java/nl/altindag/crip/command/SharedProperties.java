@@ -45,7 +45,7 @@ public class SharedProperties {
     @Option(names = {"--proxy-host"}, description = "Proxy host")
     private String proxyHost;
 
-    @Option(names = {"--proxy-port"}, description = "Proxy port", paramLabel = "abc")
+    @Option(names = {"--proxy-port"}, description = "Proxy port")
     private Integer proxyPort;
 
     @Option(names = {"--proxy-user"}, description = "User for authenticating the user for the given proxy")
