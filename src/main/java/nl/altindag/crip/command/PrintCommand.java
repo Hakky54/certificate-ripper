@@ -36,7 +36,8 @@ public class PrintCommand implements Runnable {
     @Mixin
     private SharedProperties sharedProperties;
 
-    @Option(names = {"-f", "--format"}, description = "To be printed certificate format")
+    @Option(names = {"-f", "--format"},
+            description = "To be printed certificate format%nAvailable Formats: x509, pem")
     private Format format = Format.X509;
 
     @Override

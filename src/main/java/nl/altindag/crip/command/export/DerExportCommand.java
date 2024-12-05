@@ -37,7 +37,9 @@ import java.util.stream.Collectors;
 import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toList;
 
-@Command(name = "der", description = "Export the extracted certificate to a binary form also known as DER")
+@Command(name = "der",
+        description = "Export the extracted certificate to a binary form also known as DER",
+        mixinStandardHelpOptions = true)
 public class DerExportCommand extends CombinableFileExport implements Runnable {
 
     private int counter = 0;

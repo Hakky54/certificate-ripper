@@ -39,7 +39,9 @@ import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
-@Command(name = "pem", description = "Export the extracted certificate to a base64 encoded string also known as PEM")
+@Command(name = "pem",
+        description = "Export the extracted certificate to a base64 encoded string also known as PEM",
+        mixinStandardHelpOptions = true)
 public class PemExportCommand extends CombinableFileExport implements Runnable {
 
     @Option(names = {"--include-header"}, description = "Indicator to either omit or include additional information above the BEGIN statement.")

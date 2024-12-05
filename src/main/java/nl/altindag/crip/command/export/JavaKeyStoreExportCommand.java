@@ -17,7 +17,9 @@ package nl.altindag.crip.command.export;
 
 import picocli.CommandLine.Command;
 
-@Command(name = "jks", description = "Export the extracted certificate to a JKS (Java KeyStore) type truststore")
+@Command(name = "jks",
+        description = "Export the extracted certificate to a JKS (Java KeyStore) type truststore",
+        mixinStandardHelpOptions = true)
 public class JavaKeyStoreExportCommand extends KeyStoreExportCommand {
 
     @Override
