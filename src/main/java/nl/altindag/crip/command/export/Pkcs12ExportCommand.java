@@ -17,7 +17,10 @@ package nl.altindag.crip.command.export;
 
 import picocli.CommandLine.Command;
 
-@Command(name = "pkcs12", aliases = {"p12"}, description = "Export the extracted certificate to a PKCS12/p12 type truststore")
+@Command(name = "pkcs12",
+        aliases = {"p12"},
+        description = "Export the extracted certificate to a PKCS12/p12 type truststore",
+        mixinStandardHelpOptions = true)
 public class Pkcs12ExportCommand extends KeyStoreExportCommand {
 
     @Override

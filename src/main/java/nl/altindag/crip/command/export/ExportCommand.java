@@ -24,7 +24,10 @@ import picocli.CommandLine.Command;
                 JavaKeyStoreExportCommand.class,
                 DerExportCommand.class,
                 PemExportCommand.class
-        })
+        },
+        mixinStandardHelpOptions = true,
+        synopsisSubcommandLabel = "[FORMAT]",
+        commandListHeading = "Formats:%n")
 public class ExportCommand {
 
 }
