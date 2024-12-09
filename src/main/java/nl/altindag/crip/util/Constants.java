@@ -13,26 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.altindag.crip.command.export;
+package nl.altindag.crip.util;
 
-import nl.altindag.crip.App;
-import picocli.CommandLine.Command;
+public class Constants {
 
-@Command(name = "pkcs12",
-        aliases = {"p12"},
-        description = "Export the extracted certificate to a PKCS12/p12 type truststore",
-        mixinStandardHelpOptions = true,
-        versionProvider = App.VersionProvider.class)
-public class Pkcs12ExportCommand extends KeyStoreExportCommand {
+    public static final String APP_NAME = "Certificate Ripper";
+    public static final String APP_VERSION = "v2.3.0";
 
-    @Override
-    String getKeyStoreType() {
-        return "PKCS12";
-    }
+    private Constants() {
 
-    @Override
-    String getFileExtension() {
-        return ".p12";
     }
 
 }

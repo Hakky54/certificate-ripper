@@ -15,6 +15,7 @@
  */
 package nl.altindag.crip.command;
 
+import nl.altindag.crip.App;
 import nl.altindag.crip.util.StatisticsUtils;
 import nl.altindag.ssl.util.CertificateUtils;
 import picocli.CommandLine.Command;
@@ -30,7 +31,8 @@ import java.util.stream.Collectors;
 @SuppressWarnings("FieldMayBeFinal")
 @Command(name = "print",
         description = "Prints the extracted certificates to the console",
-        mixinStandardHelpOptions = true)
+        mixinStandardHelpOptions = true,
+        versionProvider = App.VersionProvider.class)
 public class PrintCommand implements Runnable {
 
     private static final String CERTIFICATE_DELIMITER = "%n%n<========== Next certificate for %s ==========>%n%n";

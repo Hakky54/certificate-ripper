@@ -15,6 +15,7 @@
  */
 package nl.altindag.crip.command.export;
 
+import nl.altindag.crip.App;
 import nl.altindag.crip.model.CertificateHolder;
 import nl.altindag.crip.util.StatisticsUtils;
 import nl.altindag.ssl.util.CertificateUtils;
@@ -39,7 +40,8 @@ import static java.util.stream.Collectors.toList;
 
 @Command(name = "der",
         description = "Export the extracted certificate to a binary form also known as DER",
-        mixinStandardHelpOptions = true)
+        mixinStandardHelpOptions = true,
+        versionProvider = App.VersionProvider.class)
 public class DerExportCommand extends CombinableFileExport implements Runnable {
 
     private int counter = 0;

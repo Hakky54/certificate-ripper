@@ -15,6 +15,7 @@
  */
 package nl.altindag.crip.command.export;
 
+import nl.altindag.crip.App;
 import nl.altindag.crip.model.CertificateHolder;
 import nl.altindag.crip.util.StatisticsUtils;
 import nl.altindag.ssl.util.CertificateUtils;
@@ -41,7 +42,8 @@ import static java.util.stream.Collectors.toMap;
 
 @Command(name = "pem",
         description = "Export the extracted certificate to a base64 encoded string also known as PEM",
-        mixinStandardHelpOptions = true)
+        mixinStandardHelpOptions = true,
+        versionProvider = App.VersionProvider.class)
 public class PemExportCommand extends CombinableFileExport implements Runnable {
 
     @Option(names = {"--include-header"}, description = "Indicator to either omit or include additional information above the BEGIN statement.")

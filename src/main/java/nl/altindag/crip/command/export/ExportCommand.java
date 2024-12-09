@@ -15,6 +15,7 @@
  */
 package nl.altindag.crip.command.export;
 
+import nl.altindag.crip.App;
 import picocli.CommandLine.Command;
 
 @Command(name = "export",
@@ -27,7 +28,8 @@ import picocli.CommandLine.Command;
         },
         mixinStandardHelpOptions = true,
         synopsisSubcommandLabel = "[FORMAT]",
-        commandListHeading = "Formats:%n")
+        commandListHeading = "Formats:%n",
+        versionProvider = App.VersionProvider.class)
 public class ExportCommand {
 
 }
