@@ -81,7 +81,7 @@ public final class HelpFactory implements IHelpFactory {
         result.add(new CommandLine.Help.Ansi.Text[]{
                 scheme.optionText(String.valueOf(option.command().usageMessage().requiredOptionMarker())),
                 scheme.optionText(shortOption),
-                scheme.text("".equals(shortOption) ? "" : OPTION_SEPARATOR),
+                scheme.text("".equals(shortOption) ? EMPTY : OPTION_SEPARATOR),
                 scheme.optionText(longOption),
                 descriptionFirstLines[0]}
         );
