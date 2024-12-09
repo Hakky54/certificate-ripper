@@ -57,7 +57,7 @@ public class SharedProperties {
     @Option(names = {"-t", "--timeout"}, description = "Amount of milliseconds till the ripping should timeout")
     private Integer timeoutInMilliseconds;
 
-    @Option(names = {"--resolve-ca"}, description = "Indicator to automatically resolve the root ca")
+    @Option(names = {"--resolve-ca"}, description = "Indicator to automatically resolve the root ca%nPossible options: true, false")
     private Boolean resolveRootCa = true;
 
     public CertificateHolder getCertificateHolder() {
