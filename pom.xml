@@ -74,6 +74,11 @@
             <artifactId>picocli</artifactId>
             <version>${version.picocli}</version>
         </dependency>
+        <dependency>
+            <groupId>info.picocli</groupId>
+            <artifactId>picocli-codegen</artifactId>
+            <version>${version.picocli}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.junit.jupiter</groupId>

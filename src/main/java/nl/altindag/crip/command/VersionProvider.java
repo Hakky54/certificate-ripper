@@ -13,15 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.altindag.crip.util;
+package nl.altindag.crip.command;
 
-public class Constants {
+import picocli.CommandLine;
+
+public class VersionProvider implements CommandLine.IVersionProvider {
 
     public static final String APP_NAME = "Certificate Ripper";
     public static final String APP_VERSION = "v2.3.0";
 
-    private Constants() {
-
+    public String[] getVersion() {
+        return new String[]{String.format("%s %s", APP_NAME, APP_VERSION)};
     }
 
 }

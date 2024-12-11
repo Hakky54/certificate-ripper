@@ -16,12 +16,9 @@
 package nl.altindag.crip;
 
 import nl.altindag.crip.command.CertificateRipper;
-import nl.altindag.crip.util.Constants;
 import nl.altindag.crip.util.HelpFactory;
 import picocli.CommandLine;
-import picocli.CommandLine.Command;
 
-@Command(versionProvider = App.VersionProvider.class)
 public class App {
 
     public static void main(String[] applicationArguments) {
@@ -31,9 +28,4 @@ public class App {
                 .execute(applicationArguments);
     }
 
-    public static class VersionProvider implements CommandLine.IVersionProvider {
-        public String[] getVersion() {
-            return new String[]{String.format("%s %s", Constants.APP_NAME, Constants.APP_VERSION)};
-        }
-    }
 }

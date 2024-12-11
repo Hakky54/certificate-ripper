@@ -15,14 +15,14 @@
  */
 package nl.altindag.crip.command.export;
 
-import nl.altindag.crip.App;
+import nl.altindag.crip.command.VersionProvider;
 import picocli.CommandLine.Command;
 
 @Command(name = "pkcs12",
         aliases = {"p12"},
         description = "Export the extracted certificate to a PKCS12/p12 type truststore",
         mixinStandardHelpOptions = true,
-        versionProvider = App.VersionProvider.class)
+        versionProvider = VersionProvider.class)
 public class Pkcs12ExportCommand extends KeyStoreExportCommand {
 
     @Override

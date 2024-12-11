@@ -25,6 +25,7 @@ import picocli.CommandLine.Command;
                 PrintCommand.class,
                 ExportCommand.class
         },
-        mixinStandardHelpOptions = true
+        mixinStandardHelpOptions = true,
+        versionProvider = VersionProvider.class
 )
 public class CertificateRipper {}
