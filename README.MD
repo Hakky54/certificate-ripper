@@ -194,5 +194,6 @@ crip export pem -u=https://github.com --combined=true --destination=/path/to/exp
 There are plenty of ways to contribute to this project:
 
 * Give it a star
+* Make a donation through [GitHub](https://github.com/sponsors/Hakky54) or [open collective](https://opencollective.com/hakky54)
 * Share it with a [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=Easily%20extract%20server%20certificates&url=https://github.com/Hakky54/certificate-ripper&via=hakky541&hashtags=certificate,security,https,ssl,tls,developer,java)
 * Submit a PR
