@@ -142,6 +142,21 @@ class DerExportCommandShould extends FileBaseTest {
     }
 
     @Test
+    void processSystemTrustedCertificates() throws IOException {
+        createTempDirAndClearConsoleCaptor();
+
+        cmd.execute("export", "der", "--extract-system-ca=true", "--destination=" + TEMP_DIRECTORY.toAbsolutePath());
+
+        List<Path> files = Files.walk(TEMP_DIRECTORY, 1)
+                .filter(Files::isRegularFile)
+                .collect(Collectors.toList());
+
+        assertThat(files)
+                .hasSizeGreaterThan(1)
+                .allMatch(path -> path.toString().endsWith(".crt"));
+    }
+
+    @Test
     void provideHelpFullInformationWhenThereIsNothingToProcess() {
         cmd.execute("export", "der");
 
