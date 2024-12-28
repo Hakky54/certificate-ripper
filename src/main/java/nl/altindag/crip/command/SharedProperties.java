@@ -38,8 +38,6 @@ import static nl.altindag.ssl.util.internal.StringUtils.isNotBlank;
 @SuppressWarnings({"unused", "FieldCanBeLocal", "FieldMayBeFinal"})
 public class SharedProperties {
 
-    private static final String SYSTEM = "system";
-
     @Option(names = {"-u", "--url"}, description = "Url of the target server to extract the certificates")
     private List<String> urls = new ArrayList<>();
     private List<String> uniqueUrls;
@@ -77,7 +75,7 @@ public class SharedProperties {
 
         if (includeSystemCertificates) {
             List<X509Certificate> systemTrustedCertificates = CertificateUtils.getSystemTrustedCertificates();
-            urlsToCertificates.put(SYSTEM, systemTrustedCertificates);
+            urlsToCertificates.put("system", systemTrustedCertificates);
         }
 
         if (urlsToCertificates.isEmpty()) {
