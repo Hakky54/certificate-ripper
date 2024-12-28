@@ -79,7 +79,7 @@ public class SharedProperties {
         }
 
         if (urlsToCertificates.isEmpty()) {
-            System.out.println("No certificates have been extracted. Please provide at least one url");
+            System.err.println("No certificates have been extracted. Please provide at least one url");
         }
 
         return new CertificateHolder(urlsToCertificates);

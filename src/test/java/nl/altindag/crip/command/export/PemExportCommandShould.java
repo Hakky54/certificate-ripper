@@ -234,7 +234,7 @@ class PemExportCommandShould extends FileBaseTest {
     void provideHelpFullInformationWhenThereIsNothingToProcess() {
         cmd.execute("export", "pem");
 
-        String output = String.join(System.lineSeparator(), consoleCaptor.getStandardOutput());
+        String output = String.join(System.lineSeparator(), consoleCaptor.getErrorOutput());
         assertThat(output).contains("No certificates have been extracted. Please provide at least one url");
     }
 

@@ -105,7 +105,7 @@ class PrintCommandShould extends BaseTest {
     void provideHelpFullInformationWhenThereIsNothingToProcess() {
         cmd.execute("print", "-f=pem");
 
-        String output = String.join(System.lineSeparator(), consoleCaptor.getStandardOutput());
+        String output = String.join(System.lineSeparator(), consoleCaptor.getErrorOutput());
         assertThat(output).contains("No certificates have been extracted. Please provide at least one url");
     }
 
