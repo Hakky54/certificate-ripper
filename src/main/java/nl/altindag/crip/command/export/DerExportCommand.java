@@ -55,8 +55,8 @@ public class DerExportCommand extends CombinableFileExport implements Runnable {
             if (combined) {
                 CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
 
-                if (sharedProperties.getUrls().size() == 1) {
-                    List<X509Certificate> certificates = sharedProperties.getCertificatesFromFirstUrl();
+                if (certificateHolder.getUrlsToCertificates().size() == 1) {
+                    List<X509Certificate> certificates = certificateHolder.getUniqueCertificates();
                     Path destination = null;
 
                     if (!certificates.isEmpty()) {

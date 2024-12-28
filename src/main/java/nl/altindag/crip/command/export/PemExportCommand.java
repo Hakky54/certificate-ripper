@@ -27,12 +27,12 @@ import picocli.CommandLine.Option;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.security.cert.X509Certificate;
-import java.util.AbstractMap.SimpleEntry;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -56,8 +56,8 @@ public class PemExportCommand extends CombinableFileExport implements Runnable {
         CertificateHolder certificateHolder = sharedProperties.getCertificateHolder();
 
         if (combined) {
-            if (sharedProperties.getUrls().size() == 1) {
-                List<X509Certificate> certificates = sharedProperties.getCertificatesFromFirstUrl();
+            if (certificateHolder.getUrlsToCertificates().size() == 1) {
+                List<X509Certificate> certificates = certificateHolder.getUniqueCertificates();
                 Path destination = null;
 
                 if (!certificates.isEmpty()) {
@@ -78,14 +78,20 @@ public class PemExportCommand extends CombinableFileExport implements Runnable {
 
             filenameToCertificate = new HashMap<>();
             for (Entry<String, List<X509Certificate>> entry : certificateHolder.getUrlsToCertificates().entrySet()) {
-                String fileName = reformatFileName(UriUtils.extractHost(entry.getKey()));
+                String fileName = Optional.ofNullable(UriUtils.extractHost(entry.getKey()))
+                        .map(this::reformatFileName)
+                        .orElse(entry.getKey());
+
                 if (filenameToCertificate.containsKey(fileName)) {
                     fileName = fileName + "-" + counter++;
                 }
 
                 List<X509Certificate> certificates = entry.getValue();
                 if (!certificates.isEmpty()) {
-                    String certificateAsPem = String.join(System.lineSeparator(), CertificateUtils.convertToPem(certificates));
+                    String certificateAsPem = certificates.stream()
+                            .map(CertificateUtils::convertToPem)
+                            .map(certificate -> includeHeader ? certificate : removeHeader(certificate))
+                            .collect(Collectors.joining(System.lineSeparator()));
                     filenameToCertificate.put(fileName, certificateAsPem);
                 }
             }
@@ -93,13 +99,8 @@ public class PemExportCommand extends CombinableFileExport implements Runnable {
             filenameToCertificate = certificateHolder.getUrlsToCertificates().values().stream()
                     .flatMap(Collection::stream)
                     .collect(collectingAndThen(collectingAndThen(toList(), CertificateUtils::generateAliases),
-                            entry -> entry.entrySet().stream().collect(toMap(Entry::getKey, element -> CertificateUtils.convertToPem(element.getValue())))));
-        }
-
-        if (!includeHeader) {
-            filenameToCertificate = filenameToCertificate.entrySet().stream()
-                    .map(entry -> new SimpleEntry<>(entry.getKey(), removeHeader(entry.getValue())))
-                    .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+                            entry -> entry.entrySet().stream().collect(toMap(Entry::getKey, element -> includeHeader ? CertificateUtils.convertToPem(element.getValue()) : removeHeader(CertificateUtils.convertToPem(element.getValue())))))
+                    );
         }
 
         Path directory = getDestination().orElseGet(this::getCurrentDirectory);
