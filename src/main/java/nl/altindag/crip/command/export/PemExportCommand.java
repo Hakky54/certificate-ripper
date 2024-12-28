@@ -25,6 +25,7 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.cert.X509Certificate;
 import java.util.Collection;
@@ -54,6 +55,9 @@ public class PemExportCommand extends CombinableFileExport implements Runnable {
     public void run() {
         Map<String, String> filenameToCertificate;
         CertificateHolder certificateHolder = sharedProperties.getCertificateHolder();
+        if (certificateHolder.getUrlsToCertificates().isEmpty()) {
+            return;
+        }
 
         if (combined) {
             if (certificateHolder.getUrlsToCertificates().size() == 1) {
@@ -66,9 +70,17 @@ public class PemExportCommand extends CombinableFileExport implements Runnable {
                             .map(certificate -> includeHeader ? certificate : removeHeader(certificate))
                             .collect(Collectors.joining(System.lineSeparator()));
 
+                    String key = certificateHolder.getUrlsToCertificates().keySet().stream()
+                            .findFirst()
+                            .orElseThrow(IllegalArgumentException::new);
+
+                    String fileName = Optional.ofNullable(UriUtils.extractHost(key))
+                            .map(this::reformatFileName)
+                            .orElse(key) + ".crt";
+
                     destination = getDestination()
-                            .orElseGet(() -> getCurrentDirectory()
-                                    .resolve(reformatFileName(UriUtils.extractHost(sharedProperties.getUrls().get(0))) + ".crt"));
+                            .map(path -> Files.isDirectory(path) ? path.resolve(fileName) : path)
+                            .orElseGet(() -> getCurrentDirectory().resolve(fileName));
 
                     IOUtils.write(destination, certificatesAsPem.getBytes(StandardCharsets.UTF_8));
                 }

@@ -141,4 +141,12 @@ class DerExportCommandShould extends FileBaseTest {
         logCaptor.close();
     }
 
+    @Test
+    void provideHelpFullInformationWhenThereIsNothingToProcess() {
+        cmd.execute("export", "der");
+
+        String output = String.join(System.lineSeparator(), consoleCaptor.getStandardOutput());
+        assertThat(output).contains("No certificates have been extracted. Please provide at least one url");
+    }
+
 }

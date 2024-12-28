@@ -31,6 +31,10 @@ abstract class KeyStoreExportCommand extends FileExport implements Runnable {
     @Override
     public void run() {
         CertificateHolder certificateHolder = sharedProperties.getCertificateHolder();
+        if (certificateHolder.getUrlsToCertificates().isEmpty()) {
+            return;
+        }
+
         Path trustStorePath = null;
         if (!certificateHolder.getAllCertificates().isEmpty()) {
             trustStorePath = getDestination().orElseGet(() -> getCurrentDirectory().resolve("truststore" + getFileExtension()));

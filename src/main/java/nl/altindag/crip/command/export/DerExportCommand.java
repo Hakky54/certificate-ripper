@@ -23,6 +23,7 @@ import nl.altindag.ssl.util.internal.IOUtils;
 import nl.altindag.ssl.util.internal.UriUtils;
 import picocli.CommandLine.Command;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.cert.CertPath;
 import java.security.cert.CertificateException;
@@ -33,6 +34,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.collectingAndThen;
@@ -49,6 +51,10 @@ public class DerExportCommand extends CombinableFileExport implements Runnable {
     @Override
     public void run() {
         CertificateHolder certificateHolder = sharedProperties.getCertificateHolder();
+        if (certificateHolder.getUrlsToCertificates().isEmpty()) {
+            return;
+        }
+
         try {
             Map<String, byte[]> filenameToFileContent = new HashMap<>();
 
@@ -62,8 +68,17 @@ public class DerExportCommand extends CombinableFileExport implements Runnable {
                     if (!certificates.isEmpty()) {
                         CertPath certPath = certificateFactory.generateCertPath(certificates);
 
-                        String fileName = UriUtils.extractHost(sharedProperties.getUrls().get(0)) + ".p7b";
-                        destination = getDestination().orElseGet(() -> getCurrentDirectory().resolve(fileName));
+                        String key = certificateHolder.getUrlsToCertificates().keySet().stream()
+                                .findFirst()
+                                .orElseThrow(IllegalArgumentException::new);
+
+                        String fileName = Optional.ofNullable(UriUtils.extractHost(key))
+                                .map(this::reformatFileName)
+                                .orElse(key) + ".p7b";
+
+                        destination = getDestination()
+                                .map(path -> Files.isDirectory(path) ? path.resolve(fileName) : path)
+                                .orElseGet(() -> getCurrentDirectory().resolve(fileName));
 
                         IOUtils.write(destination, certPath.getEncoded("PKCS7"));
                     }
@@ -73,7 +88,10 @@ public class DerExportCommand extends CombinableFileExport implements Runnable {
                 }
 
                 for (Entry<String, List<X509Certificate>> entry : sharedProperties.getCertificateHolder().getUrlsToCertificates().entrySet()) {
-                    String fileName = reformatFileName(UriUtils.extractHost(entry.getKey()));
+                    String fileName = Optional.ofNullable(UriUtils.extractHost(entry.getKey()))
+                            .map(this::reformatFileName)
+                            .orElse(entry.getKey());
+
                     if (filenameToFileContent.containsKey(fileName)) {
                         fileName = fileName + "-" + counter++;
                     }
