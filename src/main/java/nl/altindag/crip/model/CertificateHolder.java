@@ -16,6 +16,7 @@
 package nl.altindag.crip.model;
 
 import java.security.cert.X509Certificate;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -29,6 +30,7 @@ public final class CertificateHolder {
     private final List<X509Certificate> allCertificates;
     private final List<X509Certificate> uniqueCertificates;
     private final List<X509Certificate> duplicateCertificates;
+    private final List<X509Certificate> expiredCertificates;
 
     public CertificateHolder(Map<String, List<X509Certificate>> urlsToCertificates) {
         List<X509Certificate> certificates = urlsToCertificates.values().stream()
@@ -46,10 +48,20 @@ public final class CertificateHolder {
             }
         }
 
+        List<X509Certificate> expiredCerts = new ArrayList<>();
+        Instant now = Instant.now();
+        for (X509Certificate certificate : uniqueCerts) {
+            Instant expirationDateTime = certificate.getNotAfter().toInstant();
+            if (expirationDateTime.isBefore(now)) {
+                expiredCerts.add(certificate);
+            }
+        }
+
         this.urlsToCertificates = Collections.unmodifiableMap(urlsToCertificates);
         this.allCertificates = Collections.unmodifiableList(certificates);
         this.uniqueCertificates = Collections.unmodifiableList(uniqueCerts);
         this.duplicateCertificates = Collections.unmodifiableList(duplicateCerts);
+        this.expiredCertificates = Collections.unmodifiableList(expiredCerts);
     }
 
     public Map<String, List<X509Certificate>> getUrlsToCertificates() {
@@ -66,6 +78,10 @@ public final class CertificateHolder {
 
     public List<X509Certificate> getDuplicateCertificates() {
         return duplicateCertificates;
+    }
+
+    public List<X509Certificate> getExpiredCertificates() {
+        return expiredCertificates;
     }
 
 }
