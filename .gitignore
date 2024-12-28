@@ -1,6 +1,7 @@
 *.iml
 .idea
 *.project
+**/dependency-reduced-pom.xml
 *.theia
 *.classpath
 *.DS_Store
