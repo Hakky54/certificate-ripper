@@ -33,9 +33,6 @@
       },
       {
         "name": "resolveRootCa"
-      },
-      {
-        "name": "includeSystemCertificates"
       }
     ]
   },
