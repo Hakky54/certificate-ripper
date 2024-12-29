@@ -38,7 +38,7 @@ import static nl.altindag.ssl.util.internal.StringUtils.isNotBlank;
 @SuppressWarnings({"unused", "FieldCanBeLocal", "FieldMayBeFinal"})
 public class SharedProperties {
 
-    @Option(names = {"-u", "--url"}, description = "Url of the target server to extract the certificates", required = true)
+    @Option(names = {"-u", "--url"}, description = "Url of the target server to extract the certificates")
     private List<String> urls = new ArrayList<>();
     private List<String> uniqueUrls;
 
@@ -60,6 +60,9 @@ public class SharedProperties {
     @Option(names = {"--resolve-ca"}, description = "Indicator to automatically resolve the root ca%nPossible options: true, false")
     private Boolean resolveRootCa = true;
 
+    @Option(names = {"--extract-system-ca"}, description = "Indicator to extract the operating system trusted root ca%nPossible options: true, false")
+    private Boolean includeSystemCertificates = false;
+
     public CertificateHolder getCertificateHolder() {
         List<String> resolvedUrls = getUrls();
 
@@ -69,6 +72,15 @@ public class SharedProperties {
                 .distinct()
                 .map(url -> new AbstractMap.SimpleEntry<>(url, client.get(url)))
                 .collect(Collectors.collectingAndThen(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue, (key1, key2) -> key1, LinkedHashMap::new), HashMap::new));
+
+        if (includeSystemCertificates) {
+            List<X509Certificate> systemTrustedCertificates = CertificateUtils.getSystemTrustedCertificates();
+            urlsToCertificates.put("system", systemTrustedCertificates);
+        }
+
+        if (urlsToCertificates.isEmpty()) {
+            System.err.println("No certificates have been extracted. Please provide at least one url");
+        }
 
         return new CertificateHolder(urlsToCertificates);
     }
