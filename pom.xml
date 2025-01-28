@@ -78,6 +78,7 @@
             <groupId>info.picocli</groupId>
             <artifactId>picocli-codegen</artifactId>
             <version>${version.picocli}</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -130,6 +131,13 @@
                 <configuration>
                     <source>${version.java}</source>
                     <target>${version.java}</target>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>info.picocli</groupId>
+                            <artifactId>picocli-codegen</artifactId>
+                            <version>${version.picocli}</version>
+                        </path>
+                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
 
@@ -261,15 +269,6 @@ limitations under the License.
             </plugin>
         </plugins>
 
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <includes>
-                    <include>simplelogger.properties</include>
-                    <include>graalvm_config.json</include>
-                </includes>
-            </resource>
-        </resources>
     </build>
 
     <profiles>
@@ -296,7 +295,6 @@ limitations under the License.
                             <skip>false</skip>
                             <buildArgs>
                                 --no-fallback
-                                -H:ReflectionConfigurationResources=graalvm_config.json
                                 -H:EnableURLProtocols=https
                                 -H:EnableURLProtocols=http
                                 -H:Name=crip
@@ -305,14 +303,6 @@ limitations under the License.
                     </plugin>
                 </plugins>
 
-                <resources>
-                    <resource>
-                        <directory>src/main/resources</directory>
-                        <includes>
-                            <include>graalvm_config.json</include>
-                        </includes>
-                    </resource>
-                </resources>
             </build>
         </profile>
     </profiles>
