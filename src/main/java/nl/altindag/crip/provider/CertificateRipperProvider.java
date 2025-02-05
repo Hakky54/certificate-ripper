@@ -15,23 +15,17 @@
  */
 package nl.altindag.crip.provider;
 
-import java.security.AccessController;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivilegedAction;
 import java.security.Provider;
-import java.security.ProviderException;
 
 public final class CertificateRipperProvider extends Provider {
 
     public CertificateRipperProvider() {
         super("CertificateRipper", 1.0, "Certificate Ripper Security Provider");
+        put("KeyStore.KeychainStore", "nl.altindag.crip.provider.DummyKeychainStoreSpi");
+        put("KeyStore.KeychainStore-ROOT", "nl.altindag.crip.provider.DummyKeychainStoreSpi");
 
-        final Provider provider = this;
-        AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
-            putService(new MockAppleProviderService(provider, "KeyStore", "KeychainStore", "apple.security.KeychainStore$USER"));
-            putService(new MockAppleProviderService(provider, "KeyStore", "KeychainStore-ROOT", "apple.security.KeychainStore$ROOT"));
-            return null;
-        });
+        putService(new MockAppleProviderService(this, "KeyStore", "KeychainStore", "apple.security.KeychainStore$USER"));
+        putService(new MockAppleProviderService(this, "KeyStore", "KeychainStore-ROOT", "apple.security.KeychainStore$ROOT"));
     }
 
 }
