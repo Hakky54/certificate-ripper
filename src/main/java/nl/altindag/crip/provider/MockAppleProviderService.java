@@ -29,7 +29,7 @@ final class MockAppleProviderService extends Provider.Service {
         String type = getType();
         String algo = getAlgorithm();
         if ("KeyStore".equals(type) && "KeychainStore".equals(algo) || "KeychainStore-ROOT".equals(algo)) {
-            return new DummyKeychainStore();
+            return new DummyKeychainStoreSpi();
         }
         throw new ProviderException("No impl for " + algo + " " + type);
     }

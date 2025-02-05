@@ -24,7 +24,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
 
-final class DummyKeychainStore extends KeyStoreSpi {
+final class DummyKeychainStoreSpi extends KeyStoreSpi {
 
     @Override
     public Key engineGetKey(String alias, char[] password) {
