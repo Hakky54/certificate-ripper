@@ -23,27 +23,6 @@ import java.security.ProviderException;
 
 public final class CertificateRipperProvider extends Provider {
 
-    private static final class MockAppleProviderService extends Provider.Service {
-
-        public MockAppleProviderService(Provider p, String type, String algo, String cn) {
-            super(p, type, algo, cn, null, null);
-        }
-
-        @Override
-        public Object newInstance(Object constructorParameter) throws NoSuchAlgorithmException {
-            String type = getType();
-            String algo = getAlgorithm();
-            try {
-                if (type.equals("KeyStore") && algo.equals("KeychainStore") || algo.equals("KeychainStore-ROOT")) {
-                    return new DummyKeychainStore();
-                }
-            } catch (Exception ex) {
-                throw new NoSuchAlgorithmException("Error constructing " + type + " for " + algo, ex);
-            }
-            throw new ProviderException("No impl for " + algo + " " + type);
-        }
-    }
-
     public CertificateRipperProvider() {
         super("CertificateRipper", 1.0, "Certificate Ripper Security Provider");
 
