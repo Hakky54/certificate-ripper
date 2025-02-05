@@ -111,7 +111,7 @@ class JksExportCommandShould extends FileBaseTest {
     void processSystemTrustedCertificates() throws IOException {
         createTempDirAndClearConsoleCaptor();
 
-        cmd.execute("export", "jks", "--extract-system-ca=true", "--destination=" + TEMP_DIRECTORY.toAbsolutePath().resolve("my-truststore.jks"));
+        cmd.execute("export", "jks", "--url=system", "--destination=" + TEMP_DIRECTORY.toAbsolutePath().resolve("my-truststore.jks"));
 
         List<Path> files = Files.walk(TEMP_DIRECTORY, 1)
                 .filter(Files::isRegularFile)
@@ -120,14 +120,6 @@ class JksExportCommandShould extends FileBaseTest {
         assertThat(files)
                 .hasSize(1)
                 .allMatch(path -> path.toString().endsWith(".jks"));
-    }
-
-    @Test
-    void provideHelpFullInformationWhenThereIsNothingToProcess() {
-        cmd.execute("export", "jks");
-
-        String output = String.join(System.lineSeparator(), consoleCaptor.getErrorOutput());
-        assertThat(output).contains("No certificates have been extracted. Please provide at least one url");
     }
 
 }

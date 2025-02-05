@@ -145,7 +145,7 @@ class DerExportCommandShould extends FileBaseTest {
     void processSystemTrustedCertificates() throws IOException {
         createTempDirAndClearConsoleCaptor();
 
-        cmd.execute("export", "der", "--extract-system-ca=true", "--destination=" + TEMP_DIRECTORY.toAbsolutePath());
+        cmd.execute("export", "der", "--url=system", "--destination=" + TEMP_DIRECTORY.toAbsolutePath());
 
         List<Path> files = Files.walk(TEMP_DIRECTORY, 1)
                 .filter(Files::isRegularFile)
@@ -154,14 +154,6 @@ class DerExportCommandShould extends FileBaseTest {
         assertThat(files)
                 .hasSizeGreaterThan(1)
                 .allMatch(path -> path.toString().endsWith(".crt"));
-    }
-
-    @Test
-    void provideHelpFullInformationWhenThereIsNothingToProcess() {
-        cmd.execute("export", "der");
-
-        String output = String.join(System.lineSeparator(), consoleCaptor.getErrorOutput());
-        assertThat(output).contains("No certificates have been extracted. Please provide at least one url");
     }
 
 }

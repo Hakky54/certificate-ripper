@@ -111,7 +111,7 @@ class Pkcs12ExportCommandShould extends FileBaseTest {
     void processSystemTrustedCertificates() throws IOException {
         createTempDirAndClearConsoleCaptor();
 
-        cmd.execute("export", "p12", "--extract-system-ca=true", "--destination=" + TEMP_DIRECTORY.toAbsolutePath().resolve("my-truststore.p12"));
+        cmd.execute("export", "p12", "--url=system", "--destination=" + TEMP_DIRECTORY.toAbsolutePath().resolve("my-truststore.p12"));
 
         List<Path> files = Files.walk(TEMP_DIRECTORY, 1)
                 .filter(Files::isRegularFile)
@@ -120,14 +120,6 @@ class Pkcs12ExportCommandShould extends FileBaseTest {
         assertThat(files)
                 .hasSize(1)
                 .allMatch(path -> path.toString().endsWith(".p12"));
-    }
-
-    @Test
-    void provideHelpFullInformationWhenThereIsNothingToProcess() {
-        cmd.execute("export", "p12");
-
-        String output = String.join(System.lineSeparator(), consoleCaptor.getErrorOutput());
-        assertThat(output).contains("No certificates have been extracted. Please provide at least one url");
     }
 
 }

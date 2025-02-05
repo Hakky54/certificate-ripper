@@ -219,7 +219,7 @@ class PemExportCommandShould extends FileBaseTest {
     void processSystemTrustedCertificates() throws IOException {
         createTempDirAndClearConsoleCaptor();
 
-        cmd.execute("export", "pem", "--extract-system-ca=true", "--combined=true", "--destination=" + TEMP_DIRECTORY.toAbsolutePath());
+        cmd.execute("export", "pem", "--url=system", "--combined=true", "--destination=" + TEMP_DIRECTORY.toAbsolutePath());
 
         List<Path> files = Files.walk(TEMP_DIRECTORY, 1)
                 .filter(Files::isRegularFile)
@@ -228,14 +228,6 @@ class PemExportCommandShould extends FileBaseTest {
         assertThat(files)
                 .hasSize(1)
                 .allMatch(path -> path.toString().endsWith(".crt"));
-    }
-
-    @Test
-    void provideHelpFullInformationWhenThereIsNothingToProcess() {
-        cmd.execute("export", "pem");
-
-        String output = String.join(System.lineSeparator(), consoleCaptor.getErrorOutput());
-        assertThat(output).contains("No certificates have been extracted. Please provide at least one url");
     }
 
 }
