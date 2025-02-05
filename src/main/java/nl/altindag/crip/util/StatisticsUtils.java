@@ -23,7 +23,6 @@ import java.security.cert.X509Certificate;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -47,12 +46,16 @@ public final class StatisticsUtils {
 
         if (!certificateHolder.getDuplicateCertificates().isEmpty()) {
             System.out.printf("%n- Duplicate certificate count%n");
+
+            Comparator<Map.Entry<String, Long>> compareByCount = Map.Entry.comparingByValue();
+            Comparator<Map.Entry<String, Long>> compareByAlias = Map.Entry.comparingByKey();
+
             certificateHolder.getDuplicateCertificates().stream()
                     .map(CertificateUtils::generateAlias)
-                    .collect(Collectors.groupingBy(Function.identity(), () -> new TreeMap<>(Comparator.comparing(String::toString)), Collectors.counting()))
-                    .forEach((alias, count) -> System.out.printf("  * %d: [%s]%n", count, alias));
+                    .collect(Collectors.groupingBy(Function.identity(), Collectors.counting())).entrySet().stream()
+                    .sorted(compareByCount.thenComparing(compareByAlias))
+                    .forEach(entry -> System.out.printf("  * %d: [%s]%n", entry.getValue(), entry.getKey()));
         }
-
 
         if (!certificateHolder.getExpiredCertificates().isEmpty()) {
             System.out.printf("%n- Expired certificates overview%n");
