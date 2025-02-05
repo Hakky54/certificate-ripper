@@ -37,8 +37,11 @@ A CLI tool to extract server certificates
   - Install the [certificate-ripper-bin](https://aur.archlinux.org/packages/certificate-ripper-bin) AUR package
 - NixOS (nixpkgs)
   - Run `nix-shell -p certificate-ripper` or add `pkgs.certificate-ripper` to your `configuration.nix` file
-- Windows - Chocolatey 🍫 
-  - Run `choco install crip`
+- Windows
+  - Chocolatey 🍫 
+    - Run `choco install crip`
+  - Scoop 🍨
+    - Run `scoop install extras/crip`
 
 ## Build locally
 <details>
