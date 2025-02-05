@@ -77,7 +77,7 @@ public class SharedProperties {
                 List<X509Certificate> systemTrustedCertificates = CertificateUtils.getSystemTrustedCertificates();
                 urlsToCertificates.put(SYSTEM, systemTrustedCertificates);
             } catch (UnsatisfiedLinkError error) {
-                System.out.printf("Unable to extract system certificates for %s\n", System.getProperty("os.name"));
+                System.out.printf("Unable to extract system certificates for %s%n", System.getProperty("os.name"));
             }
         }
 
