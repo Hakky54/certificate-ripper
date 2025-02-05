@@ -20,7 +20,7 @@ import picocli.CommandLine;
 public class VersionProvider implements CommandLine.IVersionProvider {
 
     public static final String APP_NAME = "Certificate Ripper";
-    public static final String APP_VERSION = "v2.3.0";
+    public static final String APP_VERSION = "v2.4.0";
 
     public String[] getVersion() {
         return new String[]{String.format("%s %s", APP_NAME, APP_VERSION)};
