@@ -215,4 +215,19 @@ class PemExportCommandShould extends FileBaseTest {
         }
     }
 
+    @Test
+    void processSystemTrustedCertificates() throws IOException {
+        createTempDirAndClearConsoleCaptor();
+
+        cmd.execute("export", "pem", "--url=system", "--combined=true", "--destination=" + TEMP_DIRECTORY.toAbsolutePath());
+
+        List<Path> files = Files.walk(TEMP_DIRECTORY, 1)
+                .filter(Files::isRegularFile)
+                .collect(Collectors.toList());
+
+        assertThat(files)
+                .hasSize(1)
+                .allMatch(path -> path.toString().endsWith(".crt"));
+    }
+
 }

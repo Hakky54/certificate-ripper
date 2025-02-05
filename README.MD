@@ -192,6 +192,11 @@ Works only with the combined option while only specifying a single url.
 crip export pem -u=https://github.com --combined=true --destination=/path/to/export/github-chain.crt
 ```
 
+### Extract system certificates
+```bash
+crip export pem -u=system
+```
+
 ## Contributing
 
 There are plenty of ways to contribute to this project:

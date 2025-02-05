@@ -107,4 +107,19 @@ class JksExportCommandShould extends FileBaseTest {
         assertThat(keyStoreType).isEqualTo("JKS");
     }
 
+    @Test
+    void processSystemTrustedCertificates() throws IOException {
+        createTempDirAndClearConsoleCaptor();
+
+        cmd.execute("export", "jks", "--url=system", "--destination=" + TEMP_DIRECTORY.toAbsolutePath().resolve("my-truststore.jks"));
+
+        List<Path> files = Files.walk(TEMP_DIRECTORY, 1)
+                .filter(Files::isRegularFile)
+                .collect(Collectors.toList());
+
+        assertThat(files)
+                .hasSize(1)
+                .allMatch(path -> path.toString().endsWith(".jks"));
+    }
+
 }

@@ -107,4 +107,19 @@ class Pkcs12ExportCommandShould extends FileBaseTest {
         assertThat(keyStoreType).isEqualTo("PKCS12");
     }
 
+    @Test
+    void processSystemTrustedCertificates() throws IOException {
+        createTempDirAndClearConsoleCaptor();
+
+        cmd.execute("export", "p12", "--url=system", "--destination=" + TEMP_DIRECTORY.toAbsolutePath().resolve("my-truststore.p12"));
+
+        List<Path> files = Files.walk(TEMP_DIRECTORY, 1)
+                .filter(Files::isRegularFile)
+                .collect(Collectors.toList());
+
+        assertThat(files)
+                .hasSize(1)
+                .allMatch(path -> path.toString().endsWith(".p12"));
+    }
+
 }
