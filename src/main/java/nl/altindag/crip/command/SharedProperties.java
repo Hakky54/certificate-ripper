@@ -32,7 +32,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static nl.altindag.ssl.util.internal.StringUtils.isNotBlank;
@@ -74,13 +74,14 @@ public class SharedProperties {
                     try {
                         CertificateExtractingClient client = createClient();
                         List<X509Certificate> certificates = client.get(url);
-                        return new AbstractMap.SimpleEntry<>(url, certificates);
+                        return Optional.of(new AbstractMap.SimpleEntry<>(url, certificates));
                     } catch (GenericIOException e) {
                         System.out.printf("Could not extract from %s%n", url);
-                        return null;
+                        return Optional.<AbstractMap.SimpleEntry<String, List<X509Certificate>>>empty();
                     }
                 })
-                .filter(Objects::nonNull)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
                 .collect(Collectors.collectingAndThen(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue, (key1, key2) -> key1, LinkedHashMap::new), HashMap::new));
 
         if (urls.contains(SYSTEM)) {
