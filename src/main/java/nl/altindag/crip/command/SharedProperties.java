@@ -16,6 +16,7 @@
 package nl.altindag.crip.command;
 
 import nl.altindag.crip.model.CertificateHolder;
+import nl.altindag.ssl.exception.GenericIOException;
 import nl.altindag.ssl.util.CertificateExtractingClient;
 import nl.altindag.ssl.util.CertificateUtils;
 import nl.altindag.ssl.util.internal.UriUtils;
@@ -31,6 +32,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static nl.altindag.ssl.util.internal.StringUtils.isNotBlank;
@@ -65,11 +67,21 @@ public class SharedProperties {
     public CertificateHolder getCertificateHolder() {
         List<String> resolvedUrls = getUrls();
 
-        CertificateExtractingClient client = createClient();
-
         Map<String, List<X509Certificate>> urlsToCertificates = resolvedUrls.stream()
                 .distinct()
-                .map(url -> new AbstractMap.SimpleEntry<>(url, client.get(url)))
+                .parallel()
+                .map(url -> {
+                    try {
+                        CertificateExtractingClient client = createClient();
+                        List<X509Certificate> certificates = client.get(url);
+                        return Optional.of(new AbstractMap.SimpleEntry<>(url, certificates));
+                    } catch (GenericIOException e) {
+                        System.out.printf("Could not extract from %s%n", url);
+                        return Optional.<AbstractMap.SimpleEntry<String, List<X509Certificate>>>empty();
+                    }
+                })
+                .filter(Optional::isPresent)
+                .map(Optional::get)
                 .collect(Collectors.collectingAndThen(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue, (key1, key2) -> key1, LinkedHashMap::new), HashMap::new));
 
         if (urls.contains(SYSTEM)) {
