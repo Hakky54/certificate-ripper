@@ -72,7 +72,9 @@ public class SharedProperties {
                 .parallel()
                 .map(url -> {
                     try {
-                        return new AbstractMap.SimpleEntry<>(url, createClient().get(url));
+                        CertificateExtractingClient client = createClient();
+                        List<X509Certificate> certificates = client.get(url);
+                        return new AbstractMap.SimpleEntry<>(url, certificates);
                     } catch (GenericIOException e) {
                         System.out.printf("Could not extract from %s%n", url);
                         return null;
