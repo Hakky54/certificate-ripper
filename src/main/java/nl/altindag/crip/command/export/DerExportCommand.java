@@ -87,7 +87,7 @@ public class DerExportCommand extends CombinableFileExport implements Runnable {
                     return;
                 }
 
-                for (Entry<String, List<X509Certificate>> entry : sharedProperties.getCertificateHolder().getUrlsToCertificates().entrySet()) {
+                for (Entry<String, List<X509Certificate>> entry : certificateHolder.getUrlsToCertificates().entrySet()) {
                     String fileName = Optional.ofNullable(UriUtils.extractHost(entry.getKey()))
                             .map(this::reformatFileName)
                             .orElse(entry.getKey());
@@ -106,7 +106,7 @@ public class DerExportCommand extends CombinableFileExport implements Runnable {
                 filenameToFileContent = filenameToFileContent.entrySet().stream()
                         .collect(Collectors.toMap(entry -> entry.getKey() + ".p7b", Map.Entry::getValue));
             } else {
-                Map<String, X509Certificate> aliasToCertificate = sharedProperties.getCertificateHolder().getUrlsToCertificates().values().stream()
+                Map<String, X509Certificate> aliasToCertificate = certificateHolder.getUrlsToCertificates().values().stream()
                         .flatMap(Collection::stream)
                         .collect(collectingAndThen(toList(), CertificateUtils::generateAliases));
 

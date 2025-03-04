@@ -15,6 +15,7 @@
  */
 package nl.altindag.crip.command;
 
+import nl.altindag.crip.model.CertificateHolder;
 import nl.altindag.crip.util.StatisticsUtils;
 import nl.altindag.ssl.util.CertificateUtils;
 import picocli.CommandLine.Command;
@@ -45,12 +46,13 @@ public class PrintCommand implements Runnable {
 
     @Override
     public void run() {
-        Map<String, List<X509Certificate>> urlsToCertificates = sharedProperties.getCertificateHolder().getUrlsToCertificates();
+        CertificateHolder certificateHolder = sharedProperties.getCertificateHolder();
+        Map<String, List<X509Certificate>> urlsToCertificates = certificateHolder.getUrlsToCertificates();
         if (urlsToCertificates.isEmpty()) {
             return;
         }
 
-        StatisticsUtils.printStatics(sharedProperties.getCertificateHolder());
+        StatisticsUtils.printStatics(certificateHolder);
 
         switch (format) {
             case X509:
