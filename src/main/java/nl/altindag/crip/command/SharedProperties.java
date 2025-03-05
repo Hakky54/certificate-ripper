@@ -70,19 +70,10 @@ public class SharedProperties {
         Map<String, List<X509Certificate>> urlsToCertificates = resolvedUrls.stream()
                 .distinct()
                 .parallel()
-                .map(url -> {
-                    try {
-                        CertificateExtractingClient client = createClient();
-                        List<X509Certificate> certificates = client.get(url);
-                        return Optional.of(new AbstractMap.SimpleEntry<>(url, certificates));
-                    } catch (GenericIOException e) {
-                        System.out.printf("Could not extract from %s%n", url);
-                        return Optional.<AbstractMap.SimpleEntry<String, List<X509Certificate>>>empty();
-                    }
-                })
+                .map(this::getCertificates)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
-                .collect(Collectors.collectingAndThen(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue, (key1, key2) -> key1, LinkedHashMap::new), HashMap::new));
+                .collect(Collectors.collectingAndThen(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (key1, key2) -> key1, LinkedHashMap::new), HashMap::new));
 
         if (urls.contains(SYSTEM)) {
             try {
@@ -96,25 +87,7 @@ public class SharedProperties {
         return new CertificateHolder(urlsToCertificates);
     }
 
-    private CertificateExtractingClient createClient() {
-        CertificateExtractingClient.Builder clientBuilder = CertificateExtractingClient.builder()
-                .withResolvedRootCa(resolveRootCa);
-
-        if (isNotBlank(proxyHost) && proxyPort != null) {
-            clientBuilder.withProxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, proxyPort)));
-        }
-        if (isNotBlank(proxyUser) && isNotBlank(proxyPassword)) {
-            clientBuilder.withPasswordAuthentication(new PasswordAuthentication(proxyUser, proxyPassword.toCharArray()));
-        }
-
-        if (timeoutInMilliseconds != null && timeoutInMilliseconds > 0) {
-            clientBuilder.withTimeout(timeoutInMilliseconds);
-        }
-
-        return clientBuilder.build();
-    }
-
-    public List<String> getUrls() {
+    private List<String> getUrls() {
         if (uniqueUrls != null) {
             return uniqueUrls;
         }
@@ -144,6 +117,35 @@ public class SharedProperties {
             uniqueUrls.add(url);
         }
         return uniqueUrls;
+    }
+
+    private Optional<Map.Entry<String, List<X509Certificate>>> getCertificates(String url) {
+        try {
+            CertificateExtractingClient client = createClient();
+            List<X509Certificate> certificates = client.get(url);
+            return Optional.of(new AbstractMap.SimpleEntry<>(url, certificates));
+        } catch (GenericIOException e) {
+            System.out.printf("Could not extract from %s%n", url);
+            return Optional.empty();
+        }
+    }
+
+    private CertificateExtractingClient createClient() {
+        CertificateExtractingClient.Builder clientBuilder = CertificateExtractingClient.builder()
+                .withResolvedRootCa(resolveRootCa);
+
+        if (isNotBlank(proxyHost) && proxyPort != null) {
+            clientBuilder.withProxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, proxyPort)));
+        }
+        if (isNotBlank(proxyUser) && isNotBlank(proxyPassword)) {
+            clientBuilder.withPasswordAuthentication(new PasswordAuthentication(proxyUser, proxyPassword.toCharArray()));
+        }
+
+        if (timeoutInMilliseconds != null && timeoutInMilliseconds > 0) {
+            clientBuilder.withTimeout(timeoutInMilliseconds);
+        }
+
+        return clientBuilder.build();
     }
 
 }
