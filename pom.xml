@@ -198,7 +198,9 @@
                 <artifactId>license-maven-plugin</artifactId>
                 <version>${version.license-maven-plugin}</version>
                 <configuration>
-                    <inlineHeader>
+                    <licenseSets>
+                        <licenseSet>
+                            <inlineHeader>
                         <![CDATA[
 Copyright ${license.git.copyrightYears} Thunderberry.
 
@@ -214,10 +216,12 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 ]]>
-                    </inlineHeader>
-                    <includes>
-                        <include>**/*.java</include>
-                    </includes>
+                            </inlineHeader>
+                            <includes>
+                                <include>**/*.java</include>
+                            </includes>
+                        </licenseSet>
+                    </licenseSets>
                     <strictCheck>true</strictCheck>
                     <mapping>
                         <java>SLASHSTAR_STYLE</java>
