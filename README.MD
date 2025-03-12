@@ -97,24 +97,18 @@ Usage: crip print
 Prints the extracted certificates to the console
   -f, --format              To be printed certificate format. This option is not required. Default is human-readable.
   -u, --url                 Url of the target server to extract the certificates. Can be provided multiple times.
-  -t, --timeout             Amount of milliseconds till the ripping should timeout
-      --resolve-ca          Indicator to automatically resolve the root ca. Possible options: true, false
 
 Usage: crip export pkcs12
 Export the extracted certificate to a PKCS12/p12 type truststore
   -p, --password            TrustStore password. This option is not required. Default is changeit.
   -u, --url                 Url of the target server to extract the certificates. Can be provided multiple times.
   -d, --destination         Destination of the to be stored file. Default is current directory if none is provided.
-  -t, --timeout             Amount of milliseconds till the ripping should timeout
-      --resolve-ca          Indicator to automatically resolve the root ca. Possible options: true, false
       
 Usage: crip export der
 Export the extracted certificate to a binary form also known as DER
   -u, --url                 Url of the target server to extract the certificates. Can be provided multiple times.
   -c, --combined            Indicator to either combine all of the certificate into one file for a given url or export into individual files.
   -d, --destination         Destination of the to be stored file. Default is current directory if none is provided.
-  -t, --timeout             Amount of milliseconds till the ripping should timeout
-      --resolve-ca          Indicator to automatically resolve the root ca. Possible options: true, false
 
 Usage: crip export pem
 Export the extracted certificate to a base64 encoded string also known as PEM
@@ -122,14 +116,14 @@ Export the extracted certificate to a base64 encoded string also known as PEM
   -c, --combined            Indicator to either combine all of the certificate into one file for a given url or export into individual files.
   -d, --destination         Destination of the to be stored file. Default is current directory if none is provided.
       --include-header      Indicator to either omit or include additional information above the BEGIN statement.
-  -t, --timeout             Amount of milliseconds till the ripping should timeout
-      --resolve-ca          Indicator to automatically resolve the root ca. Possible options: true, false
       
 Proxy options applicable for all commands
       --proxy-host          Proxy host
       --proxy-port          Proxy port
       --proxy-password      Password for authenticating the user for the given proxy
       --proxy-user          User for authenticating the user for the given proxy
+  -t, --timeout             Amount of milliseconds till the ripping should timeout
+      --resolve-ca          Indicator to automatically resolve the root ca. Possible options: true, false
 ```
 
 ## Example usages
