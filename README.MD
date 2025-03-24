@@ -70,7 +70,7 @@ A CLI tool to extract server certificates
   <summary>Build java fat jar</summary>
 
   **Minimum requirements:**
-  1. Java 8
+  1. Java 11
   2. Maven
   3. Terminal
 
