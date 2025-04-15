@@ -30,7 +30,7 @@
 
     <properties>
         <version.java>11</version.java>
-        <version.sslcontext-kickstart>9.1.0</version.sslcontext-kickstart>
+        <version.sslcontext-kickstart>9.1.1-SNAPSHOT</version.sslcontext-kickstart>
         <version.slf4j>2.0.17</version.slf4j>
         <version.picocli>4.7.6</version.picocli>
         <version.junit>5.12.1</version.junit>

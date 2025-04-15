@@ -15,18 +15,22 @@
  */
 package nl.altindag.crip.command;
 
+import nl.altindag.crip.client.websocket.WebSocketClientRunnable;
 import nl.altindag.crip.model.CertificateHolder;
-import nl.altindag.ssl.exception.GenericIOException;
 import nl.altindag.ssl.util.CertificateExtractingClient;
 import nl.altindag.ssl.util.CertificateUtils;
 import nl.altindag.ssl.util.internal.UriUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import picocli.CommandLine.Option;
 
 import java.net.InetSocketAddress;
 import java.net.PasswordAuthentication;
 import java.net.Proxy;
+import java.net.URI;
 import java.security.cert.X509Certificate;
-import java.util.AbstractMap;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -39,6 +43,8 @@ import static nl.altindag.ssl.util.internal.StringUtils.isNotBlank;
 
 @SuppressWarnings({"unused", "FieldCanBeLocal", "FieldMayBeFinal"})
 public class SharedProperties {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SharedProperties.class);
 
     private static final String SYSTEM = "system";
 
@@ -80,7 +86,7 @@ public class SharedProperties {
                 List<X509Certificate> systemTrustedCertificates = CertificateUtils.getSystemTrustedCertificates();
                 urlsToCertificates.put(SYSTEM, systemTrustedCertificates);
             } catch (UnsatisfiedLinkError error) {
-                System.out.printf("Unable to extract system certificates for %s%n", System.getProperty("os.name"));
+                LOGGER.debug("Unable to extract system certificates for {}", System.getProperty("os.name"));
             }
         }
 
@@ -121,18 +127,24 @@ public class SharedProperties {
 
     private Optional<Map.Entry<String, List<X509Certificate>>> getCertificates(String url) {
         try {
-            CertificateExtractingClient client = createClient();
+            CertificateExtractingClient client = createClient(url);
             List<X509Certificate> certificates = client.get(url);
-            return Optional.of(new AbstractMap.SimpleEntry<>(url, certificates));
-        } catch (GenericIOException e) {
-            System.out.printf("Could not extract from %s%n", url);
+            return Optional.of(Map.entry(url, certificates));
+        } catch (Exception e) {
+            LOGGER.debug(String.format("Could not extract from %s", url), e);
             return Optional.empty();
         }
     }
 
-    private CertificateExtractingClient createClient() {
+    private CertificateExtractingClient createClient(String url) {
         CertificateExtractingClient.Builder clientBuilder = CertificateExtractingClient.builder()
                 .withResolvedRootCa(resolveRootCa);
+
+        URI uri = URI.create(url);
+        if ("wss".equals(URI.create(url).getScheme())) {
+            clientBuilder = CertificateExtractingClient.builder()
+                    .withClientRunnable(new WebSocketClientRunnable());
+        }
 
         if (isNotBlank(proxyHost) && proxyPort != null) {
             clientBuilder.withProxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, proxyPort)));
@@ -142,7 +154,8 @@ public class SharedProperties {
         }
 
         if (timeoutInMilliseconds != null && timeoutInMilliseconds > 0) {
-            clientBuilder.withTimeout(timeoutInMilliseconds);
+            Duration timeout = Duration.of(timeoutInMilliseconds, ChronoUnit.MILLIS);
+            clientBuilder.withTimeout(timeout);
         }
 
         return clientBuilder.build();
