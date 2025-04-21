@@ -16,12 +16,17 @@
 package nl.altindag.crip.client.websocket;
 
 import nl.altindag.ssl.model.ClientConfig;
+import nl.altindag.ssl.util.AuthenticatorUtils;
 import nl.altindag.ssl.util.ClientRunnable;
 
+import java.io.IOException;
+import java.net.Proxy;
+import java.net.ProxySelector;
+import java.net.SocketAddress;
 import java.net.URI;
 import java.net.http.HttpClient;
-import java.net.http.WebSocket;
 import java.time.Duration;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 
@@ -29,17 +34,39 @@ public class WebSocketClientRunnable implements ClientRunnable {
 
     @Override
     public void run(ClientConfig clientConfig, URI uri) {
+        HttpClient.Builder clientBuilder = HttpClient.newBuilder()
+                .sslContext(clientConfig.getSslFactory().getSslContext());
+
+        clientConfig.getProxy()
+                .map(WebSocketClientRunnable::createProxySelector)
+                .ifPresent(clientBuilder::proxy);
+
+        clientConfig.getPasswordAuthentication()
+                .map(AuthenticatorUtils::create)
+                .ifPresent(clientBuilder::authenticator);
+
         Optional<Duration> timeout = clientConfig.getTimeout();
-
-        WebSocket.Builder webSocketBuilder = HttpClient.newBuilder()
-                .sslContext(clientConfig.getSslFactory().getSslContext())
-                .build()
-                .newWebSocketBuilder();
-
-        timeout.ifPresent(webSocketBuilder::connectTimeout);
+        timeout.ifPresent(clientBuilder::connectTimeout);
 
         WebSocketListener listener = new WebSocketListener(new CountDownLatch(1));
-        webSocketBuilder.buildAsync(uri, listener).join();
-        timeout.ifPresentOrElse(listener::waitForResponse, listener::waitForResponse);
+        clientBuilder.build()
+                .newWebSocketBuilder()
+                .buildAsync(uri, listener).join();
+        timeout.ifPresentOrElse(listener::waitTillTimeout, listener::waitEndless);
     }
+
+    private static ProxySelector createProxySelector(Proxy proxy) {
+        return new ProxySelector() {
+            @Override
+            public List<Proxy> select(URI uri) {
+                return List.of(proxy);
+            }
+
+            @Override
+            public void connectFailed(URI uri, SocketAddress sa, IOException ioe) {
+
+            }
+        };
+    }
+
 }

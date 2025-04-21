@@ -54,7 +54,7 @@ public final class WebSocketListener implements WebSocket.Listener {
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    public void waitForResponse(Duration timeout) {
+    public void waitTillTimeout(Duration timeout) {
         try {
             latch.await(timeout.toMillis(), TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
@@ -62,8 +62,7 @@ public final class WebSocketListener implements WebSocket.Listener {
         }
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    public void waitForResponse() {
+    public void waitEndless() {
         try {
             latch.await();
         } catch (InterruptedException e) {
