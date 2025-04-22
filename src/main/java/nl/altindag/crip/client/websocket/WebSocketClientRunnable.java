@@ -38,7 +38,7 @@ public class WebSocketClientRunnable implements ClientRunnable {
                 .sslContext(clientConfig.getSslFactory().getSslContext());
 
         clientConfig.getProxy()
-                .map(WebSocketClientRunnable::createProxySelector)
+                .map(this::createProxySelector)
                 .ifPresent(clientBuilder::proxy);
 
         clientConfig.getPasswordAuthentication()
@@ -55,7 +55,7 @@ public class WebSocketClientRunnable implements ClientRunnable {
         timeout.ifPresentOrElse(listener::waitTillTimeout, listener::waitEndless);
     }
 
-    private static ProxySelector createProxySelector(Proxy proxy) {
+    private ProxySelector createProxySelector(Proxy proxy) {
         return new ProxySelector() {
             @Override
             public List<Proxy> select(URI uri) {
