@@ -10,6 +10,14 @@
 # Certificate Ripper 🔐
 A CLI tool to extract server certificates
 
+# Introduction
+Certificate ripper came to life when I was curious to learn about writing OS native apps. It started as a pet project and I wanted to create a native app by writing it in Java.
+During my work I discovered that extracting certificates in other tools can sometimes be troublesome, so I used that as a use-case to create an app in Java, compile that to native OS app so others don't need Java to run it.
+It made my work easier for maintaining trust-stores and I hope it made others life also easier.
+
+I have created this tool with ❤️ and passion, mostly during evening and night hours. If you use my tool and want to appreciate the work I have done, please consider to sponsor this project as a way to contribute back to the community.
+There are 3 options available to pick from: [GitHub](https://github.com/sponsors/Hakky54), [Ko-fi](https://ko-fi.com/hakky54) and [Open Collective](https://opencollective.com/hakky54)
+
 ## Demo
 ![alt text](https://github.com/Hakky54/certificate-ripper/blob/master/images/demo.gif?raw=true)
 
