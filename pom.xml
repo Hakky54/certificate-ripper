@@ -302,6 +302,7 @@ limitations under the License.
                                 -H:EnableURLProtocols=https
                                 -H:EnableURLProtocols=http
                                 -H:Name=crip
+                                -march=compatibility
                             </buildArgs>
                         </configuration>
                     </plugin>
