@@ -108,8 +108,8 @@ Prints the extracted certificates to the console
 
 Usage: crip export pkcs12
 Export the extracted certificate to a PKCS12/p12 type truststore
-  -p, --password            TrustStore password. This option is not required. Default is changeit.
   -u, --url                 Url of the target server to extract the certificates. Can be provided multiple times.
+  -p, --password            TrustStore password. This option is not required. Default is changeit.
   -d, --destination         Destination of the to be stored file. Default is current directory if none is provided.
       
 Usage: crip export der
@@ -130,6 +130,8 @@ Proxy options applicable for all commands
       --proxy-port          Proxy port
       --proxy-password      Password for authenticating the user for the given proxy
       --proxy-user          User for authenticating the user for the given proxy
+
+Other additional options applicable for all commands
   -t, --timeout             Amount of milliseconds till the ripping should timeout
       --resolve-ca          Indicator to automatically resolve the root ca. Possible options: true, false
 ```
