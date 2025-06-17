@@ -33,7 +33,7 @@
         <version.sslcontext-kickstart>9.1.0</version.sslcontext-kickstart>
         <version.slf4j>2.0.17</version.slf4j>
         <version.picocli>4.7.7</version.picocli>
-        <version.jna-platform>5.17.0</version.jna-platform>
+        <version.jna>5.17.0</version.jna>
         <version.junit>5.13.1</version.junit>
         <version.assertj-core>3.27.3</version.assertj-core>
         <version.consolecaptor>1.0.3</version.consolecaptor>
@@ -85,7 +85,12 @@
         <dependency>
             <groupId>net.java.dev.jna</groupId>
             <artifactId>jna-platform</artifactId>
-            <version>${version.jna-platform}</version>
+            <version>${version.jna}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna</artifactId>
+            <version>${version.jna}</version>
         </dependency>
 
         <dependency>
