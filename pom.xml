@@ -314,15 +314,31 @@ limitations under the License.
                                 -H:EnableURLProtocols=https
                                 -H:EnableURLProtocols=http
                                 -H:Name=crip
-                                -H:ReflectionConfigurationFiles=conf/reflect-config.json
-                                -H:DynamicProxyConfigurationFiles=conf/proxy-config.json
-                                -H:+JNI -H:JNIConfigurationFiles=conf/jni-config.json
-                                -H:ResourceConfigurationFiles=conf/resource-config.json
+                                -H:ReflectionConfigurationFiles=classes/reflect-config.json
+                                -H:DynamicProxyConfigurationFiles=classes/proxy-config.json
+                                -H:+JNI -H:JNIConfigurationFiles=classes/jni-config.json
+                                -H:ResourceConfigurationFiles=classes/resource-config.json
                                 -march=compatibility
+                                --initialize-at-build-time
+                                --initialize-at-run-time=com.sun.jna
+                                --allow-incomplete-classpath
                             </buildArgs>
                         </configuration>
                     </plugin>
                 </plugins>
+
+                <resources>
+                    <resource>
+                        <filtering>false</filtering>
+                        <directory>src/main/resources/conf</directory>
+                        <includes>
+                            <include>reflect-config.json</include>
+                            <include>proxy-config.json</include>
+                            <include>jni-config.json</include>
+                            <include>resource-config.json</include>
+                        </includes>
+                    </resource>
+                </resources>
 
             </build>
         </profile>
