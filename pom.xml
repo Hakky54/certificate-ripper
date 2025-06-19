@@ -314,7 +314,10 @@ limitations under the License.
                                 -H:EnableURLProtocols=https
                                 -H:EnableURLProtocols=http
                                 -H:Name=crip
-                                -H:IncludeResources=com/sun/jna/win32-x86-64/jnidispatch.dll
+                                -H:ReflectionConfigurationFiles=conf/reflect-config.json
+                                -H:DynamicProxyConfigurationFiles=conf/proxy-config.json
+                                -H:+JNI -H:JNIConfigurationFiles=conf/jni-config.json
+                                -H:ResourceConfigurationFiles=conf/resource-config.json
                                 -march=compatibility
                             </buildArgs>
                         </configuration>
