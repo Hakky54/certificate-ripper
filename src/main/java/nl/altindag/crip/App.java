@@ -19,10 +19,8 @@ import com.sun.jna.platform.win32.Kernel32;
 import nl.altindag.crip.command.CertificateRipper;
 import nl.altindag.crip.provider.CertificateRipperProvider;
 import nl.altindag.crip.util.HelpFactory;
-import nl.altindag.ssl.util.internal.IOUtils;
 import picocli.CommandLine;
 
-import java.io.InputStream;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.security.Security;
@@ -30,10 +28,21 @@ import java.security.Security;
 public class App {
 
     public static void main(String[] applicationArguments) {
+        applyWorkaroundForNativeExecutable();
+
+        new CommandLine(new CertificateRipper())
+                .setCaseInsensitiveEnumValuesAllowed(true)
+                .setHelpFactory(new HelpFactory())
+                .execute(applicationArguments);
+    }
+
+    private static void applyWorkaroundForNativeExecutable() {
         // Temporally ignoring KeychainStore as it does not work with Graal VM yet.
         // The actual call to get the KeychainStore from the Apple Provider will be intercepted, and it will return a dummy keystore
         // See here for the related issue https://github.com/oracle/graal/issues/10387
-        Security.insertProviderAt(new CertificateRipperProvider(), 1);
+        if (System.getProperty("os.name").toLowerCase().contains("mac")) {
+            Security.insertProviderAt(new CertificateRipperProvider(), 1);
+        }
 
         // Temporally enforcing chcp 65001 to support UTF-8 on windows. This code snippet can be removed in the future
         // when the GraalVM issue https://github.com/oracle/graal/issues/11214 is resolved
@@ -43,15 +52,6 @@ public class App {
                 System.setErr(new PrintStream(System.err, true, StandardCharsets.UTF_8));
             }
         }
-
-        InputStream resourceAsStream = IOUtils.getResourceAsStream("com/sun/jna/win32-x86-64/jnidispatch.dll");
-        System.out.println(resourceAsStream);
-
-        new CommandLine(new CertificateRipper())
-                .setCaseInsensitiveEnumValuesAllowed(true)
-                .setHelpFactory(new HelpFactory())
-                .execute(applicationArguments);
     }
-
 
 }
