@@ -15,25 +15,43 @@
  */
 package nl.altindag.crip;
 
+import com.sun.jna.platform.win32.Kernel32;
 import nl.altindag.crip.command.CertificateRipper;
 import nl.altindag.crip.provider.CertificateRipperProvider;
 import nl.altindag.crip.util.HelpFactory;
 import picocli.CommandLine;
 
+import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.security.Security;
 
 public class App {
 
     public static void main(String[] applicationArguments) {
-        // Temporally ignoring KeychainStore as it does not work with Graal VM yet.
-        // The actual call to get the KeychainStore from the Apple Provider will be intercepted, and it will return a dummy keystore
-        // See here for the related issue https://github.com/oracle/graal/issues/10387
-        Security.insertProviderAt(new CertificateRipperProvider(), 1);
+        applyWorkaroundForNativeExecutable();
 
         new CommandLine(new CertificateRipper())
                 .setCaseInsensitiveEnumValuesAllowed(true)
                 .setHelpFactory(new HelpFactory())
                 .execute(applicationArguments);
+    }
+
+    private static void applyWorkaroundForNativeExecutable() {
+        // Temporally ignoring KeychainStore as it does not work with Graal VM yet.
+        // The actual call to get the KeychainStore from the Apple Provider will be intercepted, and it will return a dummy keystore
+        // See here for the related issue https://github.com/oracle/graal/issues/10387
+        if (System.getProperty("os.name").toLowerCase().contains("mac")) {
+            Security.insertProviderAt(new CertificateRipperProvider(), 1);
+        }
+
+        // Temporally enforcing chcp 65001 to support UTF-8 on windows. This code snippet can be removed in the future
+        // when the GraalVM issue https://github.com/oracle/graal/issues/11214 is resolved
+        if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+            if(Kernel32.INSTANCE.SetConsoleOutputCP(65001)) {
+                System.setOut(new PrintStream(System.out, true, StandardCharsets.UTF_8));
+                System.setErr(new PrintStream(System.err, true, StandardCharsets.UTF_8));
+            }
+        }
     }
 
 }
