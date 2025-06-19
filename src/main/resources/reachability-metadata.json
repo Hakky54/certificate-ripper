@@ -1,7 +1,0 @@
-{
-  "resources": [
-    {
-      "glob": "com/sun/jna/win32-x86-64/jnidispatch.dll"
-    }
-  ]
-}
