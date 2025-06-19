@@ -19,8 +19,10 @@ import com.sun.jna.platform.win32.Kernel32;
 import nl.altindag.crip.command.CertificateRipper;
 import nl.altindag.crip.provider.CertificateRipperProvider;
 import nl.altindag.crip.util.HelpFactory;
+import nl.altindag.ssl.util.internal.IOUtils;
 import picocli.CommandLine;
 
+import java.io.InputStream;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.security.Security;
@@ -33,7 +35,7 @@ public class App {
         // See here for the related issue https://github.com/oracle/graal/issues/10387
         Security.insertProviderAt(new CertificateRipperProvider(), 1);
 
-        // Temporally enforcing chp 65001 to support UTF-8 on windows. This code snippet can be removed in the future
+        // Temporally enforcing chcp 65001 to support UTF-8 on windows. This code snippet can be removed in the future
         // when the GraalVM issue https://github.com/oracle/graal/issues/11214 is resolved
         if (System.getProperty("os.name").toLowerCase().contains("windows")) {
             if(Kernel32.INSTANCE.SetConsoleOutputCP(65001)) {
@@ -41,6 +43,9 @@ public class App {
                 System.setErr(new PrintStream(System.err, true, StandardCharsets.UTF_8));
             }
         }
+
+        InputStream resourceAsStream = IOUtils.getResourceAsStream("com/sun/jna/win32-x86-64/jnidispatch.dll");
+        System.out.println(resourceAsStream);
 
         new CommandLine(new CertificateRipper())
                 .setCaseInsensitiveEnumValuesAllowed(true)
