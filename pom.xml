@@ -309,7 +309,7 @@ limitations under the License.
                                 </goals>
                                 <configuration>
                                     <executable>java</executable>
-                                    <commandlineArgs>-agentlib:native-image-agent=config-output-dir=${project.build.directory}${file.separator}graalvm${file.separator}config -jar ${project.build.directory}${file.separator}crip.jar</commandlineArgs>
+                                    <commandlineArgs>-agentlib:native-image-agent=config-output-dir=${project.build.directory}${file.separator}graalvm${file.separator}config -jar ${project.build.directory}${file.separator}crip.jar -V</commandlineArgs>
                                 </configuration>
                             </execution>
                         </executions>
