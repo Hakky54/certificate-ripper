@@ -344,19 +344,6 @@ limitations under the License.
                     </plugin>
                 </plugins>
 
-                <resources>
-                    <resource>
-                        <filtering>false</filtering>
-                        <directory>src/main/resources/conf</directory>
-                        <includes>
-                            <include>reflect-config.json</include>
-                            <include>proxy-config.json</include>
-                            <include>jni-config.json</include>
-                            <include>resource-config.json</include>
-                        </includes>
-                    </resource>
-                </resources>
-
             </build>
         </profile>
     </profiles>
