@@ -296,6 +296,25 @@ limitations under the License.
             <build>
                 <plugins>
                     <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>${version.exec-maven-plugin}</version>
+                        <inherited>false</inherited>
+                        <executions>
+                            <execution>
+                                <id>generate-graalvm-metadata</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>java</executable>
+                                    <commandlineArgs>-agentlib:native-image-agent=config-output-dir=${project.build.directory}${file.separator}graalvm${file.separator}config -jar ${project.build.directory}${file.separator}crip.jar</commandlineArgs>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
                         <groupId>org.graalvm.nativeimage</groupId>
                         <artifactId>native-image-maven-plugin</artifactId>
                         <version>${version.graalvm}</version>
@@ -304,7 +323,7 @@ limitations under the License.
                                 <goals>
                                     <goal>native-image</goal>
                                 </goals>
-                                <phase>package</phase>
+                                <phase>pre-integration-test</phase>
                             </execution>
                         </executions>
                         <configuration>
@@ -315,14 +334,11 @@ limitations under the License.
                                 -H:EnableURLProtocols=http
                                 -H:Name=crip
                                 -H:IncludeResources=com/sun/jna/win32-x86-64/jnidispatch.dll
-                                -H:ReflectionConfigurationFiles=classes/reflect-config.json
-                                -H:DynamicProxyConfigurationFiles=classes/proxy-config.json
-                                -H:+JNI -H:JNIConfigurationFiles=classes/jni-config.json
-                                -H:ResourceConfigurationFiles=classes/resource-config.json
+                                -H:ReflectionConfigurationFiles=${project.build.directory}/graalvm/config/reflect-config.json
+                                -H:DynamicProxyConfigurationFiles=${project.build.directory}/graalvm/config/proxy-config.json
+                                -H:+JNI -H:JNIConfigurationFiles=${project.build.directory}/graalvm/config/jni-config.json
+                                -H:ResourceConfigurationFiles=${project.build.directory}/graalvm/config/resource-config.json
                                 -march=compatibility
-                                --initialize-at-build-time
-                                --initialize-at-run-time=com.sun.jna
-                                --allow-incomplete-classpath
                             </buildArgs>
                         </configuration>
                     </plugin>

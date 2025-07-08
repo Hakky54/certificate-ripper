@@ -47,7 +47,7 @@ public class App {
         // Temporally enforcing chcp 65001 to support UTF-8 on windows. This code snippet can be removed in the future
         // when the GraalVM issue https://github.com/oracle/graal/issues/11214 is resolved
         if (System.getProperty("os.name").toLowerCase().contains("windows")) {
-            if(Kernel32.INSTANCE.SetConsoleCP(65001)) {
+            if(Kernel32.INSTANCE.SetConsoleOutputCP(65001)) {
                 System.setOut(new PrintStream(System.out, true, StandardCharsets.UTF_8));
                 System.setErr(new PrintStream(System.err, true, StandardCharsets.UTF_8));
             }
