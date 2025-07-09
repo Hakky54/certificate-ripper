@@ -19,6 +19,8 @@ import com.sun.jna.platform.win32.Kernel32;
 import nl.altindag.crip.command.CertificateRipper;
 import nl.altindag.crip.provider.CertificateRipperProvider;
 import nl.altindag.crip.util.HelpFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
 
 import java.io.PrintStream;
@@ -26,6 +28,8 @@ import java.nio.charset.StandardCharsets;
 import java.security.Security;
 
 public class App {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(App.class);
 
     public static void main(String[] applicationArguments) {
         applyWorkaroundForNativeExecutable();
@@ -47,11 +51,18 @@ public class App {
         // Temporally enforcing chcp 65001 to support UTF-8 on windows. This code snippet can be removed in the future
         // when the GraalVM issue https://github.com/oracle/graal/issues/11214 is resolved
         if (System.getProperty("os.name").toLowerCase().contains("windows")) {
-            if(Kernel32.INSTANCE.SetConsoleOutputCP(65001)) {
-                System.setOut(new PrintStream(System.out, true, StandardCharsets.UTF_8));
-                System.setErr(new PrintStream(System.err, true, StandardCharsets.UTF_8));
+            int cp = 65001;
+            if (Kernel32.INSTANCE.SetConsoleCP(cp)) {
+                LOGGER.debug("Successfully set the console CP to [{}]", cp);
+            }
+
+            if (Kernel32.INSTANCE.SetConsoleOutputCP(cp)) {
+                LOGGER.debug("Successfully set the console output CP to [{}]", cp);
             }
         }
+
+        System.setOut(new PrintStream(System.out, true, StandardCharsets.UTF_8));
+        System.setErr(new PrintStream(System.err, true, StandardCharsets.UTF_8));
     }
 
 }
