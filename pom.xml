@@ -36,7 +36,7 @@
         <version.junit>5.13.3</version.junit>
         <version.assertj-core>3.27.3</version.assertj-core>
         <version.consolecaptor>1.0.4</version.consolecaptor>
-        <version.logcaptor>2.11.0</version.logcaptor>
+        <version.logcaptor>2.12.0</version.logcaptor>
         <version.ssl-server>1.0.6</version.ssl-server>
         <version.maven-compiler-plugin>3.14.0</version.maven-compiler-plugin>
         <version.maven-surefire-plugin>3.5.3</version.maven-surefire-plugin>
