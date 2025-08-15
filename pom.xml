@@ -34,7 +34,7 @@
         <version.slf4j>2.0.17</version.slf4j>
         <version.picocli>4.7.7</version.picocli>
         <version.junit>5.13.4</version.junit>
-        <version.assertj-core>3.27.3</version.assertj-core>
+        <version.assertj-core>3.27.4</version.assertj-core>
         <version.consolecaptor>1.0.4</version.consolecaptor>
         <version.logcaptor>2.12.0</version.logcaptor>
         <version.ssl-server>1.0.6</version.ssl-server>
