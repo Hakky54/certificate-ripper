@@ -30,7 +30,7 @@
 
     <properties>
         <version.java>11</version.java>
-        <version.sslcontext-kickstart>9.1.0</version.sslcontext-kickstart>
+        <version.ayza>10.0.0</version.ayza>
         <version.slf4j>2.0.17</version.slf4j>
         <version.picocli>4.7.7</version.picocli>
         <version.junit>5.13.4</version.junit>
@@ -60,8 +60,8 @@
     <dependencies>
         <dependency>
             <groupId>io.github.hakky54</groupId>
-            <artifactId>sslcontext-kickstart</artifactId>
-            <version>${version.sslcontext-kickstart}</version>
+            <artifactId>ayza</artifactId>
+            <version>${version.ayza}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
