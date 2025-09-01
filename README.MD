@@ -201,6 +201,11 @@ crip export pem -u=https://github.com --combined=true --destination=/path/to/exp
 crip export pem -u=system
 ```
 
+### Extract from a websocket server
+```bash
+crip export pem -u=wss://echo.websocket.org
+```
+
 ## Contributing
 
 There are plenty of ways to contribute to this project:
