@@ -63,7 +63,7 @@ There are 3 options available to pick from: [GitHub](https://github.com/sponsors
   **Additional OS specific requirements**
   - Linux: `sudo apt-get update && sudo apt-get install build-essential libz-dev zlib1g-dev -y`
   - Mac: `xcode-select --install`
-  - Windows: Visual Studio app
+  - Windows: Visual Studio app and ensure `chcp 65001` (UTF-8 encoding) is active in the command line
   
   ```text
   mvn clean install -Pnative-image \
