@@ -32,41 +32,17 @@ public class BaseTest {
 
     protected static CommandLine cmd;
     protected static ConsoleCaptor consoleCaptor;
-    protected static Server serverOne;
-    protected static Server serverTwo;
-    protected static SSLFactory sslFactoryForServerOne;
-    protected static SSLFactory sslFactoryForServerTwo;
     private static List<LogCaptor> mutedLogs;
 
     @BeforeAll
     static void setupCertificateRipper() {
-        char[] keyStorePassword = "secret".toCharArray();
-        sslFactoryForServerOne = SSLFactory.builder()
-                .withIdentityMaterial("keystore/server/server-one/identity.jks", keyStorePassword)
-                .withTrustMaterial("keystore/server/server-one/truststore.jks", keyStorePassword)
-                .build();
-
-        sslFactoryForServerTwo = SSLFactory.builder()
-                .withIdentityMaterial("keystore/server/server-two/identity.jks", keyStorePassword)
-                .withTrustMaterial("keystore/server/server-two/truststore.jks", keyStorePassword)
-                .build();
-
+        TestServer.getInstance();
         mutedLogs = Collections.singletonList(LogCaptor.forName("io.netty"));
         mutedLogs.forEach(LogCaptor::disableConsoleOutput);
-
-        serverOne = Server.builder(sslFactoryForServerOne)
-                .withPort(8443)
-                .build();
-
-        serverTwo = Server.builder(sslFactoryForServerTwo)
-                .withPort(8444)
-                .build();
     }
 
     @AfterAll
     static void stopServerAndCloseConsoleCaptor() {
-        serverOne.stop();
-        serverTwo.stop();
         consoleCaptor.close();
         mutedLogs.forEach(LogCaptor::close);
     }
@@ -84,8 +60,7 @@ public class BaseTest {
                     .build();
         }
 
-        SSLSessionUtils.invalidateServerCaches(sslFactoryForServerOne);
-        SSLSessionUtils.invalidateServerCaches(sslFactoryForServerTwo);
+        TestServer.invalidateServerCaches();
 
         consoleCaptor.clearOutput();
     }
