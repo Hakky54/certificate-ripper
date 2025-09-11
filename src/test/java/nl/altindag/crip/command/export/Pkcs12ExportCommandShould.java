@@ -16,6 +16,7 @@
 package nl.altindag.crip.command.export;
 
 import nl.altindag.crip.command.FileBaseTest;
+import nl.altindag.crip.command.TestServer;
 import nl.altindag.log.LogCaptor;
 import nl.altindag.ssl.server.service.Server;
 import nl.altindag.ssl.util.KeyStoreUtils;
@@ -68,7 +69,7 @@ class Pkcs12ExportCommandShould extends FileBaseTest {
     @Test
     void timeoutWhenServerTakesToLongToRespond() throws IOException {
         LogCaptor logCaptor = LogCaptor.forRoot();
-        Server server = Server.builder(sslFactoryForServerOne)
+        Server server = Server.builder(TestServer.getInstance().getSslFactoryForServerOne())
                 .withPort(8447)
                 .withDelayedResponseTime(500)
                 .build();

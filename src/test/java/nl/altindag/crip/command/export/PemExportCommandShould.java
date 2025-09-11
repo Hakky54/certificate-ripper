@@ -16,6 +16,7 @@
 package nl.altindag.crip.command.export;
 
 import nl.altindag.crip.command.FileBaseTest;
+import nl.altindag.crip.command.TestServer;
 import nl.altindag.log.LogCaptor;
 import nl.altindag.ssl.server.service.Server;
 import org.junit.jupiter.api.Test;
@@ -156,7 +157,7 @@ class PemExportCommandShould extends FileBaseTest {
     @Test
     void timeoutWhenServerTakesToLongToRespond() throws IOException {
         LogCaptor logCaptor = LogCaptor.forRoot();
-        Server server = Server.builder(sslFactoryForServerOne)
+        Server server = Server.builder(TestServer.getInstance().getSslFactoryForServerOne())
                 .withPort(8446)
                 .withDelayedResponseTime(500)
                 .build();
