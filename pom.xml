@@ -40,7 +40,7 @@
         <version.ssl-server>1.0.8</version.ssl-server>
         <version.maven-compiler-plugin>3.14.1</version.maven-compiler-plugin>
         <version.maven-surefire-plugin>3.5.4</version.maven-surefire-plugin>
-        <version.exec-maven-plugin>3.5.1</version.exec-maven-plugin>
+        <version.exec-maven-plugin>3.6.1</version.exec-maven-plugin>
         <version.maven-shade-plugin>3.6.1</version.maven-shade-plugin>
         <version.jacoco-maven-plugin>0.8.13</version.jacoco-maven-plugin>
         <version.graalvm>21.2.0</version.graalvm>
