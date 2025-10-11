@@ -33,6 +33,7 @@
         <version.ayza>10.0.0</version.ayza>
         <version.slf4j>2.0.17</version.slf4j>
         <version.picocli>4.7.7</version.picocli>
+        <version.commons-net>3.12.0</version.commons-net>
         <version.junit>5.13.4</version.junit>
         <version.assertj-core>3.27.5</version.assertj-core>
         <version.consolecaptor>1.0.4</version.consolecaptor>
@@ -62,6 +63,11 @@
             <groupId>io.github.hakky54</groupId>
             <artifactId>ayza</artifactId>
             <version>${version.ayza}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-net</groupId>
+            <artifactId>commons-net</artifactId>
+            <version>${version.commons-net}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
