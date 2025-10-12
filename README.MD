@@ -32,6 +32,7 @@ There are 3 options available to pick from: [GitHub](https://github.com/sponsors
 - Bulk extraction of multiple different urls with a single command is possible
 - Extracted certificates can be stored automatically into a p12 truststore
 - Works also behind a proxy
+- Supported protocols: https, wss, ftps
 
 ## Installing
 
@@ -204,6 +205,11 @@ crip export pem -u=system
 ### Extract from a websocket server
 ```bash
 crip export pem -u=wss://echo.websocket.org
+```
+
+### Extract from a ftp server
+```bash
+crip export pem -u=ftps://my-drive.com:21
 ```
 
 ## Contributing
