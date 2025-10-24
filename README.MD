@@ -135,6 +135,7 @@ Proxy options applicable for all commands
 Other additional options applicable for all commands
   -t, --timeout             Amount of milliseconds till the ripping should timeout
       --resolve-ca          Indicator to automatically resolve the root ca. Possible options: true, false
+      --cert-type           To be extracted certificate types. Available Formats: root, inter, leaf, all. Default: all
 ```
 
 ## Example usages
