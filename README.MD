@@ -202,6 +202,13 @@ crip export pem -u=https://github.com --combined=true --destination=/path/to/exp
 crip export pem -u=system
 ```
 
+### Filter on certificate types
+The to be extracted certificates can be filtered to include only root ca, intermediate or leaf certificates. An example is shown below:
+```bash
+crip export der -u=https://google.com --cert-type=root
+```
+Other values for the cert-type option are: inter and leaf. When the option is not provided all of the certificates are extracted.
+
 ### Extract from a websocket server
 ```bash
 crip export pem -u=wss://echo.websocket.org
