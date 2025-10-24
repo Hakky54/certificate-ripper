@@ -79,7 +79,7 @@ There are 3 options available to pick from: [GitHub](https://github.com/sponsors
   <summary>Build java fat jar</summary>
 
   **Minimum requirements:**
-  1. Java 11
+  1. Java 21
   2. Maven
   3. Terminal
 

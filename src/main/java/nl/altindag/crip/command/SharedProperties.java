@@ -38,6 +38,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 import static nl.altindag.ssl.util.internal.StringUtils.isNotBlank;
@@ -71,6 +72,10 @@ public class SharedProperties {
     @Option(names = {"--resolve-ca"}, description = "Indicator to automatically resolve the root ca%nPossible options: true, false")
     private Boolean resolveRootCa = true;
 
+    @Option(names = {"--cert-type"},
+            description = "To be extracted certificate types%nAvailable Formats: root, inter, leaf, all%nDefault: all")
+    private CertificateType certificateType = CertificateType.ALL;
+
     public CertificateHolder getCertificateHolder() {
         List<String> resolvedUrls = getUrls();
 
@@ -81,6 +86,8 @@ public class SharedProperties {
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.collectingAndThen(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (key1, key2) -> key1, LinkedHashMap::new), HashMap::new));
+
+        urlsToCertificates = filterCertificatesIfNeeded(urlsToCertificates, certificateType);
 
         if (urls.contains(SYSTEM)) {
             try {
@@ -165,6 +172,33 @@ public class SharedProperties {
         }
 
         return clientBuilder.build();
+    }
+
+    Map<String, List<X509Certificate>> filterCertificatesIfNeeded(Map<String, List<X509Certificate>> urlsToCertificates, CertificateType type) {
+        return switch (type) {
+            case ALL -> urlsToCertificates;
+            case LEAF -> filterCertificates(urlsToCertificates, certificates -> List.of(certificates.getFirst()));
+            case ROOT -> filterCertificates(urlsToCertificates, certificates -> List.of(certificates.getLast()));
+            case INTER -> filterCertificates(urlsToCertificates, certificates -> {
+                List<X509Certificate> intermediateCertificates = new ArrayList<>(certificates);
+                intermediateCertificates.removeFirst();
+                X509Certificate last = intermediateCertificates.getLast();
+                if (CertificateUtils.isSelfSigned(last)) {
+                    intermediateCertificates.removeLast();
+                }
+                return intermediateCertificates;
+            });
+        };
+    }
+
+    private Map<String, List<X509Certificate>> filterCertificates(Map<String, List<X509Certificate>> urlsToCertificates, UnaryOperator<List<X509Certificate>> valueMapper) {
+        return urlsToCertificates.entrySet().stream()
+                .map(entry -> Map.entry(entry.getKey(), valueMapper.apply(entry.getValue())))
+                .collect(Collectors.collectingAndThen(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue), HashMap::new));
+    }
+
+    enum CertificateType {
+        ALL, ROOT, INTER, LEAF
     }
 
 }

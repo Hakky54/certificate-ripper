@@ -19,7 +19,6 @@ import java.security.cert.X509Certificate;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -57,11 +56,11 @@ public final class CertificateHolder {
             }
         }
 
-        this.urlsToCertificates = Collections.unmodifiableMap(urlsToCertificates);
-        this.allCertificates = Collections.unmodifiableList(certificates);
-        this.uniqueCertificates = Collections.unmodifiableList(uniqueCerts);
-        this.duplicateCertificates = Collections.unmodifiableList(duplicateCerts);
-        this.expiredCertificates = Collections.unmodifiableList(expiredCerts);
+        this.urlsToCertificates = Map.copyOf(urlsToCertificates);
+        this.allCertificates = List.copyOf(certificates);
+        this.uniqueCertificates = List.copyOf(uniqueCerts);
+        this.duplicateCertificates = List.copyOf(duplicateCerts);
+        this.expiredCertificates = List.copyOf(expiredCerts);
     }
 
     public Map<String, List<X509Certificate>> getUrlsToCertificates() {
