@@ -17,15 +17,11 @@ package nl.altindag.crip.command;
 
 import nl.altindag.console.ConsoleCaptor;
 import nl.altindag.log.LogCaptor;
-import nl.altindag.ssl.SSLFactory;
-import nl.altindag.ssl.server.service.Server;
-import nl.altindag.ssl.util.SSLSessionUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import picocli.CommandLine;
 
-import java.util.Collections;
 import java.util.List;
 
 public class BaseTest {
@@ -37,7 +33,7 @@ public class BaseTest {
     @BeforeAll
     static void setupCertificateRipper() {
         TestServer.getInstance();
-        mutedLogs = Collections.singletonList(LogCaptor.forName("io.netty"));
+        mutedLogs = List.of(LogCaptor.forName("io.netty"));
         mutedLogs.forEach(LogCaptor::disableConsoleOutput);
     }
 
