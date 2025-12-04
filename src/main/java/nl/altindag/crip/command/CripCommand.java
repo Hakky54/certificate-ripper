@@ -16,6 +16,7 @@
 package nl.altindag.crip.command;
 
 import nl.altindag.crip.command.export.ExportCommand;
+import nl.altindag.crip.command.print.PrintCommand;
 import picocli.CommandLine.Command;
 
 @Command(
@@ -28,4 +29,4 @@ import picocli.CommandLine.Command;
         mixinStandardHelpOptions = true,
         versionProvider = VersionProvider.class
 )
-public class CertificateRipper {}
+public class CripCommand {}

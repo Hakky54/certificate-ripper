@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public final class CertificateHolder {
 
@@ -34,7 +33,7 @@ public final class CertificateHolder {
     public CertificateHolder(Map<String, List<X509Certificate>> urlsToCertificates) {
         List<X509Certificate> certificates = urlsToCertificates.values().stream()
                 .flatMap(Collection::stream)
-                .collect(Collectors.toList());
+                .toList();
 
         List<X509Certificate> uniqueCerts = new ArrayList<>();
         List<X509Certificate> duplicateCerts = new ArrayList<>();

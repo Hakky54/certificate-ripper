@@ -13,9 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.altindag.crip.command;
+package nl.altindag.crip.command.print;
 
+import nl.altindag.crip.command.SharedProperties;
+import nl.altindag.crip.command.VersionProvider;
 import nl.altindag.crip.model.CertificateHolder;
+import nl.altindag.crip.model.print.Format;
 import nl.altindag.crip.util.StatisticsUtils;
 import nl.altindag.ssl.util.CertificateUtils;
 import picocli.CommandLine.Command;
@@ -76,10 +79,6 @@ public class PrintCommand implements Runnable {
                                         String.join(String.format(CERTIFICATE_DELIMITER, entry.getKey()), entry.getValue())));
                 break;
         }
-    }
-
-    private enum Format {
-        PEM, X509
     }
 
 }

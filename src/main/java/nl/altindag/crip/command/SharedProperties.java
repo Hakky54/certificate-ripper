@@ -18,6 +18,7 @@ package nl.altindag.crip.command;
 import nl.altindag.crip.client.ftp.FtpsClientRunnable;
 import nl.altindag.crip.client.websocket.WebSocketClientRunnable;
 import nl.altindag.crip.model.CertificateHolder;
+import nl.altindag.crip.model.CertificateType;
 import nl.altindag.ssl.util.CertificateExtractingClient;
 import nl.altindag.ssl.util.CertificateUtils;
 import nl.altindag.ssl.util.internal.UriUtils;
@@ -195,10 +196,6 @@ public class SharedProperties {
         return urlsToCertificates.entrySet().stream()
                 .map(entry -> Map.entry(entry.getKey(), valueMapper.apply(entry.getValue())))
                 .collect(Collectors.collectingAndThen(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue), HashMap::new));
-    }
-
-    enum CertificateType {
-        ALL, ROOT, INTER, LEAF
     }
 
 }

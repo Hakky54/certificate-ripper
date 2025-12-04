@@ -13,8 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.altindag.crip.command;
+package nl.altindag.crip.model.print;
 
+import nl.altindag.crip.CertificateRipper;
+import nl.altindag.crip.command.BaseTest;
 import nl.altindag.ssl.util.CertificateUtils;
 import org.assertj.core.api.Condition;
 import org.junit.jupiter.api.Test;
@@ -26,6 +28,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static nl.altindag.crip.IOTestUtils.getResourceContent;
+import static nl.altindag.crip.model.print.Format.PEM;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class PrintCommandShould extends BaseTest {
@@ -39,10 +42,10 @@ class PrintCommandShould extends BaseTest {
 
         assertThat(expectedCertificates).hasSize(2);
 
-        cmd.execute("print", "-u=https://localhost:8443");
+        CertificateRipper.forPrinting("https://localhost:8443").run();
 
         assertThat(consoleCaptor.getStandardOutput()).areExactly(1, new Condition<>("Certificates for url = https://localhost:8443"::equals, null));
-        assertThat(consoleCaptor.getStandardOutput()).areExactly(expectedCertificates.size() -1, new Condition<>("<========== Next certificate for https://localhost:8443 ==========>"::equals, null));
+        assertThat(consoleCaptor.getStandardOutput()).areExactly(expectedCertificates.size() - 1, new Condition<>("<========== Next certificate for https://localhost:8443 ==========>"::equals, null));
     }
 
     @Test
@@ -59,12 +62,12 @@ class PrintCommandShould extends BaseTest {
                 .collect(Collectors.toList());
         assertThat(expectedCertificatesForServerTwo).hasSize(2);
 
-        cmd.execute("print", "-u=https://localhost:8443", "-u=https://localhost:8444");
+        CertificateRipper.forPrinting(List.of("https://localhost:8443", "https://localhost:8444")).run();
 
         assertThat(consoleCaptor.getStandardOutput()).areExactly(1, new Condition<>("Certificates for url = https://localhost:8443"::equals, null));
         assertThat(consoleCaptor.getStandardOutput()).areExactly(1, new Condition<>("Certificates for url = https://localhost:8444"::equals, null));
-        assertThat(consoleCaptor.getStandardOutput()).areExactly(expectedCertificatesForServerOne.size() -1, new Condition<>("<========== Next certificate for https://localhost:8443 ==========>"::equals, null));
-        assertThat(consoleCaptor.getStandardOutput()).areExactly(expectedCertificatesForServerTwo.size() -1, new Condition<>("<========== Next certificate for https://localhost:8444 ==========>"::equals, null));
+        assertThat(consoleCaptor.getStandardOutput()).areExactly(expectedCertificatesForServerOne.size() - 1, new Condition<>("<========== Next certificate for https://localhost:8443 ==========>"::equals, null));
+        assertThat(consoleCaptor.getStandardOutput()).areExactly(expectedCertificatesForServerTwo.size() - 1, new Condition<>("<========== Next certificate for https://localhost:8444 ==========>"::equals, null));
     }
 
     @Test
@@ -76,7 +79,7 @@ class PrintCommandShould extends BaseTest {
 
         assertThat(expectedCertificates).hasSize(2);
 
-        cmd.execute("print", "-u=https://localhost:8443");
+        CertificateRipper.forPrinting("https://localhost:8443").run();
 
         String output = String.join(System.lineSeparator(), consoleCaptor.getStandardOutput());
         for (Certificate expectedCertificate : expectedCertificates) {
@@ -93,7 +96,7 @@ class PrintCommandShould extends BaseTest {
 
         assertThat(expectedCertificates).isNotEmpty();
 
-        cmd.execute("print", "-u=https://localhost:8443", "-f=pem");
+        CertificateRipper.forPrinting("https://localhost:8443").withFormat(PEM).run();
 
         String output = String.join(System.lineSeparator(), consoleCaptor.getStandardOutput());
         for (String expectedCertificate : expectedCertificates) {
