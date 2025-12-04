@@ -220,6 +220,25 @@ crip export pem -u=wss://echo.websocket.org
 crip export pem -u=ftps://my-drive.com:21
 ```
 
+### Extracting with Java DSL
+Include the following dependency:
+```xml
+<dependency>
+    <groupId>io.github.hakky54</groupId>
+    <artifactId>certificate-ripper</artifactId>
+    <version>2.6.0</version>
+</dependency>
+```
+
+Example code snippet:
+```text
+CertificateRipper.forExportingToPem("https://github.com")
+        .withIncludeHeader(false)
+        .withCombined(true)
+        .withDestination("/path/to/export/github-chain.crt")
+        .run();
+```
+
 ## Contributing
 
 There are plenty of ways to contribute to this project:
