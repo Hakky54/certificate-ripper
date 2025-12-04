@@ -28,14 +28,12 @@ public abstract class ExportRequest extends Request {
         super(urls);
     }
 
-    public ExportRequest withDestination(String destination) {
+    public void setDestination(String destination) {
         this.destination = destination;
-        return this;
     }
 
-    public ExportRequest withDestination(Path destination) {
+    public void setDestination(Path destination) {
         this.destination = destination.toString();
-        return this;
     }
 
     abstract ExportMode getExportMode();

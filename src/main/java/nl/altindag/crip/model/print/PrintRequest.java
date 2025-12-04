@@ -29,9 +29,8 @@ public class PrintRequest extends Request {
         super(urls);
     }
 
-    public PrintRequest withFormat(Format format) {
+    public void setFormat(Format format) {
         this.format = format;
-        return this;
     }
 
     @Override

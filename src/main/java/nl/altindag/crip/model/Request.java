@@ -43,24 +43,20 @@ public abstract class Request implements Runnable {
         CertificateRipper.main(arguments);
     }
 
-    public Request withProxyOptions(ProxyOptions proxyOptions) {
+    public void setProxyOptions(ProxyOptions proxyOptions) {
         this.proxyOptions = proxyOptions;
-        return this;
     }
 
-    public Request withTimeoutInMilliseconds(Integer timeoutInMilliseconds) {
+    public void setTimeoutInMilliseconds(Integer timeoutInMilliseconds) {
         this.timeoutInMilliseconds = timeoutInMilliseconds;
-        return this;
     }
 
-    public Request withResolveRootCa(Boolean resolveRootCa) {
+    public void setResolveRootCa(Boolean resolveRootCa) {
         this.resolveRootCa = resolveRootCa;
-        return this;
     }
 
-    public Request withCertificateType(CertificateType certificateType) {
+    public void setCertificateType(CertificateType certificateType) {
         this.certificateType = certificateType;
-        return this;
     }
 
     public List<String> getUrls() {

@@ -42,9 +42,9 @@ class JksExportRequestShould extends FileBaseTest {
     void exportMultipleCertificateFromChainToACustomFilename() throws IOException, KeyStoreException {
         KeyStore expectedTruststore = KeyStoreUtils.loadKeyStore(getResource("reference-files/jks/server-one/truststore.jks"), "changeit".toCharArray());
 
-        CertificateRipper.forExportingToJks("https://localhost:8443")
-                .withDestination(TEMP_DIRECTORY.toAbsolutePath().resolve("my-truststore.jks"))
-                .run();
+        JksExportRequest request = CertificateRipper.forExportingToJks("https://localhost:8443");
+        request.setDestination(TEMP_DIRECTORY.toAbsolutePath().resolve("my-truststore.jks"));
+        request.run();
 
         List<Path> files = Files.walk(TEMP_DIRECTORY, 1)
                 .filter(Files::isRegularFile)
@@ -77,10 +77,10 @@ class JksExportRequestShould extends FileBaseTest {
                 .withDelayedResponseTime(500)
                 .build();
 
-        CertificateRipper.forExportingToJks(List.of("https://localhost:8448"))
-                .withDestination(TEMP_DIRECTORY.toAbsolutePath().resolve("my-truststore.jks"))
-                .withTimeoutInMilliseconds(250)
-                .run();
+        JksExportRequest request = CertificateRipper.forExportingToJks(List.of("https://localhost:8448"));
+        request.setDestination(TEMP_DIRECTORY.toAbsolutePath().resolve("my-truststore.jks"));
+        request.setTimeoutInMilliseconds(250);
+        request.run();
 
         assertThat(consoleCaptor.getStandardOutput())
                 .contains(
@@ -104,9 +104,9 @@ class JksExportRequestShould extends FileBaseTest {
     void processSystemTrustedCertificates() throws IOException {
         createTempDirAndClearConsoleCaptor();
 
-        CertificateRipper.forExportingToJks("system")
-                .withDestination(TEMP_DIRECTORY.toAbsolutePath().resolve("my-truststore.jks"))
-                .run();
+        JksExportRequest request = CertificateRipper.forExportingToJks("system");
+        request.setDestination(TEMP_DIRECTORY.toAbsolutePath().resolve("my-truststore.jks"));
+        request.run();
 
         List<Path> files = Files.walk(TEMP_DIRECTORY, 1)
                 .filter(Files::isRegularFile)

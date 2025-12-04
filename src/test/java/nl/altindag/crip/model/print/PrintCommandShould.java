@@ -96,7 +96,9 @@ class PrintCommandShould extends BaseTest {
 
         assertThat(expectedCertificates).isNotEmpty();
 
-        CertificateRipper.forPrinting("https://localhost:8443").withFormat(PEM).run();
+        PrintRequest request = CertificateRipper.forPrinting("https://localhost:8443");
+        request.setFormat(PEM);
+        request.run();
 
         String output = String.join(System.lineSeparator(), consoleCaptor.getStandardOutput());
         for (String expectedCertificate : expectedCertificates) {

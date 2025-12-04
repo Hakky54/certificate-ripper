@@ -27,9 +27,8 @@ public class PemExportRequest extends CombineableExportRequest {
         super(urls);
     }
 
-    public PemExportRequest withIncludeHeader(boolean includeHeader) {
+    public void setIncludeHeader(boolean includeHeader) {
         this.includeHeader = includeHeader;
-        return this;
     }
 
     @Override

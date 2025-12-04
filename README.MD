@@ -232,11 +232,11 @@ Include the following dependency:
 
 Example code snippet:
 ```text
-CertificateRipper.forExportingToPem("https://github.com")
-        .withIncludeHeader(false)
-        .withCombined(true)
-        .withDestination("/path/to/export/github-chain.crt")
-        .run();
+PemExportRequest request = CertificateRipper.forExportingToPem("https://github.com");
+request.setIncludeHeader(false);
+request.setCombined(true);
+request.setDestination("/path/to/export/github-chain.crt");
+request.run();
 ```
 
 ## Contributing

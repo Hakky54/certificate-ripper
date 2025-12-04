@@ -25,9 +25,8 @@ public abstract class CombineableExportRequest extends ExportRequest {
         super(urls);
     }
 
-    public CombineableExportRequest withCombined(Boolean combined) {
+    public void setCombined(Boolean combined) {
         this.combined = combined;
-        return this;
     }
 
     @Override

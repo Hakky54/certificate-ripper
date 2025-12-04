@@ -42,9 +42,9 @@ class Pkcs12ExportRequestShould extends FileBaseTest {
     void exportMultipleCertificateFromChainToACustomFilename() throws IOException, KeyStoreException {
         KeyStore expectedTruststore = KeyStoreUtils.loadKeyStore(getResource("reference-files/pkcs12/server-one/truststore.p12"), "changeit".toCharArray());
 
-        CertificateRipper.forExportingToPkcs12("https://localhost:8443")
-                .withDestination(TEMP_DIRECTORY.toAbsolutePath().resolve("my-truststore.p12"))
-                .run();
+        Pkcs12ExportRequest request = CertificateRipper.forExportingToPkcs12("https://localhost:8443");
+        request.setDestination(TEMP_DIRECTORY.toAbsolutePath().resolve("my-truststore.p12"));
+        request.run();
 
         List<Path> files = Files.walk(TEMP_DIRECTORY, 1)
                 .filter(Files::isRegularFile)
@@ -77,10 +77,10 @@ class Pkcs12ExportRequestShould extends FileBaseTest {
                 .withDelayedResponseTime(500)
                 .build();
 
-        CertificateRipper.forExportingToPkcs12(List.of("https://localhost:8447"))
-                .withDestination(TEMP_DIRECTORY.toAbsolutePath().resolve("my-truststore.p12"))
-                .withTimeoutInMilliseconds(250)
-                .run();
+        Pkcs12ExportRequest request = CertificateRipper.forExportingToPkcs12(List.of("https://localhost:8447"));
+        request.setDestination(TEMP_DIRECTORY.toAbsolutePath().resolve("my-truststore.p12"));
+        request.setTimeoutInMilliseconds(250);
+        request.run();
 
         assertThat(consoleCaptor.getStandardOutput())
                 .contains(
@@ -104,9 +104,9 @@ class Pkcs12ExportRequestShould extends FileBaseTest {
     void processSystemTrustedCertificates() throws IOException {
         createTempDirAndClearConsoleCaptor();
 
-        CertificateRipper.forExportingToPkcs12("system")
-                .withDestination(TEMP_DIRECTORY.toAbsolutePath().resolve("my-truststore.p12"))
-                .run();
+        Pkcs12ExportRequest request = CertificateRipper.forExportingToPkcs12("system");
+        request.setDestination(TEMP_DIRECTORY.toAbsolutePath().resolve("my-truststore.p12"));
+        request.run();
 
         List<Path> files = Files.walk(TEMP_DIRECTORY, 1)
                 .filter(Files::isRegularFile)

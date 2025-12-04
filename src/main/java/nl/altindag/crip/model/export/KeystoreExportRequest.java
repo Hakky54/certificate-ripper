@@ -25,9 +25,8 @@ public abstract class KeystoreExportRequest extends ExportRequest {
         super(urls);
     }
 
-    public KeystoreExportRequest withPassword(String password) {
+    public void setPassword(String password) {
         this.password = password;
-        return this;
     }
 
     @Override
