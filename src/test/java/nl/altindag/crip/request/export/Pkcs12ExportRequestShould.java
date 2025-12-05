@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.altindag.crip.command.export;
+package nl.altindag.crip.request.export;
 
+import nl.altindag.crip.CertificateRipper;
 import nl.altindag.crip.command.FileBaseTest;
 import nl.altindag.crip.command.TestServer;
 import nl.altindag.log.LogCaptor;
@@ -35,13 +36,15 @@ import java.util.stream.Collectors;
 import static nl.altindag.crip.IOTestUtils.getResource;
 import static org.assertj.core.api.Assertions.assertThat;
 
-class JksExportCommandShould extends FileBaseTest {
+class Pkcs12ExportRequestShould extends FileBaseTest {
 
     @Test
     void exportMultipleCertificateFromChainToACustomFilename() throws IOException, KeyStoreException {
-        KeyStore expectedTruststore = KeyStoreUtils.loadKeyStore(getResource("reference-files/jks/server-one/truststore.jks"), "changeit".toCharArray());
+        KeyStore expectedTruststore = KeyStoreUtils.loadKeyStore(getResource("reference-files/pkcs12/server-one/truststore.p12"), "changeit".toCharArray());
 
-        cmd.execute("export", "jks", "--url=https://localhost:8443", "--destination=" + TEMP_DIRECTORY.toAbsolutePath().resolve("my-truststore.jks"));
+        Pkcs12ExportRequest request = CertificateRipper.exportToPkcs12("https://localhost:8443");
+        request.setDestination(TEMP_DIRECTORY.toAbsolutePath().resolve("my-truststore.p12"));
+        request.run();
 
         List<Path> files = Files.walk(TEMP_DIRECTORY, 1)
                 .filter(Files::isRegularFile)
@@ -49,7 +52,7 @@ class JksExportCommandShould extends FileBaseTest {
 
         assertThat(files).hasSize(1);
         assertThat(consoleCaptor.getStandardOutput()).contains("Extracted 2 certificates.", "It has been exported to " + files.get(0));
-        assertThat(files).allMatch(path -> path.toString().endsWith("my-truststore.jks"));
+        assertThat(files).allMatch(path -> path.toString().endsWith("my-truststore.p12"));
 
         KeyStore truststore = KeyStoreUtils.loadKeyStore(files.get(0), "changeit".toCharArray());
 
@@ -70,20 +73,23 @@ class JksExportCommandShould extends FileBaseTest {
     void timeoutWhenServerTakesToLongToRespond() throws IOException {
         LogCaptor logCaptor = LogCaptor.forRoot();
         Server server = Server.builder(TestServer.getInstance().getSslFactoryForServerOne())
-                .withPort(8448)
+                .withPort(8447)
                 .withDelayedResponseTime(500)
                 .build();
 
-        cmd.execute("export", "jks", "--url=https://localhost:8448", "--destination=" + TEMP_DIRECTORY.toAbsolutePath().resolve("my-truststore.jks"), "--timeout=250");
+        Pkcs12ExportRequest request = CertificateRipper.exportToPkcs12(List.of("https://localhost:8447"));
+        request.setDestination(TEMP_DIRECTORY.toAbsolutePath().resolve("my-truststore.p12"));
+        request.setTimeoutInMilliseconds(250);
+        request.run();
 
         assertThat(consoleCaptor.getStandardOutput())
                 .contains(
                         "Certificate ripper statistics:",
                         "- Certificate count",
-                        "  * 0: https://localhost:8448"
+                        "  * 0: https://localhost:8447"
                 );
 
-        assertThat(logCaptor.getDebugLogs()).contains("The client didn't get a respond within the configured time-out of [250] milliseconds from: [https://localhost:8448]");
+        assertThat(logCaptor.getDebugLogs()).contains("The client didn't get a respond within the configured time-out of [250] milliseconds from: [https://localhost:8447]");
 
         List<Path> files = Files.walk(TEMP_DIRECTORY, 1)
                 .filter(Files::isRegularFile)
@@ -95,24 +101,12 @@ class JksExportCommandShould extends FileBaseTest {
     }
 
     @Test
-    void getFileExtension() {
-        JavaKeyStoreExportCommand command = new JavaKeyStoreExportCommand();
-        String fileExtension = command.getFileExtension();
-        assertThat(fileExtension).isEqualTo(".jks");
-    }
-
-    @Test
-    void getKeyStoreType() {
-        JavaKeyStoreExportCommand command = new JavaKeyStoreExportCommand();
-        String keyStoreType = command.getKeyStoreType();
-        assertThat(keyStoreType).isEqualTo("JKS");
-    }
-
-    @Test
     void processSystemTrustedCertificates() throws IOException {
         createTempDirAndClearConsoleCaptor();
 
-        cmd.execute("export", "jks", "--url=system", "--destination=" + TEMP_DIRECTORY.toAbsolutePath().resolve("my-truststore.jks"));
+        Pkcs12ExportRequest request = CertificateRipper.exportToPkcs12("system");
+        request.setDestination(TEMP_DIRECTORY.toAbsolutePath().resolve("my-truststore.p12"));
+        request.run();
 
         List<Path> files = Files.walk(TEMP_DIRECTORY, 1)
                 .filter(Files::isRegularFile)
@@ -120,7 +114,7 @@ class JksExportCommandShould extends FileBaseTest {
 
         assertThat(files)
                 .hasSize(1)
-                .allMatch(path -> path.toString().endsWith(".jks"));
+                .allMatch(path -> path.toString().endsWith(".p12"));
     }
 
 }

@@ -15,7 +15,7 @@
  */
 package nl.altindag.crip.command;
 
-import nl.altindag.crip.command.SharedProperties.CertificateType;
+import nl.altindag.crip.model.CertificateType;
 import nl.altindag.ssl.util.CertificateUtils;
 import org.assertj.core.api.Condition;
 import org.junit.jupiter.api.BeforeAll;

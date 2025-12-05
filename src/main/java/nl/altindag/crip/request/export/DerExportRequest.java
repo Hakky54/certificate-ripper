@@ -13,19 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.altindag.crip.command;
+package nl.altindag.crip.request.export;
 
-import nl.altindag.crip.command.export.ExportCommand;
-import picocli.CommandLine.Command;
+import nl.altindag.crip.model.ExportMode;
 
-@Command(
-        name = "crip",
-        description = "CLI tool to extracts server certificates",
-        subcommands = {
-                PrintCommand.class,
-                ExportCommand.class
-        },
-        mixinStandardHelpOptions = true,
-        versionProvider = VersionProvider.class
-)
-public class CertificateRipper {}
+import java.util.List;
+
+import static nl.altindag.crip.model.ExportMode.DER;
+
+public class DerExportRequest extends CombineableExportRequest {
+
+    public DerExportRequest(List<String> urls) {
+        super(urls);
+    }
+
+    @Override
+    ExportMode getExportMode() {
+        return DER;
+    }
+
+}

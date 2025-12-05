@@ -45,8 +45,8 @@ public class BaseTest {
 
     @BeforeEach
     void setupServerAndConsoleCaptor() {
-        CertificateRipper certificateRipper = new CertificateRipper();
-        cmd = new CommandLine(certificateRipper)
+        CripCommand cripCommand = new CripCommand();
+        cmd = new CommandLine(cripCommand)
                 .setCaseInsensitiveEnumValuesAllowed(true);
 
         if (consoleCaptor == null) {
