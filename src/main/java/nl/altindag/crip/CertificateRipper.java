@@ -45,43 +45,43 @@ public final class CertificateRipper {
                 .execute(applicationArguments);
     }
 
-    public static PrintRequest forPrinting(String... urls) {
+    public static PrintRequest print(String... urls) {
         return new PrintRequest(Arrays.asList(urls));
     }
 
-    public static PrintRequest forPrinting(List<String> urls) {
+    public static PrintRequest print(List<String> urls) {
         return new PrintRequest(urls);
     }
 
-    public static PemExportRequest forExportingToPem(String... urls) {
+    public static PemExportRequest exportToPem(String... urls) {
         return new PemExportRequest(Arrays.asList(urls));
     }
 
-    public static PemExportRequest forExportingToPem(List<String> urls) {
+    public static PemExportRequest exportToPem(List<String> urls) {
         return new PemExportRequest(urls);
     }
 
-    public static DerExportRequest forExportingToDer(String... urls) {
+    public static DerExportRequest exportToDer(String... urls) {
         return new DerExportRequest(Arrays.asList(urls));
     }
 
-    public static DerExportRequest forExportingToDer(List<String> urls) {
+    public static DerExportRequest exportToDer(List<String> urls) {
         return new DerExportRequest(urls);
     }
 
-    public static Pkcs12ExportRequest forExportingToPkcs12(String... urls) {
+    public static Pkcs12ExportRequest exportToPkcs12(String... urls) {
         return new Pkcs12ExportRequest(Arrays.asList(urls));
     }
 
-    public static Pkcs12ExportRequest forExportingToPkcs12(List<String> urls) {
+    public static Pkcs12ExportRequest exportToPkcs12(List<String> urls) {
         return new Pkcs12ExportRequest(urls);
     }
 
-    public static JksExportRequest forExportingToJks(String... urls) {
+    public static JksExportRequest exportToJks(String... urls) {
         return new JksExportRequest(Arrays.asList(urls));
     }
 
-    public static JksExportRequest forExportingToJks(List<String> urls) {
+    public static JksExportRequest exportToJks(List<String> urls) {
         return new JksExportRequest(urls);
     }
 

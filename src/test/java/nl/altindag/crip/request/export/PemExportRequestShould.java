@@ -45,7 +45,7 @@ class PemExportRequestShould extends FileBaseTest {
 
         assertThat(expectedCertificates).isNotEmpty();
 
-        PemExportRequest request = CertificateRipper.forExportingToPem("https://localhost:8443");
+        PemExportRequest request = CertificateRipper.exportToPem("https://localhost:8443");
         request.setDestination(TEMP_DIRECTORY.toAbsolutePath());
         request.run();
 
@@ -70,7 +70,7 @@ class PemExportRequestShould extends FileBaseTest {
         String expectedCertificate = getResourceContent("reference-files/pem/server-one/cn=certificate-ripper-server-one_ou=amsterdam_o=thunderberry_c=nl_with_header_combined.crt");
         assertThat(expectedCertificate).isNotEmpty();
 
-        PemExportRequest request = CertificateRipper.forExportingToPem("https://localhost:8443");
+        PemExportRequest request = CertificateRipper.exportToPem("https://localhost:8443");
         request.setCombined(true);
         request.setDestination(TEMP_DIRECTORY.toAbsolutePath().resolve("localhost.crt"));
         request.run();
@@ -95,7 +95,7 @@ class PemExportRequestShould extends FileBaseTest {
         expectedCertificatesAsPem.put("localhost-1", getResourceContent("reference-files/pem/server-one/cn=certificate-ripper-server-one_ou=amsterdam_o=thunderberry_c=nl_with_header_combined.crt"));
         expectedCertificatesAsPem.put("localhost-2", getResourceContent("reference-files/pem/server-two/cn=certificate-ripper-server-two_ou=amsterdam_o=thunderberry_c=nl_with_header_combined.crt"));
 
-        PemExportRequest request = CertificateRipper.forExportingToPem(List.of("https://localhost:8443", "https://localhost:8444"));
+        PemExportRequest request = CertificateRipper.exportToPem(List.of("https://localhost:8443", "https://localhost:8444"));
         request.setCombined(true);
         request.setDestination(TEMP_DIRECTORY.toAbsolutePath());
         request.run();
@@ -125,7 +125,7 @@ class PemExportRequestShould extends FileBaseTest {
 
         assertThat(expectedCertificates).isNotEmpty();
 
-        PemExportRequest request = CertificateRipper.forExportingToPem("https://localhost:8443");
+        PemExportRequest request = CertificateRipper.exportToPem("https://localhost:8443");
         request.setIncludeHeader(false);
         request.setDestination(TEMP_DIRECTORY.toAbsolutePath());
         request.run();
@@ -150,7 +150,7 @@ class PemExportRequestShould extends FileBaseTest {
 
         assertThat(expectedCertificate).isNotEmpty();
 
-        PemExportRequest request = CertificateRipper.forExportingToPem("https://localhost:8443");
+        PemExportRequest request = CertificateRipper.exportToPem("https://localhost:8443");
         request.setIncludeHeader(false);
         request.setCombined(true);
         request.setDestination(TEMP_DIRECTORY.toAbsolutePath().resolve("thunderberry.crt").toString());
@@ -178,7 +178,7 @@ class PemExportRequestShould extends FileBaseTest {
                 .withDelayedResponseTime(500)
                 .build();
 
-        PemExportRequest request = CertificateRipper.forExportingToPem("https://localhost:8446");
+        PemExportRequest request = CertificateRipper.exportToPem("https://localhost:8446");
         request.setDestination(TEMP_DIRECTORY.toAbsolutePath().resolve("thunderberry.crt"));
         request.setTimeoutInMilliseconds(250);
         request.run();
@@ -206,7 +206,7 @@ class PemExportRequestShould extends FileBaseTest {
     void resolveRootCaOnlyWhenEnabled() throws IOException {
         resolvedRootCa:
         {
-            PemExportRequest request = CertificateRipper.forExportingToPem("https://google.com");
+            PemExportRequest request = CertificateRipper.exportToPem("https://google.com");
             request.setDestination(TEMP_DIRECTORY.toAbsolutePath());
             request.setResolveRootCa(true);
             request.run();
@@ -226,7 +226,7 @@ class PemExportRequestShould extends FileBaseTest {
 
         notResolvedRootCa:
         {
-            PemExportRequest request = CertificateRipper.forExportingToPem("https://google.com");
+            PemExportRequest request = CertificateRipper.exportToPem("https://google.com");
             request.setDestination(TEMP_DIRECTORY.toAbsolutePath());
             request.setResolveRootCa(false);
             request.run();
@@ -247,7 +247,7 @@ class PemExportRequestShould extends FileBaseTest {
     void processSystemTrustedCertificates() throws IOException {
         createTempDirAndClearConsoleCaptor();
 
-        PemExportRequest request = CertificateRipper.forExportingToPem("system");
+        PemExportRequest request = CertificateRipper.exportToPem("system");
         request.setDestination(TEMP_DIRECTORY.toAbsolutePath());
         request.setCombined(true);
         request.run();

@@ -42,7 +42,7 @@ class PrintCommandShould extends BaseTest {
 
         assertThat(expectedCertificates).hasSize(2);
 
-        CertificateRipper.forPrinting("https://localhost:8443").run();
+        CertificateRipper.print("https://localhost:8443").run();
 
         assertThat(consoleCaptor.getStandardOutput()).areExactly(1, new Condition<>("Certificates for url = https://localhost:8443"::equals, null));
         assertThat(consoleCaptor.getStandardOutput()).areExactly(expectedCertificates.size() - 1, new Condition<>("<========== Next certificate for https://localhost:8443 ==========>"::equals, null));
@@ -62,7 +62,7 @@ class PrintCommandShould extends BaseTest {
                 .collect(Collectors.toList());
         assertThat(expectedCertificatesForServerTwo).hasSize(2);
 
-        CertificateRipper.forPrinting(List.of("https://localhost:8443", "https://localhost:8444")).run();
+        CertificateRipper.print(List.of("https://localhost:8443", "https://localhost:8444")).run();
 
         assertThat(consoleCaptor.getStandardOutput()).areExactly(1, new Condition<>("Certificates for url = https://localhost:8443"::equals, null));
         assertThat(consoleCaptor.getStandardOutput()).areExactly(1, new Condition<>("Certificates for url = https://localhost:8444"::equals, null));
@@ -79,7 +79,7 @@ class PrintCommandShould extends BaseTest {
 
         assertThat(expectedCertificates).hasSize(2);
 
-        CertificateRipper.forPrinting("https://localhost:8443").run();
+        CertificateRipper.print("https://localhost:8443").run();
 
         String output = String.join(System.lineSeparator(), consoleCaptor.getStandardOutput());
         for (Certificate expectedCertificate : expectedCertificates) {
@@ -96,7 +96,7 @@ class PrintCommandShould extends BaseTest {
 
         assertThat(expectedCertificates).isNotEmpty();
 
-        PrintRequest request = CertificateRipper.forPrinting("https://localhost:8443");
+        PrintRequest request = CertificateRipper.print("https://localhost:8443");
         request.setFormat(PEM);
         request.run();
 

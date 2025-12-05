@@ -42,7 +42,7 @@ class JksExportRequestShould extends FileBaseTest {
     void exportMultipleCertificateFromChainToACustomFilename() throws IOException, KeyStoreException {
         KeyStore expectedTruststore = KeyStoreUtils.loadKeyStore(getResource("reference-files/jks/server-one/truststore.jks"), "changeit".toCharArray());
 
-        JksExportRequest request = CertificateRipper.forExportingToJks("https://localhost:8443");
+        JksExportRequest request = CertificateRipper.exportToJks("https://localhost:8443");
         request.setDestination(TEMP_DIRECTORY.toAbsolutePath().resolve("my-truststore.jks"));
         request.run();
 
@@ -77,7 +77,7 @@ class JksExportRequestShould extends FileBaseTest {
                 .withDelayedResponseTime(500)
                 .build();
 
-        JksExportRequest request = CertificateRipper.forExportingToJks(List.of("https://localhost:8448"));
+        JksExportRequest request = CertificateRipper.exportToJks(List.of("https://localhost:8448"));
         request.setDestination(TEMP_DIRECTORY.toAbsolutePath().resolve("my-truststore.jks"));
         request.setTimeoutInMilliseconds(250);
         request.run();
@@ -104,7 +104,7 @@ class JksExportRequestShould extends FileBaseTest {
     void processSystemTrustedCertificates() throws IOException {
         createTempDirAndClearConsoleCaptor();
 
-        JksExportRequest request = CertificateRipper.forExportingToJks("system");
+        JksExportRequest request = CertificateRipper.exportToJks("system");
         request.setDestination(TEMP_DIRECTORY.toAbsolutePath().resolve("my-truststore.jks"));
         request.run();
 

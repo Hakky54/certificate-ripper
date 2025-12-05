@@ -42,7 +42,7 @@ class Pkcs12ExportRequestShould extends FileBaseTest {
     void exportMultipleCertificateFromChainToACustomFilename() throws IOException, KeyStoreException {
         KeyStore expectedTruststore = KeyStoreUtils.loadKeyStore(getResource("reference-files/pkcs12/server-one/truststore.p12"), "changeit".toCharArray());
 
-        Pkcs12ExportRequest request = CertificateRipper.forExportingToPkcs12("https://localhost:8443");
+        Pkcs12ExportRequest request = CertificateRipper.exportToPkcs12("https://localhost:8443");
         request.setDestination(TEMP_DIRECTORY.toAbsolutePath().resolve("my-truststore.p12"));
         request.run();
 
@@ -77,7 +77,7 @@ class Pkcs12ExportRequestShould extends FileBaseTest {
                 .withDelayedResponseTime(500)
                 .build();
 
-        Pkcs12ExportRequest request = CertificateRipper.forExportingToPkcs12(List.of("https://localhost:8447"));
+        Pkcs12ExportRequest request = CertificateRipper.exportToPkcs12(List.of("https://localhost:8447"));
         request.setDestination(TEMP_DIRECTORY.toAbsolutePath().resolve("my-truststore.p12"));
         request.setTimeoutInMilliseconds(250);
         request.run();
@@ -104,7 +104,7 @@ class Pkcs12ExportRequestShould extends FileBaseTest {
     void processSystemTrustedCertificates() throws IOException {
         createTempDirAndClearConsoleCaptor();
 
-        Pkcs12ExportRequest request = CertificateRipper.forExportingToPkcs12("system");
+        Pkcs12ExportRequest request = CertificateRipper.exportToPkcs12("system");
         request.setDestination(TEMP_DIRECTORY.toAbsolutePath().resolve("my-truststore.p12"));
         request.run();
 
