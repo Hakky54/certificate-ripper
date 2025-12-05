@@ -13,11 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.altindag.crip.model.export;
+package nl.altindag.crip.request.export;
+
+import nl.altindag.crip.model.ExportMode;
 
 import java.util.List;
 
-import static nl.altindag.crip.model.export.ExportMode.PEM;
+import static nl.altindag.crip.model.ExportMode.PEM;
+
 
 public class PemExportRequest extends CombineableExportRequest {
 

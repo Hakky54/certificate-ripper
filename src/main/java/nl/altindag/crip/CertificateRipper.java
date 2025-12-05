@@ -16,11 +16,11 @@
 package nl.altindag.crip;
 
 import nl.altindag.crip.command.CripCommand;
-import nl.altindag.crip.model.export.DerExportRequest;
-import nl.altindag.crip.model.export.JksExportRequest;
-import nl.altindag.crip.model.export.PemExportRequest;
-import nl.altindag.crip.model.export.Pkcs12ExportRequest;
-import nl.altindag.crip.model.print.PrintRequest;
+import nl.altindag.crip.request.export.DerExportRequest;
+import nl.altindag.crip.request.export.JksExportRequest;
+import nl.altindag.crip.request.export.PemExportRequest;
+import nl.altindag.crip.request.export.Pkcs12ExportRequest;
+import nl.altindag.crip.request.print.PrintRequest;
 import nl.altindag.crip.provider.CertificateRipperProvider;
 import nl.altindag.crip.util.HelpFactory;
 import picocli.CommandLine;

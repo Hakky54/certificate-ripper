@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.altindag.crip.model.print;
+package nl.altindag.crip.request.print;
 
 import nl.altindag.crip.CertificateRipper;
 import nl.altindag.crip.command.BaseTest;
@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static nl.altindag.crip.IOTestUtils.getResourceContent;
-import static nl.altindag.crip.model.print.Format.PEM;
+import static nl.altindag.crip.model.Format.PEM;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class PrintCommandShould extends BaseTest {

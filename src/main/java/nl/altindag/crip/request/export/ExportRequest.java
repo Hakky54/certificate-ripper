@@ -13,25 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.altindag.crip.model.export;
+package nl.altindag.crip.request.export;
 
+import nl.altindag.crip.model.ExportMode;
+import nl.altindag.crip.request.Request;
+
+import java.nio.file.Path;
 import java.util.List;
 
-public abstract class CombineableExportRequest extends ExportRequest {
+public abstract class ExportRequest extends Request {
 
-    private Boolean combined = false;
+    private String destination;
 
-    CombineableExportRequest(List<String> urls) {
+    public ExportRequest(List<String> urls) {
         super(urls);
     }
 
-    public void setCombined(Boolean combined) {
-        this.combined = combined;
+    public void setDestination(String destination) {
+        this.destination = destination;
     }
+
+    public void setDestination(Path destination) {
+        this.destination = destination.toString();
+    }
+
+    abstract ExportMode getExportMode();
 
     @Override
     public String toString() {
-        return String.format("%s --combined=%s", super.toString(), combined);
+        return String.format("export %s --destination=%s %s", getExportMode(), destination, super.toString());
     }
-
 }

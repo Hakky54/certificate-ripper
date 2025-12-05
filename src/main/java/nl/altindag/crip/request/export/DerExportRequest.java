@@ -13,21 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.altindag.crip.model.export;
+package nl.altindag.crip.request.export;
+
+import nl.altindag.crip.model.ExportMode;
 
 import java.util.List;
 
-import static nl.altindag.crip.model.export.ExportMode.JKS;
+import static nl.altindag.crip.model.ExportMode.DER;
 
-public class JksExportRequest extends KeystoreExportRequest {
+public class DerExportRequest extends CombineableExportRequest {
 
-    public JksExportRequest(List<String> urls) {
+    public DerExportRequest(List<String> urls) {
         super(urls);
     }
 
     @Override
     ExportMode getExportMode() {
-        return JKS;
+        return DER;
     }
 
 }

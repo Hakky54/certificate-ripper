@@ -13,33 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.altindag.crip.model.export;
+package nl.altindag.crip.model;
 
-import nl.altindag.crip.model.Request;
+public enum Format {
 
-import java.nio.file.Path;
-import java.util.List;
-
-public abstract class ExportRequest extends Request {
-
-    private String destination;
-
-    public ExportRequest(List<String> urls) {
-        super(urls);
-    }
-
-    public void setDestination(String destination) {
-        this.destination = destination;
-    }
-
-    public void setDestination(Path destination) {
-        this.destination = destination.toString();
-    }
-
-    abstract ExportMode getExportMode();
+    PEM, X509;
 
     @Override
     public String toString() {
-        return String.format("export %s --destination=%s %s", getExportMode(), destination, super.toString());
+        return name().toLowerCase();
     }
+
 }

@@ -18,7 +18,7 @@ package nl.altindag.crip.command.print;
 import nl.altindag.crip.command.SharedProperties;
 import nl.altindag.crip.command.VersionProvider;
 import nl.altindag.crip.model.CertificateHolder;
-import nl.altindag.crip.model.print.Format;
+import nl.altindag.crip.model.Format;
 import nl.altindag.crip.util.StatisticsUtils;
 import nl.altindag.ssl.util.CertificateUtils;
 import picocli.CommandLine.Command;

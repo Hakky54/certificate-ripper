@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.altindag.crip.model;
+package nl.altindag.crip.request;
 
 import nl.altindag.crip.CertificateRipper;
+import nl.altindag.crip.model.CertificateType;
 
 import java.util.Arrays;
 import java.util.List;

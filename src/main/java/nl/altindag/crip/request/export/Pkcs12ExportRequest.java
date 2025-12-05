@@ -13,15 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.altindag.crip.model.print;
+package nl.altindag.crip.request.export;
 
-public enum Format {
+import nl.altindag.crip.model.ExportMode;
 
-    PEM, X509;
+import java.util.List;
 
-    @Override
-    public String toString() {
-        return name().toLowerCase();
+import static nl.altindag.crip.model.ExportMode.PKCS12;
+
+public class Pkcs12ExportRequest extends KeystoreExportRequest {
+
+    public Pkcs12ExportRequest(List<String> urls) {
+        super(urls);
     }
 
+    @Override
+    ExportMode getExportMode() {
+        return PKCS12;
+    }
 }

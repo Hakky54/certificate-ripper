@@ -13,34 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.altindag.crip.model.print;
-
-import nl.altindag.crip.model.Request;
+package nl.altindag.crip.request.export;
 
 import java.util.List;
 
-import static nl.altindag.crip.model.print.Format.X509;
+public abstract class CombineableExportRequest extends ExportRequest {
 
-public class PrintRequest extends Request {
+    private Boolean combined = false;
 
-    private Format format = X509;
-
-    public PrintRequest(List<String> urls) {
+    CombineableExportRequest(List<String> urls) {
         super(urls);
     }
 
-    public void setFormat(Format format) {
-        this.format = format;
+    public void setCombined(Boolean combined) {
+        this.combined = combined;
     }
 
     @Override
     public String toString() {
-        StringBuilder requestBuilder = new StringBuilder();
-        requestBuilder.append("print").append(" ")
-                .append("--format=").append(format).append(" ");
-
-        getUrls().forEach(url -> requestBuilder.append("--url=").append(url).append(" "));
-        return requestBuilder.append(super.toString()).toString();
+        return String.format("%s --combined=%s", super.toString(), combined);
     }
 
 }
