@@ -29,7 +29,9 @@ import java.security.Security;
 import java.util.Arrays;
 import java.util.List;
 
-public class CertificateRipper {
+public final class CertificateRipper {
+
+    private CertificateRipper() {}
 
     public static void main(String[] applicationArguments) {
         // Temporally ignoring KeychainStore as it does not work with Graal VM yet.
