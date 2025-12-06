@@ -16,6 +16,7 @@
 package nl.altindag.crip.command;
 
 import nl.altindag.crip.client.ftp.FtpsClientRunnable;
+import nl.altindag.crip.client.smtp.SmtpClientRunnable;
 import nl.altindag.crip.client.websocket.WebSocketClientRunnable;
 import nl.altindag.crip.model.CertificateHolder;
 import nl.altindag.crip.model.CertificateType;
@@ -158,6 +159,11 @@ public class SharedProperties {
         if ("ftps".equals(uri.getScheme())) {
             clientBuilder = CertificateExtractingClient.builder()
                     .withClientRunnable(new FtpsClientRunnable());
+        }
+
+        if ("smtps".equals(uri.getScheme())) {
+            clientBuilder = CertificateExtractingClient.builder()
+                    .withClientRunnable(new SmtpClientRunnable());
         }
 
         if (isNotBlank(proxyHost) && proxyPort != null) {
