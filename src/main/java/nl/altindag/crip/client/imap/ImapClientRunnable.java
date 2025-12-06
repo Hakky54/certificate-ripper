@@ -17,6 +17,7 @@ package nl.altindag.crip.client.imap;
 
 import nl.altindag.ssl.model.ClientConfig;
 import nl.altindag.ssl.util.ClientRunnable;
+import org.apache.commons.net.SocketClient;
 import org.apache.commons.net.imap.AuthenticatingIMAPClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,22 +31,18 @@ public final class ImapClientRunnable implements ClientRunnable {
 
     @Override
     public void run(ClientConfig clientConfig, URI uri) {
-        AuthenticatingIMAPClient client = new AuthenticatingIMAPClient(true, clientConfig.getSslFactory().getSslContext());
+        SocketClient client = new AuthenticatingIMAPClient(true, clientConfig.getSslFactory().getSslContext());
         clientConfig.getProxy().ifPresent(client::setProxy);
         clientConfig.getTimeout()
                 .map(Duration::toMillis)
                 .map(Long::intValue)
-                .ifPresent(timeout -> {
-                    client.setDefaultTimeout(timeout);
-                    client.setConnectTimeout(timeout);
-                });
+                .ifPresent(client::setDefaultTimeout);
 
         try {
             client.connect(uri.getHost(), uri.getPort());
-            client.close();
         } catch (Exception e) {
-            LOGGER.debug("Could not connect or close the imap client", e);
+            LOGGER.debug("Could not connect to {}:{}", uri.getHost(), uri.getPort(), e);
         }
-
     }
+
 }
