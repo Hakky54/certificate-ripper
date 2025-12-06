@@ -16,6 +16,7 @@
 package nl.altindag.crip.command;
 
 import nl.altindag.crip.client.ftp.FtpsClientRunnable;
+import nl.altindag.crip.client.imap.ImapClientRunnable;
 import nl.altindag.crip.client.smtp.SmtpClientRunnable;
 import nl.altindag.crip.client.websocket.WebSocketClientRunnable;
 import nl.altindag.crip.model.CertificateHolder;
@@ -147,23 +148,15 @@ public class SharedProperties {
     }
 
     private CertificateExtractingClient createClient(String url) {
-        CertificateExtractingClient.Builder clientBuilder = CertificateExtractingClient.builder()
-                .withResolvedRootCa(resolveRootCa);
+        CertificateExtractingClient.Builder clientBuilder = CertificateExtractingClient.builder().withResolvedRootCa(resolveRootCa);
 
         URI uri = URI.create(url);
-        if ("wss".equals(uri.getScheme())) {
-            clientBuilder = CertificateExtractingClient.builder()
-                    .withClientRunnable(new WebSocketClientRunnable());
-        }
-
-        if ("ftps".equals(uri.getScheme())) {
-            clientBuilder = CertificateExtractingClient.builder()
-                    .withClientRunnable(new FtpsClientRunnable());
-        }
-
-        if ("smtps".equals(uri.getScheme())) {
-            clientBuilder = CertificateExtractingClient.builder()
-                    .withClientRunnable(new SmtpClientRunnable());
+        switch (uri.getScheme()) {
+            case "wss" -> clientBuilder.withClientRunnable(new WebSocketClientRunnable());
+            case "ftps" -> clientBuilder.withClientRunnable(new FtpsClientRunnable());
+            case "smtps" -> clientBuilder.withClientRunnable(new SmtpClientRunnable());
+            case "imaps" -> clientBuilder.withClientRunnable(new ImapClientRunnable());
+            default -> {}
         }
 
         if (isNotBlank(proxyHost) && proxyPort != null) {
