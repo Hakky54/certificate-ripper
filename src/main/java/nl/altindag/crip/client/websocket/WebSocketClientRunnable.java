@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 
-public class WebSocketClientRunnable implements ClientRunnable {
+public final class WebSocketClientRunnable implements ClientRunnable {
 
     @Override
     public void run(ClientConfig clientConfig, URI uri) {

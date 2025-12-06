@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
 import java.net.URI;
 import java.time.Duration;
 
-public class SmtpClientRunnable implements ClientRunnable {
+public final class SmtpClientRunnable implements ClientRunnable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SmtpClientRunnable.class);
 
@@ -59,7 +59,7 @@ public class SmtpClientRunnable implements ClientRunnable {
         try {
             mailer.close();
         } catch (Exception e) {
-            LOGGER.debug("Could not close the mailer client", e);
+            LOGGER.debug("Could not close the smtp client", e);
         }
     }
 

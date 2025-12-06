@@ -26,7 +26,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.time.Duration;
 
-public class FtpsClientRunnable implements ClientRunnable {
+public final class FtpsClientRunnable implements ClientRunnable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FtpsClientRunnable.class);
 
@@ -36,7 +36,7 @@ public class FtpsClientRunnable implements ClientRunnable {
         clientConfig.getProxy().ifPresent(client::setProxy);
         clientConfig.getTimeout()
                 .map(Duration::toMillis)
-                .map(Math::toIntExact)
+                .map(Long::intValue)
                 .ifPresent(timeout -> {
                     client.setDefaultTimeout(timeout);
                     client.setConnectTimeout(timeout);
