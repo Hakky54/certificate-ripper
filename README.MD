@@ -237,11 +237,12 @@ Include the following dependency:
 
 Example code snippet:
 ```text
-var request = CertificateRipper.exportToPem("https://github.com");
-request.setIncludeHeader(false);
-request.setCombined(true);
-request.setDestination("/path/to/export/github-chain.crt");
-request.run();
+CertificateRipper.exportToPem("https://github.com")
+        .withIncludeHeader(false)
+        .withCombined(true)
+        .withDestination("/path/to/export/github-chain.crt")
+        .build()
+        .run();
 ```
 
 ## Contributing

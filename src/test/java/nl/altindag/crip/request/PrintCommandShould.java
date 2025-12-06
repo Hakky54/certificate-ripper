@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.altindag.crip.request.print;
+package nl.altindag.crip.request;
 
 import nl.altindag.crip.CertificateRipper;
 import nl.altindag.crip.command.BaseTest;
@@ -42,7 +42,7 @@ class PrintCommandShould extends BaseTest {
 
         assertThat(expectedCertificates).hasSize(2);
 
-        CertificateRipper.print("https://localhost:8443").run();
+        CertificateRipper.print("https://localhost:8443").build().run();
 
         assertThat(consoleCaptor.getStandardOutput()).areExactly(1, new Condition<>("Certificates for url = https://localhost:8443"::equals, null));
         assertThat(consoleCaptor.getStandardOutput()).areExactly(expectedCertificates.size() - 1, new Condition<>("<========== Next certificate for https://localhost:8443 ==========>"::equals, null));
@@ -62,7 +62,7 @@ class PrintCommandShould extends BaseTest {
                 .collect(Collectors.toList());
         assertThat(expectedCertificatesForServerTwo).hasSize(2);
 
-        CertificateRipper.print(List.of("https://localhost:8443", "https://localhost:8444")).run();
+        CertificateRipper.print(List.of("https://localhost:8443", "https://localhost:8444")).build().run();
 
         assertThat(consoleCaptor.getStandardOutput()).areExactly(1, new Condition<>("Certificates for url = https://localhost:8443"::equals, null));
         assertThat(consoleCaptor.getStandardOutput()).areExactly(1, new Condition<>("Certificates for url = https://localhost:8444"::equals, null));
@@ -79,7 +79,7 @@ class PrintCommandShould extends BaseTest {
 
         assertThat(expectedCertificates).hasSize(2);
 
-        CertificateRipper.print("https://localhost:8443").run();
+        CertificateRipper.print("https://localhost:8443").build().run();
 
         String output = String.join(System.lineSeparator(), consoleCaptor.getStandardOutput());
         for (Certificate expectedCertificate : expectedCertificates) {
@@ -96,9 +96,10 @@ class PrintCommandShould extends BaseTest {
 
         assertThat(expectedCertificates).isNotEmpty();
 
-        PrintRequest request = CertificateRipper.print("https://localhost:8443");
-        request.setFormat(PEM);
-        request.run();
+        CertificateRipper.print("https://localhost:8443")
+                .withFormat(PEM)
+                .build()
+                .run();
 
         String output = String.join(System.lineSeparator(), consoleCaptor.getStandardOutput());
         for (String expectedCertificate : expectedCertificates) {

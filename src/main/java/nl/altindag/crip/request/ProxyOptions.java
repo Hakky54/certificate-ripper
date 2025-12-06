@@ -22,7 +22,7 @@ public final class ProxyOptions {
     private final String username;
     private final String password;
 
-    public ProxyOptions(String host, Integer port, String username, String password) {
+    ProxyOptions(String host, Integer port, String username, String password) {
         this.host = host;
         this.port = port;
         this.username = username;
@@ -45,5 +45,42 @@ public final class ProxyOptions {
             proxyRequestBuilder.append("--proxy-password=").append(password);
         }
         return proxyRequestBuilder.toString();
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static final class Builder {
+
+        private String host;
+        private Integer port;
+        private String username;
+        private String password;
+
+        public Builder withHost(String host) {
+            this.host = host;
+            return this;
+        }
+
+        public Builder withPort(Integer port) {
+            this.port = port;
+            return this;
+        }
+
+        public Builder withUsername(String username) {
+            this.username = username;
+            return this;
+        }
+
+        public Builder withPassword(String password) {
+            this.password = password;
+            return this;
+        }
+
+        public ProxyOptions build() {
+            return new ProxyOptions(host, port, username, password);
+        }
+
     }
 }

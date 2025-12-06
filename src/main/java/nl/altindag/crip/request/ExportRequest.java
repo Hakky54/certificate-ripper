@@ -13,23 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.altindag.crip.request.export;
+package nl.altindag.crip.request;
 
 import nl.altindag.crip.model.ExportMode;
 
 import java.util.List;
 
-import static nl.altindag.crip.model.ExportMode.DER;
+public abstract class ExportRequest extends Request {
 
-public class DerExportRequest extends CombineableExportRequest {
+    private String destination;
 
-    public DerExportRequest(List<String> urls) {
+    ExportRequest(List<String> urls) {
         super(urls);
     }
 
-    @Override
-    ExportMode getExportMode() {
-        return DER;
+    void setDestination(String destination) {
+        this.destination = destination;
     }
 
+    abstract ExportMode getExportMode();
+
+    @Override
+    public String toString() {
+        return String.format("export %s --destination=%s %s", getExportMode(), destination, super.toString());
+    }
 }

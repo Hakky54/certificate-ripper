@@ -16,11 +16,12 @@
 package nl.altindag.crip;
 
 import nl.altindag.crip.command.CripCommand;
-import nl.altindag.crip.request.export.DerExportRequest;
-import nl.altindag.crip.request.export.JksExportRequest;
-import nl.altindag.crip.request.export.PemExportRequest;
-import nl.altindag.crip.request.export.Pkcs12ExportRequest;
-import nl.altindag.crip.request.print.PrintRequest;
+import nl.altindag.crip.request.DerExportRequest;
+import nl.altindag.crip.request.JksExportRequest;
+import nl.altindag.crip.request.KeystoreExportRequest;
+import nl.altindag.crip.request.PemExportRequest;
+import nl.altindag.crip.request.Pkcs12ExportRequest;
+import nl.altindag.crip.request.PrintRequest;
 import nl.altindag.crip.provider.CertificateRipperProvider;
 import nl.altindag.crip.util.HelpFactory;
 import picocli.CommandLine;
@@ -45,44 +46,44 @@ public final class CertificateRipper {
                 .execute(applicationArguments);
     }
 
-    public static PrintRequest print(String... urls) {
-        return new PrintRequest(Arrays.asList(urls));
+    public static PrintRequest.Builder print(String... urls) {
+        return PrintRequest.builder(Arrays.asList(urls));
     }
 
-    public static PrintRequest print(List<String> urls) {
-        return new PrintRequest(urls);
+    public static PrintRequest.Builder print(List<String> urls) {
+        return PrintRequest.builder(urls);
     }
 
-    public static PemExportRequest exportToPem(String... urls) {
-        return new PemExportRequest(Arrays.asList(urls));
+    public static PemExportRequest.Builder exportToPem(String... urls) {
+        return PemExportRequest.builder(Arrays.asList(urls));
     }
 
-    public static PemExportRequest exportToPem(List<String> urls) {
-        return new PemExportRequest(urls);
+    public static PemExportRequest.Builder exportToPem(List<String> urls) {
+        return PemExportRequest.builder(urls);
     }
 
-    public static DerExportRequest exportToDer(String... urls) {
-        return new DerExportRequest(Arrays.asList(urls));
+    public static DerExportRequest.Builder exportToDer(String... urls) {
+        return DerExportRequest.builder(Arrays.asList(urls));
     }
 
-    public static DerExportRequest exportToDer(List<String> urls) {
-        return new DerExportRequest(urls);
+    public static DerExportRequest.Builder exportToDer(List<String> urls) {
+        return DerExportRequest.builder(urls);
     }
 
-    public static Pkcs12ExportRequest exportToPkcs12(String... urls) {
-        return new Pkcs12ExportRequest(Arrays.asList(urls));
+    public static KeystoreExportRequest.Builder exportToPkcs12(String... urls) {
+        return Pkcs12ExportRequest.builder(Arrays.asList(urls));
     }
 
-    public static Pkcs12ExportRequest exportToPkcs12(List<String> urls) {
-        return new Pkcs12ExportRequest(urls);
+    public static KeystoreExportRequest.Builder exportToPkcs12(List<String> urls) {
+        return Pkcs12ExportRequest.builder(urls);
     }
 
-    public static JksExportRequest exportToJks(String... urls) {
-        return new JksExportRequest(Arrays.asList(urls));
+    public static KeystoreExportRequest.Builder exportToJks(String... urls) {
+        return JksExportRequest.builder(Arrays.asList(urls));
     }
 
-    public static JksExportRequest exportToJks(List<String> urls) {
-        return new JksExportRequest(urls);
+    public static KeystoreExportRequest.Builder exportToJks(List<String> urls) {
+        return JksExportRequest.builder(urls);
     }
 
 }

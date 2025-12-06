@@ -13,34 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.altindag.crip.request.export;
+package nl.altindag.crip.request;
 
 import nl.altindag.crip.model.ExportMode;
-import nl.altindag.crip.request.Request;
 
-import java.nio.file.Path;
 import java.util.List;
 
-public abstract class ExportRequest extends Request {
+import static nl.altindag.crip.model.ExportMode.JKS;
 
-    private String destination;
+public final class JksExportRequest extends KeystoreExportRequest {
 
-    public ExportRequest(List<String> urls) {
+    JksExportRequest(List<String> urls) {
         super(urls);
     }
 
-    public void setDestination(String destination) {
-        this.destination = destination;
-    }
-
-    public void setDestination(Path destination) {
-        this.destination = destination.toString();
-    }
-
-    abstract ExportMode getExportMode();
-
     @Override
-    public String toString() {
-        return String.format("export %s --destination=%s %s", getExportMode(), destination, super.toString());
+    ExportMode getExportMode() {
+        return JKS;
     }
+
+    public static Builder builder(List<String> urls) {
+        return new Builder(urls, JKS);
+    }
+
 }

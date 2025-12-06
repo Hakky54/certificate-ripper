@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.altindag.crip.request.export;
+package nl.altindag.crip.request;
 
 import nl.altindag.crip.CertificateRipper;
 import nl.altindag.crip.command.FileBaseTest;
@@ -45,9 +45,10 @@ class PemExportRequestShould extends FileBaseTest {
 
         assertThat(expectedCertificates).isNotEmpty();
 
-        PemExportRequest request = CertificateRipper.exportToPem("https://localhost:8443");
-        request.setDestination(TEMP_DIRECTORY.toAbsolutePath());
-        request.run();
+        CertificateRipper.exportToPem("https://localhost:8443")
+                .withDestination(TEMP_DIRECTORY.toAbsolutePath())
+                .build()
+                .run();
 
         assertThat(consoleCaptor.getStandardOutput()).contains("Extracted 2 certificates.");
 
@@ -70,10 +71,11 @@ class PemExportRequestShould extends FileBaseTest {
         String expectedCertificate = getResourceContent("reference-files/pem/server-one/cn=certificate-ripper-server-one_ou=amsterdam_o=thunderberry_c=nl_with_header_combined.crt");
         assertThat(expectedCertificate).isNotEmpty();
 
-        PemExportRequest request = CertificateRipper.exportToPem("https://localhost:8443");
-        request.setCombined(true);
-        request.setDestination(TEMP_DIRECTORY.toAbsolutePath().resolve("localhost.crt"));
-        request.run();
+        CertificateRipper.exportToPem("https://localhost:8443")
+                .withCombined(true)
+                .withDestination(TEMP_DIRECTORY.toAbsolutePath().resolve("localhost.crt"))
+                .build()
+                .run();
 
         assertThat(consoleCaptor.getStandardOutput()).contains("Extracted 2 certificates.");
 
@@ -95,10 +97,11 @@ class PemExportRequestShould extends FileBaseTest {
         expectedCertificatesAsPem.put("localhost-1", getResourceContent("reference-files/pem/server-one/cn=certificate-ripper-server-one_ou=amsterdam_o=thunderberry_c=nl_with_header_combined.crt"));
         expectedCertificatesAsPem.put("localhost-2", getResourceContent("reference-files/pem/server-two/cn=certificate-ripper-server-two_ou=amsterdam_o=thunderberry_c=nl_with_header_combined.crt"));
 
-        PemExportRequest request = CertificateRipper.exportToPem(List.of("https://localhost:8443", "https://localhost:8444"));
-        request.setCombined(true);
-        request.setDestination(TEMP_DIRECTORY.toAbsolutePath());
-        request.run();
+        CertificateRipper.exportToPem(List.of("https://localhost:8443", "https://localhost:8444"))
+                .withCombined(true)
+                .withDestination(TEMP_DIRECTORY.toAbsolutePath())
+                .build()
+                .run();
 
         assertThat(consoleCaptor.getStandardOutput()).contains("Extracted 4 certificates.");
 
@@ -125,10 +128,11 @@ class PemExportRequestShould extends FileBaseTest {
 
         assertThat(expectedCertificates).isNotEmpty();
 
-        PemExportRequest request = CertificateRipper.exportToPem("https://localhost:8443");
-        request.setIncludeHeader(false);
-        request.setDestination(TEMP_DIRECTORY.toAbsolutePath());
-        request.run();
+        CertificateRipper.exportToPem("https://localhost:8443")
+                .withIncludeHeader(false)
+                .withDestination(TEMP_DIRECTORY.toAbsolutePath())
+                .build()
+                .run();
 
         assertThat(consoleCaptor.getStandardOutput()).contains("Extracted 2 certificates.");
 
@@ -150,11 +154,12 @@ class PemExportRequestShould extends FileBaseTest {
 
         assertThat(expectedCertificate).isNotEmpty();
 
-        PemExportRequest request = CertificateRipper.exportToPem("https://localhost:8443");
-        request.setIncludeHeader(false);
-        request.setCombined(true);
-        request.setDestination(TEMP_DIRECTORY.toAbsolutePath().resolve("thunderberry.crt").toString());
-        request.run();
+        CertificateRipper.exportToPem("https://localhost:8443")
+                .withIncludeHeader(false)
+                .withCombined(true)
+                .withDestination(TEMP_DIRECTORY.toAbsolutePath().resolve("thunderberry.crt"))
+                .build()
+                .run();
 
         assertThat(consoleCaptor.getStandardOutput()).contains("Extracted 2 certificates.");
 
@@ -178,10 +183,11 @@ class PemExportRequestShould extends FileBaseTest {
                 .withDelayedResponseTime(500)
                 .build();
 
-        PemExportRequest request = CertificateRipper.exportToPem("https://localhost:8446");
-        request.setDestination(TEMP_DIRECTORY.toAbsolutePath().resolve("thunderberry.crt"));
-        request.setTimeoutInMilliseconds(250);
-        request.run();
+        CertificateRipper.exportToPem("https://localhost:8446")
+                .withDestination(TEMP_DIRECTORY.toAbsolutePath().resolve("thunderberry.crt"))
+                .withTimeoutInMilliseconds(250)
+                .build()
+                .run();
 
         assertThat(consoleCaptor.getStandardOutput())
                 .contains(
@@ -206,10 +212,11 @@ class PemExportRequestShould extends FileBaseTest {
     void resolveRootCaOnlyWhenEnabled() throws IOException {
         resolvedRootCa:
         {
-            PemExportRequest request = CertificateRipper.exportToPem("https://google.com");
-            request.setDestination(TEMP_DIRECTORY.toAbsolutePath());
-            request.setResolveRootCa(true);
-            request.run();
+            CertificateRipper.exportToPem("https://google.com")
+                    .withDestination(TEMP_DIRECTORY.toAbsolutePath())
+                    .withResolveRootCa(true)
+                    .build()
+                    .run();
 
             assertThat(consoleCaptor.getStandardOutput()).contains("Extracted 4 certificates.");
 
@@ -226,10 +233,11 @@ class PemExportRequestShould extends FileBaseTest {
 
         notResolvedRootCa:
         {
-            PemExportRequest request = CertificateRipper.exportToPem("https://google.com");
-            request.setDestination(TEMP_DIRECTORY.toAbsolutePath());
-            request.setResolveRootCa(false);
-            request.run();
+            CertificateRipper.exportToPem("https://google.com")
+                    .withDestination(TEMP_DIRECTORY.toAbsolutePath())
+                    .withResolveRootCa(false)
+                    .build()
+                    .run();
 
             assertThat(consoleCaptor.getStandardOutput()).contains("Extracted 3 certificates.");
 
@@ -247,10 +255,11 @@ class PemExportRequestShould extends FileBaseTest {
     void processSystemTrustedCertificates() throws IOException {
         createTempDirAndClearConsoleCaptor();
 
-        PemExportRequest request = CertificateRipper.exportToPem("system");
-        request.setDestination(TEMP_DIRECTORY.toAbsolutePath());
-        request.setCombined(true);
-        request.run();
+        CertificateRipper.exportToPem("system")
+                .withCombined(true)
+                .withDestination(TEMP_DIRECTORY.toAbsolutePath())
+                .build()
+                .run();
 
         List<Path> files = Files.walk(TEMP_DIRECTORY, 1)
                 .filter(Files::isRegularFile)

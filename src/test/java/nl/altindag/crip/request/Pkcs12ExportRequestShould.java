@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.altindag.crip.request.export;
+package nl.altindag.crip.request;
 
 import nl.altindag.crip.CertificateRipper;
 import nl.altindag.crip.command.FileBaseTest;
@@ -42,9 +42,10 @@ class Pkcs12ExportRequestShould extends FileBaseTest {
     void exportMultipleCertificateFromChainToACustomFilename() throws IOException, KeyStoreException {
         KeyStore expectedTruststore = KeyStoreUtils.loadKeyStore(getResource("reference-files/pkcs12/server-one/truststore.p12"), "changeit".toCharArray());
 
-        Pkcs12ExportRequest request = CertificateRipper.exportToPkcs12("https://localhost:8443");
-        request.setDestination(TEMP_DIRECTORY.toAbsolutePath().resolve("my-truststore.p12"));
-        request.run();
+        CertificateRipper.exportToPkcs12("https://localhost:8443")
+                .withDestination(TEMP_DIRECTORY.toAbsolutePath().resolve("my-truststore.p12"))
+                .build()
+                .run();
 
         List<Path> files = Files.walk(TEMP_DIRECTORY, 1)
                 .filter(Files::isRegularFile)
@@ -77,10 +78,11 @@ class Pkcs12ExportRequestShould extends FileBaseTest {
                 .withDelayedResponseTime(500)
                 .build();
 
-        Pkcs12ExportRequest request = CertificateRipper.exportToPkcs12(List.of("https://localhost:8447"));
-        request.setDestination(TEMP_DIRECTORY.toAbsolutePath().resolve("my-truststore.p12"));
-        request.setTimeoutInMilliseconds(250);
-        request.run();
+        CertificateRipper.exportToPkcs12(List.of("https://localhost:8447"))
+                .withDestination(TEMP_DIRECTORY.toAbsolutePath().resolve("my-truststore.p12"))
+                .withTimeoutInMilliseconds(250)
+                .build()
+                .run();
 
         assertThat(consoleCaptor.getStandardOutput())
                 .contains(
@@ -104,9 +106,10 @@ class Pkcs12ExportRequestShould extends FileBaseTest {
     void processSystemTrustedCertificates() throws IOException {
         createTempDirAndClearConsoleCaptor();
 
-        Pkcs12ExportRequest request = CertificateRipper.exportToPkcs12("system");
-        request.setDestination(TEMP_DIRECTORY.toAbsolutePath().resolve("my-truststore.p12"));
-        request.run();
+        CertificateRipper.exportToPkcs12("system")
+                .withDestination(TEMP_DIRECTORY.toAbsolutePath().resolve("system-truststore.p12"))
+                .build()
+                .run();
 
         List<Path> files = Files.walk(TEMP_DIRECTORY, 1)
                 .filter(Files::isRegularFile)

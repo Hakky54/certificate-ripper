@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.altindag.crip.request.export;
+package nl.altindag.crip.request;
 
 import nl.altindag.crip.CertificateRipper;
 import nl.altindag.crip.command.FileBaseTest;
@@ -42,9 +42,10 @@ class JksExportRequestShould extends FileBaseTest {
     void exportMultipleCertificateFromChainToACustomFilename() throws IOException, KeyStoreException {
         KeyStore expectedTruststore = KeyStoreUtils.loadKeyStore(getResource("reference-files/jks/server-one/truststore.jks"), "changeit".toCharArray());
 
-        JksExportRequest request = CertificateRipper.exportToJks("https://localhost:8443");
-        request.setDestination(TEMP_DIRECTORY.toAbsolutePath().resolve("my-truststore.jks"));
-        request.run();
+        CertificateRipper.exportToJks("https://localhost:8443")
+                .withDestination(TEMP_DIRECTORY.toAbsolutePath().resolve("my-truststore.jks"))
+                .build()
+                .run();
 
         List<Path> files = Files.walk(TEMP_DIRECTORY, 1)
                 .filter(Files::isRegularFile)
@@ -77,10 +78,11 @@ class JksExportRequestShould extends FileBaseTest {
                 .withDelayedResponseTime(500)
                 .build();
 
-        JksExportRequest request = CertificateRipper.exportToJks(List.of("https://localhost:8448"));
-        request.setDestination(TEMP_DIRECTORY.toAbsolutePath().resolve("my-truststore.jks"));
-        request.setTimeoutInMilliseconds(250);
-        request.run();
+        CertificateRipper.exportToJks(List.of("https://localhost:8448"))
+                .withDestination(TEMP_DIRECTORY.toAbsolutePath().resolve("my-truststore.jks"))
+                .withTimeoutInMilliseconds(250)
+                .build()
+                .run();
 
         assertThat(consoleCaptor.getStandardOutput())
                 .contains(
@@ -104,9 +106,10 @@ class JksExportRequestShould extends FileBaseTest {
     void processSystemTrustedCertificates() throws IOException {
         createTempDirAndClearConsoleCaptor();
 
-        JksExportRequest request = CertificateRipper.exportToJks("system");
-        request.setDestination(TEMP_DIRECTORY.toAbsolutePath().resolve("my-truststore.jks"));
-        request.run();
+        CertificateRipper.exportToJks("system")
+                .withDestination(TEMP_DIRECTORY.toAbsolutePath().resolve("my-truststore.jks"))
+                .build()
+                .run();
 
         List<Path> files = Files.walk(TEMP_DIRECTORY, 1)
                 .filter(Files::isRegularFile)

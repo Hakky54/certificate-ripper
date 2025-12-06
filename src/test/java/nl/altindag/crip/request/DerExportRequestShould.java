@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.altindag.crip.request.export;
+package nl.altindag.crip.request;
 
 import nl.altindag.crip.CertificateRipper;
 import nl.altindag.crip.command.FileBaseTest;
@@ -46,9 +46,10 @@ class DerExportRequestShould extends FileBaseTest {
 
         assertThat(expectedCertificates).isNotEmpty();
 
-        DerExportRequest request = CertificateRipper.exportToDer("https://localhost:8443");
-        request.setDestination(TEMP_DIRECTORY.toAbsolutePath());
-        request.run();
+        CertificateRipper.exportToDer("https://localhost:8443")
+                .withDestination(TEMP_DIRECTORY.toAbsolutePath())
+                .build()
+                .run();
 
         assertThat(consoleCaptor.getStandardOutput()).contains("Extracted 2 certificates.");
 
@@ -72,10 +73,11 @@ class DerExportRequestShould extends FileBaseTest {
         List<Certificate> expectedCertificates = CertificateUtils.loadCertificate(getResource("reference-files/der/server-one/cn=certificate-ripper-server-one_ou=amsterdam_o=thunderberry_c=nl_combined.p7b"));
         assertThat(expectedCertificates).isNotEmpty().hasSize(2);
 
-        DerExportRequest request = CertificateRipper.exportToDer(List.of("https://localhost:8443"));
-        request.setCombined(true);
-        request.setDestination(TEMP_DIRECTORY.toAbsolutePath().resolve("localhost.p7b"));
-        request.run();
+        CertificateRipper.exportToDer(List.of("https://localhost:8443"))
+                .withCombined(true)
+                .withDestination(TEMP_DIRECTORY.toAbsolutePath().resolve("localhost.p7b"))
+                .build()
+                .run();
 
         assertThat(consoleCaptor.getStandardOutput()).contains("Extracted 2 certificates.");
 
@@ -101,10 +103,11 @@ class DerExportRequestShould extends FileBaseTest {
                 CertificateUtils.loadCertificate(getResource("reference-files/der/server-two/cn=certificate-ripper-server-two_ou=amsterdam_o=thunderberry_c=nl_combined.p7b")).stream()
         ).collect(Collectors.toList());
 
-        DerExportRequest request = CertificateRipper.exportToDer(List.of("https://localhost:8443", "https://localhost:8444"));
-        request.setCombined(true);
-        request.setDestination(TEMP_DIRECTORY.toAbsolutePath());
-        request.run();
+        CertificateRipper.exportToDer(List.of("https://localhost:8443", "https://localhost:8444"))
+                .withCombined(true)
+                .withDestination(TEMP_DIRECTORY.toAbsolutePath())
+                .build()
+                .run();
 
         assertThat(consoleCaptor.getStandardOutput()).contains("Extracted 4 certificates.");
 
@@ -131,10 +134,11 @@ class DerExportRequestShould extends FileBaseTest {
                 .withDelayedResponseTime(500)
                 .build();
 
-        DerExportRequest request = CertificateRipper.exportToDer(List.of("https://localhost:8445"));
-        request.setDestination(TEMP_DIRECTORY.toAbsolutePath().resolve("thunderberry.crt"));
-        request.setTimeoutInMilliseconds(250);
-        request.run();
+        CertificateRipper.exportToDer(List.of("https://localhost:8445"))
+                .withDestination(TEMP_DIRECTORY.toAbsolutePath().resolve("thunderberry.crt"))
+                .withTimeoutInMilliseconds(250)
+                .build()
+                .run();
 
         assertThat(consoleCaptor.getStandardOutput())
                 .contains(
@@ -158,9 +162,10 @@ class DerExportRequestShould extends FileBaseTest {
     void processSystemTrustedCertificates() throws IOException {
         createTempDirAndClearConsoleCaptor();
 
-        DerExportRequest request = CertificateRipper.exportToDer(List.of("system"));
-        request.setDestination(TEMP_DIRECTORY.toAbsolutePath());
-        request.run();
+        CertificateRipper.exportToDer(List.of("system"))
+                .withDestination(TEMP_DIRECTORY.toAbsolutePath())
+                .build()
+                .run();
 
         List<Path> files = Files.walk(TEMP_DIRECTORY, 1)
                 .filter(Files::isRegularFile)

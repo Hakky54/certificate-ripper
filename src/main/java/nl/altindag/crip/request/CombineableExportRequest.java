@@ -13,22 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.altindag.crip.request.export;
-
-import nl.altindag.crip.model.ExportMode;
+package nl.altindag.crip.request;
 
 import java.util.List;
 
-import static nl.altindag.crip.model.ExportMode.PKCS12;
+public abstract class CombineableExportRequest extends ExportRequest {
 
-public class Pkcs12ExportRequest extends KeystoreExportRequest {
+    private Boolean combined = false;
 
-    public Pkcs12ExportRequest(List<String> urls) {
+    CombineableExportRequest(List<String> urls) {
         super(urls);
     }
 
-    @Override
-    ExportMode getExportMode() {
-        return PKCS12;
+    void setCombined(Boolean combined) {
+        this.combined = combined;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s --combined=%s", super.toString(), combined);
+    }
+
 }

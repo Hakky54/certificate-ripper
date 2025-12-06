@@ -29,7 +29,7 @@ public abstract class Request implements Runnable {
     private Boolean resolveRootCa;
     private CertificateType certificateType;
 
-    public Request(List<String> urls) {
+    Request(List<String> urls) {
         this.urls = urls;
     }
 
@@ -44,23 +44,23 @@ public abstract class Request implements Runnable {
         CertificateRipper.main(arguments);
     }
 
-    public void setProxyOptions(ProxyOptions proxyOptions) {
+    void setProxyOptions(ProxyOptions proxyOptions) {
         this.proxyOptions = proxyOptions;
     }
 
-    public void setTimeoutInMilliseconds(Integer timeoutInMilliseconds) {
+    void setTimeoutInMilliseconds(Integer timeoutInMilliseconds) {
         this.timeoutInMilliseconds = timeoutInMilliseconds;
     }
 
-    public void setResolveRootCa(Boolean resolveRootCa) {
+    void setResolveRootCa(Boolean resolveRootCa) {
         this.resolveRootCa = resolveRootCa;
     }
 
-    public void setCertificateType(CertificateType certificateType) {
+    void setCertificateType(CertificateType certificateType) {
         this.certificateType = certificateType;
     }
 
-    public List<String> getUrls() {
+    List<String> getUrls() {
         return urls;
     }
 
