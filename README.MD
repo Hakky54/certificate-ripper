@@ -62,7 +62,7 @@ There are 3 options available to pick from: [GitHub](https://github.com/sponsors
   <summary>Build native executable</summary>
 
   **Minimum requirements:**
-  1. GraalVM 17 with Native Image
+  1. GraalVM 24 with Native Image
   2. Maven
   3. Terminal
   
