@@ -35,6 +35,15 @@ public abstract class ExportRequest extends Request {
 
     @Override
     public String toString() {
-        return String.format("export %s --destination=%s %s", getExportMode(), destination, super.toString());
+        StringBuilder sb = new StringBuilder()
+                .append("export").append(" ")
+                .append(getExportMode()).append(" ");
+
+        if (destination != null) {
+            sb.append("--destination=").append(destination).append(" ");
+        }
+
+        sb.append(super.toString());
+        return sb.toString();
     }
 }
