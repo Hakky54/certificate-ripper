@@ -13,17 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.altindag.crip.command;
+module nl.altindag.certificate.ripper {
 
-import picocli.CommandLine;
+    requires transitive nl.altindag.ssl;
+    requires transitive java.net.http;
+    requires transitive info.picocli;
+    requires transitive org.apache.commons.net;
+    requires transitive org.simplejavamail;
+    requires transitive org.simplejavamail.core;
 
-public class VersionProvider implements CommandLine.IVersionProvider {
+    exports nl.altindag.crip;
+    exports nl.altindag.crip.request;
+    exports nl.altindag.crip.model;
 
-    public static final String APP_NAME = "Certificate Ripper";
-    public static final String APP_VERSION = "v2.6.1";
-
-    public String[] getVersion() {
-        return new String[]{String.format("%s %s", APP_NAME, APP_VERSION)};
-    }
+    opens nl.altindag.crip.command to info.picocli;
+    opens nl.altindag.crip.command.print to info.picocli;
+    opens nl.altindag.crip.command.export to info.picocli;
 
 }

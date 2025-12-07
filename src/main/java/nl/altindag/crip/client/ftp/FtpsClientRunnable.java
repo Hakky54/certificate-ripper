@@ -17,10 +17,10 @@ package nl.altindag.crip.client.ftp;
 
 import nl.altindag.ssl.model.ClientConfig;
 import nl.altindag.ssl.util.ClientRunnable;
+import nl.altindag.sude.Logger;
+import nl.altindag.sude.LoggerFactory;
 import org.apache.commons.net.ftp.FTPReply;
 import org.apache.commons.net.ftp.FTPSClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URI;
@@ -46,15 +46,15 @@ public final class FtpsClientRunnable implements ClientRunnable {
             client.connect(uri.getHost(), uri.getPort());
             int replyCode = client.getReplyCode();
             if (!FTPReply.isPositiveCompletion(replyCode)) {
-                LOGGER.error("FTP server {} refused connection, reply code: {}", uri.getHost(), replyCode);
+                LOGGER.error(String.format("FTP server %s refused connection, reply code: %d", uri.getHost(), replyCode));
             }
         } catch (IOException e) {
-            LOGGER.debug("Could not connect to {}:{}", uri.getHost(), uri.getPort(), e);
+            LOGGER.debug(String.format("Could not connect to %s:%d", uri.getHost(), uri.getPort()), e);
         } finally {
             try {
                 client.disconnect();
             } catch (IOException e) {
-                LOGGER.debug("Could not disconnect from {}:{}", uri.getHost(), uri.getPort(), e);
+                LOGGER.debug(String.format("Could not disconnect from %s:%d", uri.getHost(), uri.getPort()), e);
             }
         }
     }

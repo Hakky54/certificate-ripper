@@ -15,8 +15,8 @@
  */
 package nl.altindag.crip.client.websocket;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import nl.altindag.sude.Logger;
+import nl.altindag.sude.LoggerFactory;
 
 import java.net.http.WebSocket;
 import java.time.Duration;
@@ -42,7 +42,7 @@ public final class WebSocketListener implements WebSocket.Listener {
 
     @Override
     public CompletionStage<?> onText(WebSocket webSocket, CharSequence data, boolean last) {
-        LOGGER.debug("WebSocket text received: {}", data);
+        LOGGER.debug(String.format("WebSocket text received: %s", data));
         latch.countDown();
         return WebSocket.Listener.super.onText(webSocket, data, last);
     }

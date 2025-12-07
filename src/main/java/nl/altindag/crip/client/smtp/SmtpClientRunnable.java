@@ -17,11 +17,10 @@ package nl.altindag.crip.client.smtp;
 
 import nl.altindag.ssl.model.ClientConfig;
 import nl.altindag.ssl.util.ClientRunnable;
+import nl.altindag.sude.Logger;
+import nl.altindag.sude.LoggerFactory;
 import org.simplejavamail.api.mailer.Mailer;
 import org.simplejavamail.mailer.MailerBuilder;
-import org.simplejavamail.mailer.internal.MailerRegularBuilderImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.net.URI;
 import java.time.Duration;
@@ -32,7 +31,7 @@ public final class SmtpClientRunnable implements ClientRunnable {
 
     @Override
     public void run(ClientConfig clientConfig, URI uri) {
-        MailerRegularBuilderImpl mailerBuilder = MailerBuilder
+        var mailerBuilder = MailerBuilder
                 .withSMTPServer(uri.getHost(), uri.getPort())
                 .withCustomSSLFactoryInstance(clientConfig.getSslFactory().getSslSocketFactory());
 
@@ -51,9 +50,7 @@ public final class SmtpClientRunnable implements ClientRunnable {
                 .map(Long::intValue)
                 .ifPresent(timeout -> mailerBuilder.withSessionTimeout(timeout));
 
-        Mailer mailer = mailerBuilder
-                .buildMailer();
-
+        Mailer mailer = mailerBuilder.buildMailer();
         mailer.testConnection();
 
         try {

@@ -17,10 +17,10 @@ package nl.altindag.crip.client.imap;
 
 import nl.altindag.ssl.model.ClientConfig;
 import nl.altindag.ssl.util.ClientRunnable;
+import nl.altindag.sude.Logger;
+import nl.altindag.sude.LoggerFactory;
 import org.apache.commons.net.SocketClient;
 import org.apache.commons.net.imap.AuthenticatingIMAPClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.net.URI;
 import java.time.Duration;
@@ -41,7 +41,7 @@ public final class ImapClientRunnable implements ClientRunnable {
         try {
             client.connect(uri.getHost(), uri.getPort());
         } catch (Exception e) {
-            LOGGER.debug("Could not connect to {}:{}", uri.getHost(), uri.getPort(), e);
+            LOGGER.debug(String.format("Could not connect to %s:%d", uri.getHost(), uri.getPort()), e);
         }
     }
 

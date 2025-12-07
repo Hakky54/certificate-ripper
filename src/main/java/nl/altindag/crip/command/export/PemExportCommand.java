@@ -17,10 +17,10 @@ package nl.altindag.crip.command.export;
 
 import nl.altindag.crip.command.VersionProvider;
 import nl.altindag.crip.model.CertificateHolder;
+import nl.altindag.crip.util.IOUtils;
 import nl.altindag.crip.util.StatisticsUtils;
+import nl.altindag.crip.util.UriUtils;
 import nl.altindag.ssl.util.CertificateUtils;
-import nl.altindag.ssl.util.internal.IOUtils;
-import nl.altindag.ssl.util.internal.UriUtils;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 

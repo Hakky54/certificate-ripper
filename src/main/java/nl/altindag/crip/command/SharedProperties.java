@@ -21,11 +21,11 @@ import nl.altindag.crip.client.smtp.SmtpClientRunnable;
 import nl.altindag.crip.client.websocket.WebSocketClientRunnable;
 import nl.altindag.crip.model.CertificateHolder;
 import nl.altindag.crip.model.CertificateType;
+import nl.altindag.crip.util.UriUtils;
 import nl.altindag.ssl.util.CertificateExtractingClient;
 import nl.altindag.ssl.util.CertificateUtils;
-import nl.altindag.ssl.util.internal.UriUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import nl.altindag.sude.Logger;
+import nl.altindag.sude.LoggerFactory;
 import picocli.CommandLine.Option;
 
 import java.net.InetSocketAddress;
@@ -44,7 +44,7 @@ import java.util.Optional;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
-import static nl.altindag.ssl.util.internal.StringUtils.isNotBlank;
+import static nl.altindag.crip.util.StringUtils.isNotBlank;
 
 @SuppressWarnings({"unused", "FieldCanBeLocal", "FieldMayBeFinal"})
 public class SharedProperties {
@@ -97,7 +97,7 @@ public class SharedProperties {
                 List<X509Certificate> systemTrustedCertificates = CertificateUtils.getSystemTrustedCertificates();
                 urlsToCertificates.put(SYSTEM, systemTrustedCertificates);
             } catch (UnsatisfiedLinkError error) {
-                LOGGER.debug("Unable to extract system certificates for {}", System.getProperty("os.name"));
+                LOGGER.debug(String.format("Unable to extract system certificates for %s", System.getProperty("os.name")));
             }
         }
 

@@ -33,7 +33,6 @@
     <properties>
         <version.java>21</version.java>
         <version.ayza>10.0.2</version.ayza>
-        <version.slf4j>2.0.17</version.slf4j>
         <version.picocli>4.7.7</version.picocli>
         <version.commons-net>3.12.0</version.commons-net>
         <version.simple-java-mail>8.12.6</version.simple-java-mail>
@@ -81,16 +80,6 @@
             <groupId>org.simplejavamail</groupId>
             <artifactId>simple-java-mail</artifactId>
             <version>${version.simple-java-mail}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${version.slf4j}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>${version.slf4j}</version>
         </dependency>
 
         <dependency>
@@ -173,9 +162,6 @@
                     <includes>
                         <include>%regex[.*Should.*]</include>
                     </includes>
-                    <classpathDependencyExcludes>
-                        <classpathDependencyExclude>org.slf4j:slf4j-simple</classpathDependencyExclude>
-                    </classpathDependencyExcludes>
                 </configuration>
             </plugin>
 
