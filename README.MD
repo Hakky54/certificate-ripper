@@ -89,7 +89,7 @@ There are 3 options available to pick from: [GitHub](https://github.com/sponsors
   3. Terminal
 
   ```text
-  mvn clean install \
+  mvn clean install -Pfat-jar \
    && java -jar target/crip.jar print --url=https://youtube.com/
   ```
 
