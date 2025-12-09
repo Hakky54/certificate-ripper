@@ -47,6 +47,7 @@ public final class DerExportRequest extends CombineableExportRequest {
         private ProxyOptions proxyOptions;
         private Integer timeoutInMilliseconds;
         private Boolean resolveRootCa;
+        private Boolean resolveSiblings;
         private CertificateType certificateType;
 
         Builder(List<String> urls) {
@@ -83,6 +84,11 @@ public final class DerExportRequest extends CombineableExportRequest {
             return this;
         }
 
+        public Builder withResolveSiblings(Boolean resolveSiblings) {
+            this.resolveSiblings = resolveSiblings;
+            return this;
+        }
+
         public Builder withCertificateType(CertificateType certificateType) {
             this.certificateType = certificateType;
             return this;
@@ -95,6 +101,7 @@ public final class DerExportRequest extends CombineableExportRequest {
             request.setProxyOptions(proxyOptions);
             request.setTimeoutInMilliseconds(timeoutInMilliseconds);
             request.setResolveRootCa(resolveRootCa);
+            request.setResolveSiblings(resolveSiblings);
             request.setCertificateType(certificateType);
             return request;
         }

@@ -52,6 +52,7 @@ public abstract class KeystoreExportRequest extends ExportRequest {
         private ProxyOptions proxyOptions;
         private Integer timeoutInMilliseconds;
         private Boolean resolveRootCa;
+        private Boolean resolveSiblings;
         private CertificateType certificateType;
 
         Builder(List<String> urls, ExportMode exportMode) {
@@ -89,6 +90,11 @@ public abstract class KeystoreExportRequest extends ExportRequest {
             return this;
         }
 
+        public Builder withResolveSiblings(Boolean resolveSiblings) {
+            this.resolveSiblings = resolveSiblings;
+            return this;
+        }
+
         public Builder withCertificateType(CertificateType certificateType) {
             this.certificateType = certificateType;
             return this;
@@ -106,6 +112,7 @@ public abstract class KeystoreExportRequest extends ExportRequest {
             request.setProxyOptions(proxyOptions);
             request.setTimeoutInMilliseconds(timeoutInMilliseconds);
             request.setResolveRootCa(resolveRootCa);
+            request.setResolveSiblings(resolveSiblings);
             request.setCertificateType(certificateType);
             return request;
         }
