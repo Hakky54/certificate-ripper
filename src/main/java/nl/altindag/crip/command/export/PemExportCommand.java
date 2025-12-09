@@ -25,7 +25,6 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.cert.X509Certificate;
 import java.util.Collection;
@@ -80,8 +79,8 @@ public class PemExportCommand extends CombinableFileExport implements Runnable {
                             .orElse(key) + ".crt";
 
                     destination = getDestination()
-                            .map(path -> resolveDestination(path, fileName))
-                            .orElseGet(() -> getCurrentDirectory().resolve(fileName));
+                            .map(path -> IOUtils.resolveDestination(path, fileName))
+                            .orElseGet(() -> IOUtils.getCurrentDirectory().resolve(fileName));
 
                     IOUtils.write(destination, certificatesAsPem.getBytes(StandardCharsets.UTF_8));
                 }
@@ -116,37 +115,13 @@ public class PemExportCommand extends CombinableFileExport implements Runnable {
                     );
         }
 
-        Path directory = getDestination().map(this::resolveDestination).orElseGet(this::getCurrentDirectory);
+        Path directory = getDestination().map(IOUtils::resolveDestination).orElseGet(IOUtils::getCurrentDirectory);
         for (Entry<String, String> certificateEntry : filenameToCertificate.entrySet()) {
             Path certificatePath = directory.resolve(certificateEntry.getKey() + ".crt");
             IOUtils.write(certificatePath, certificateEntry.getValue().getBytes(StandardCharsets.UTF_8));
         }
 
         StatisticsUtils.printStatics(certificateHolder, directory);
-    }
-
-    private Path resolveDestination(Path path) {
-        if (Files.isDirectory(path)) {
-            return path;
-        }
-
-        if (!path.isAbsolute()) {
-            return resolveDestination(path.toAbsolutePath().normalize());
-        }
-
-        return getCurrentDirectory();
-    }
-
-    private Path resolveDestination(Path path, String fileName) {
-        if (Files.isDirectory(path)) {
-            return path.resolve(fileName);
-        }
-
-        if (!path.isAbsolute()) {
-            return resolveDestination(path.toAbsolutePath().normalize(), fileName);
-        }
-
-        return path;
     }
 
     private static String removeHeader(String value) {

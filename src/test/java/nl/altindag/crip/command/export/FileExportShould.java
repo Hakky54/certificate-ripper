@@ -16,6 +16,7 @@
 package nl.altindag.crip.command.export;
 
 import nl.altindag.crip.command.FileBaseTest;
+import nl.altindag.crip.util.IOUtils;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Files;
@@ -35,8 +36,7 @@ class FileExportShould extends FileBaseTest {
 
     @Test
     void getCurrentDirectory() {
-        FileExport fileExport = new FileExport();
-        Path currentDirectory = fileExport.getCurrentDirectory();
+        Path currentDirectory = IOUtils.getCurrentDirectory();
         assertThat(currentDirectory).isNotNull();
         assertThat(Files.exists(currentDirectory)).isTrue();
     }
