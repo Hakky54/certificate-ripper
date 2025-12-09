@@ -17,6 +17,7 @@ package nl.altindag.crip.command.export;
 
 import nl.altindag.crip.command.FileBaseTest;
 import nl.altindag.crip.command.TestServer;
+import nl.altindag.crip.util.IOUtils;
 import nl.altindag.log.LogCaptor;
 import nl.altindag.ssl.server.service.Server;
 import org.junit.jupiter.api.Test;
@@ -24,6 +25,7 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -59,6 +61,101 @@ class PemExportCommandShould extends FileBaseTest {
         for (Path file : files) {
             String content = Files.lines(file).collect(Collectors.joining(System.lineSeparator()));
             assertThat(expectedCertificates).contains(content);
+        }
+    }
+
+    @Test
+    void exportCertificateWithRelativePath() throws IOException {
+        List<String> expectedCertificates = Arrays.asList(
+                getResourceContent("reference-files/pem/server-one/cn=certificate-ripper-server-one_ou=amsterdam_o=thunderberry_c=nl_with_header.crt"),
+                getResourceContent("reference-files/pem/server-one/cn=root-ca_ou=certificate-authority_o=thunderberry_c=nl_with_header.crt")
+        );
+
+        assertThat(expectedCertificates).isNotEmpty();
+
+        Path expectedDestination = IOUtils.getDirectory(IOUtils.resolveDestination(Paths.get("test-server.crt"), "abcd.crt"));
+        assertThat(expectedDestination).isAbsolute();
+
+        cmd.execute("export", "pem", "--url=https://localhost:8443", "--destination=test-server.crt");
+
+        assertThat(consoleCaptor.getStandardOutput()).contains("Extracted 2 certificates.");
+
+        List<Path> files = Files.walk(expectedDestination, 1)
+                .filter(Files::isRegularFile)
+                .filter(file -> file.toString().endsWith(".crt"))
+                .collect(Collectors.toList());
+
+        assertThat(files)
+                .hasSize(expectedCertificates.size())
+                .allMatch(path -> path.toString().endsWith(".crt"));
+
+        for (Path file : files) {
+            String content = Files.lines(file).collect(Collectors.joining(System.lineSeparator()));
+            assertThat(expectedCertificates).contains(content);
+            Files.delete(file);
+        }
+    }
+
+    @Test
+    void exportCertificateWithRelativePathWhileCombiningCertificates() throws IOException {
+        List<String> expectedCertificates = Arrays.asList(
+                getResourceContent("reference-files/pem/server-one/cn=certificate-ripper-server-one_ou=amsterdam_o=thunderberry_c=nl_with_header.crt"),
+                getResourceContent("reference-files/pem/server-one/cn=root-ca_ou=certificate-authority_o=thunderberry_c=nl_with_header.crt")
+        );
+
+        assertThat(expectedCertificates).isNotEmpty();
+
+        Path expectedDestination = IOUtils.resolveDestination(Paths.get("test-server.crt"), "abcd.crt");
+        assertThat(expectedDestination).isAbsolute();
+
+        cmd.execute("export", "pem", "--url=https://localhost:8443", "--destination=test-server.crt", "--combined=true");
+
+        assertThat(consoleCaptor.getStandardOutput()).contains("Extracted 2 certificates.");
+
+        List<Path> files = Files.walk(expectedDestination, 1)
+                .filter(Files::isRegularFile)
+                .collect(Collectors.toList());
+
+        assertThat(files)
+                .hasSize(1)
+                .allMatch(path -> path.toString().endsWith("test-server.crt"));
+
+        Path file = files.getFirst();
+        String content = Files.lines(file).collect(Collectors.joining(System.lineSeparator()));
+        assertThat(String.join(System.lineSeparator(), expectedCertificates)).isEqualTo(content);
+        Files.delete(file);
+    }
+
+    @Test
+    void exportCertificateWithRelativePathWithinTheCurrentDirectory() throws IOException {
+        List<String> expectedCertificates = Arrays.asList(
+                getResourceContent("reference-files/pem/server-one/cn=certificate-ripper-server-one_ou=amsterdam_o=thunderberry_c=nl_with_header.crt"),
+                getResourceContent("reference-files/pem/server-one/cn=root-ca_ou=certificate-authority_o=thunderberry_c=nl_with_header.crt")
+        );
+
+        assertThat(expectedCertificates).isNotEmpty();
+
+        Path expectedDestination = IOUtils.getDirectory(IOUtils.resolveDestination(Paths.get("./test-server.crt"), "abcd.crt"));
+        assertThat(expectedDestination).isAbsolute();
+        assertThat(expectedCertificates.toString()).doesNotContain("abcd.crt");
+
+        cmd.execute("export", "pem", "--url=https://localhost:8443", "--destination=./test-server.crt");
+
+        assertThat(consoleCaptor.getStandardOutput()).contains("Extracted 2 certificates.");
+
+        List<Path> files = Files.walk(expectedDestination, 1)
+                .filter(Files::isRegularFile)
+                .filter(file -> file.toString().endsWith(".crt"))
+                .collect(Collectors.toList());
+
+        assertThat(files)
+                .hasSize(expectedCertificates.size())
+                .allMatch(path -> path.toString().endsWith(".crt"));
+
+        for (Path file : files) {
+            String content = Files.lines(file).collect(Collectors.joining(System.lineSeparator()));
+            assertThat(expectedCertificates).contains(content);
+            Files.delete(file);
         }
     }
 

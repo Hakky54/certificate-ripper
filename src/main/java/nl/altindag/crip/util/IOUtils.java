@@ -53,7 +53,7 @@ public final class IOUtils {
 
     public static Path resolveDestination(Path path) {
         if (Files.isDirectory(path)) {
-            return path;
+            return path.normalize().toAbsolutePath();
         }
 
         if (!path.isAbsolute()) {
@@ -72,11 +72,20 @@ public final class IOUtils {
             return path.resolve(fileName);
         }
 
-        if (!path.isAbsolute()) {
-            return resolveDestination(path.toAbsolutePath().normalize(), fileName);
+        Path normalisedPath = path.normalize();
+        if (!normalisedPath.isAbsolute() && normalisedPath.getParent() == null) {
+            return resolveDestination(normalisedPath.toAbsolutePath(), fileName);
         }
 
         return path;
+    }
+
+    public static Path getDirectory(Path path) {
+        if (Files.isDirectory(path)) {
+            return path;
+        } else {
+            return path.getParent();
+        }
     }
 
     public static Path getCurrentDirectory() {

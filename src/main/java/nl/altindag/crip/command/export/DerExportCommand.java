@@ -114,7 +114,7 @@ public class DerExportCommand extends CombinableFileExport implements Runnable {
                 }
             }
 
-            Path directory = getDestination().map(IOUtils::resolveDestination).orElseGet(IOUtils::getCurrentDirectory);
+            Path directory = getDestination().map(IOUtils::resolveDestination).map(IOUtils::getDirectory).orElseGet(IOUtils::getCurrentDirectory);
             for (Entry<String, byte[]> certificateEntry : filenameToFileContent.entrySet()) {
                 Path certificatePath = directory.resolve(certificateEntry.getKey());
                 IOUtils.write(certificatePath, certificateEntry.getValue());
