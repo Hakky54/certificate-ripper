@@ -55,12 +55,13 @@ public class PemExportCommand extends CombinableFileExport implements Runnable {
     public void run() {
         Map<String, String> filenameToCertificate;
         CertificateHolder certificateHolder = sharedProperties.getCertificateHolder();
-        if (certificateHolder.getUrlsToCertificates().isEmpty()) {
+        Map<String, List<X509Certificate>> urlsToCertificates = certificateHolder.getUrlsToCertificates();
+        if (urlsToCertificates.isEmpty()) {
             return;
         }
 
         if (combined) {
-            if (certificateHolder.getUrlsToCertificates().size() == 1) {
+            if (urlsToCertificates.size() == 1) {
                 List<X509Certificate> certificates = certificateHolder.getUniqueCertificates();
                 Path destination = null;
 
@@ -70,7 +71,7 @@ public class PemExportCommand extends CombinableFileExport implements Runnable {
                             .map(certificate -> includeHeader ? certificate : removeHeader(certificate))
                             .collect(Collectors.joining(System.lineSeparator()));
 
-                    String key = certificateHolder.getUrlsToCertificates().keySet().stream()
+                    String key = urlsToCertificates.keySet().stream()
                             .findFirst()
                             .orElseThrow(IllegalArgumentException::new);
 
@@ -79,7 +80,7 @@ public class PemExportCommand extends CombinableFileExport implements Runnable {
                             .orElse(key) + ".crt";
 
                     destination = getDestination()
-                            .map(path -> Files.isDirectory(path) ? path.resolve(fileName) : path)
+                            .map(path -> resolveDestination(path, fileName))
                             .orElseGet(() -> getCurrentDirectory().resolve(fileName));
 
                     IOUtils.write(destination, certificatesAsPem.getBytes(StandardCharsets.UTF_8));
@@ -89,7 +90,7 @@ public class PemExportCommand extends CombinableFileExport implements Runnable {
             }
 
             filenameToCertificate = new HashMap<>();
-            for (Entry<String, List<X509Certificate>> entry : certificateHolder.getUrlsToCertificates().entrySet()) {
+            for (Entry<String, List<X509Certificate>> entry : urlsToCertificates.entrySet()) {
                 String fileName = Optional.ofNullable(UriUtils.extractHost(entry.getKey()))
                         .map(this::reformatFileName)
                         .orElse(entry.getKey());
@@ -108,20 +109,44 @@ public class PemExportCommand extends CombinableFileExport implements Runnable {
                 }
             }
         } else {
-            filenameToCertificate = certificateHolder.getUrlsToCertificates().values().stream()
+            filenameToCertificate = urlsToCertificates.values().stream()
                     .flatMap(Collection::stream)
                     .collect(collectingAndThen(collectingAndThen(toList(), CertificateUtils::generateAliases),
                             entry -> entry.entrySet().stream().collect(toMap(Entry::getKey, element -> includeHeader ? CertificateUtils.convertToPem(element.getValue()) : removeHeader(CertificateUtils.convertToPem(element.getValue())))))
                     );
         }
 
-        Path directory = getDestination().orElseGet(this::getCurrentDirectory);
+        Path directory = getDestination().map(this::resolveDestination).orElseGet(this::getCurrentDirectory);
         for (Entry<String, String> certificateEntry : filenameToCertificate.entrySet()) {
             Path certificatePath = directory.resolve(certificateEntry.getKey() + ".crt");
             IOUtils.write(certificatePath, certificateEntry.getValue().getBytes(StandardCharsets.UTF_8));
         }
 
         StatisticsUtils.printStatics(certificateHolder, directory);
+    }
+
+    private Path resolveDestination(Path path) {
+        if (Files.isDirectory(path)) {
+            return path;
+        }
+
+        if (!path.isAbsolute()) {
+            return resolveDestination(path.toAbsolutePath().normalize());
+        }
+
+        return getCurrentDirectory();
+    }
+
+    private Path resolveDestination(Path path, String fileName) {
+        if (Files.isDirectory(path)) {
+            return path.resolve(fileName);
+        }
+
+        if (!path.isAbsolute()) {
+            return resolveDestination(path.toAbsolutePath().normalize(), fileName);
+        }
+
+        return path;
     }
 
     private static String removeHeader(String value) {
