@@ -30,12 +30,11 @@ public class PostgresClientRunnable implements ClientRunnable {
     @SuppressWarnings("EmptyTryBlock")
     public void run(ClientConfig clientConfig, URI uri) {
         ProviderUtils.configure(clientConfig.getSslFactory());
-        String url = String.format("jdbc:postgresql://%s:%d/", uri.getHost(), uri.getPort());
+        String url = String.format("jdbc:%s", uri.toString());
 
         try (Connection conn = DriverManager.getConnection(url)) {
             // calling getConnection to trigger the SSL handshake
         } catch (SQLException ignored) {
-
         } finally {
             ProviderUtils.remove();
         }

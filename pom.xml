@@ -393,6 +393,7 @@ limitations under the License.
                         <configuration>
                             <skip>false</skip>
                             <buildArgs>
+                                --future-defaults=all
                                 --no-fallback
                                 -H:EnableURLProtocols=https
                                 -H:EnableURLProtocols=http
