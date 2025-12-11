@@ -36,6 +36,7 @@
         <version.picocli>4.7.7</version.picocli>
         <version.commons-net>3.12.0</version.commons-net>
         <version.simple-java-mail>8.12.6</version.simple-java-mail>
+        <version.postgresql>42.7.8</version.postgresql>
         <version.junit>5.14.1</version.junit>
         <version.assertj-core>3.27.6</version.assertj-core>
         <version.consolecaptor>1.0.4</version.consolecaptor>
@@ -80,6 +81,11 @@
             <groupId>org.simplejavamail</groupId>
             <artifactId>simple-java-mail</artifactId>
             <version>${version.simple-java-mail}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${version.postgresql}</version>
         </dependency>
 
         <dependency>
