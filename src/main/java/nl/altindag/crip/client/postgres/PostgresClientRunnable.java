@@ -19,6 +19,7 @@ import nl.altindag.ssl.model.ClientConfig;
 import nl.altindag.ssl.util.ClientRunnable;
 import nl.altindag.ssl.util.ProviderUtils;
 
+import javax.net.ssl.SSLContext;
 import java.net.URI;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -29,12 +30,21 @@ public class PostgresClientRunnable implements ClientRunnable {
     @Override
     @SuppressWarnings("EmptyTryBlock")
     public void run(ClientConfig clientConfig, URI uri) {
-        ProviderUtils.configure(clientConfig.getSslFactory());
+        try {
+            ProviderUtils.configure(clientConfig.getSslFactory());
+            System.out.println(clientConfig.getSslFactory().getSslSocketFactory().getClass().getName());
+            System.out.println(SSLContext.getInstance("TLS").getSocketFactory().getClass().getName());
+            System.out.println(SSLContext.getDefault().getSocketFactory().getClass().getName());
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
+
         String url = String.format("jdbc:%s", uri.toString());
 
         try (Connection conn = DriverManager.getConnection(url)) {
             // calling getConnection to trigger the SSL handshake
         } catch (SQLException ignored) {
+
         } finally {
             ProviderUtils.remove();
         }
