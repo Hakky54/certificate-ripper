@@ -21,9 +21,11 @@ import nl.altindag.ssl.util.ProviderUtils;
 
 import javax.net.ssl.SSLContext;
 import java.net.URI;
+import java.security.Security;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Arrays;
 
 public class PostgresClientRunnable implements ClientRunnable {
 
@@ -32,6 +34,7 @@ public class PostgresClientRunnable implements ClientRunnable {
     public void run(ClientConfig clientConfig, URI uri) {
         try {
             ProviderUtils.configure(clientConfig.getSslFactory());
+            System.out.println(Arrays.toString(Security.getProviders()));
             System.out.println(clientConfig.getSslFactory().getSslSocketFactory().getClass().getName());
             System.out.println(SSLContext.getInstance("TLS").getSocketFactory().getClass().getName());
             System.out.println(SSLContext.getDefault().getSocketFactory().getClass().getName());
