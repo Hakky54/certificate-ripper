@@ -1,0 +1,15 @@
+language: java
+jdk:
+  - openjdk21
+os:
+  - linux
+  - windows
+install: true
+script:
+  - mvn clean verify --no-transfer-progress 
+  - mvn clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.organization=hakky54 -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR_TOKEN --no-transfer-progress
+addons:
+  sonarcloud:
+    organization: "hakky54"
+    token:
+      secure: ""
