@@ -21,7 +21,6 @@ import nl.altindag.sude.Logger;
 import nl.altindag.sude.LoggerFactory;
 
 import javax.net.ssl.SSLSocket;
-import javax.net.ssl.SSLSocketFactory;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -66,8 +65,7 @@ public class PostgresClientRunnable implements ClientRunnable {
                 return;
             }
 
-            SSLSocketFactory sslSocketFactory = clientConfig.getSslFactory().getSslSocketFactory();
-            try (SSLSocket sslSocket = (SSLSocket) sslSocketFactory.createSocket(socket, uri.getHost(), uri.getPort(), true)) {
+            try (SSLSocket sslSocket = (SSLSocket) clientConfig.getSslFactory().getSslSocketFactory().createSocket(socket, uri.getHost(), uri.getPort(), true)) {
                 sslSocket.startHandshake();
             }
         } catch (IOException e) {
