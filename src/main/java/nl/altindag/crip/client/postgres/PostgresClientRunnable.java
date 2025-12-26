@@ -17,39 +17,60 @@ package nl.altindag.crip.client.postgres;
 
 import nl.altindag.ssl.model.ClientConfig;
 import nl.altindag.ssl.util.ClientRunnable;
-import nl.altindag.ssl.util.ProviderUtils;
+import nl.altindag.sude.Logger;
+import nl.altindag.sude.LoggerFactory;
 
-import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.Socket;
 import java.net.URI;
-import java.security.Security;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.util.Arrays;
+import java.time.Duration;
+import java.util.Optional;
 
+/**
+ * <a href="https://www.postgresql.org/docs/current/protocol-flow.html#PROTOCOL-FLOW-SSL">Protocol - SSL Flow</a>
+ * <a href="https://www.postgresql.org/docs/current/protocol-message-formats.html#PROTOCOL-MESSAGE-FORMATS-SSLREQUEST">Protocol message format - SSL request</a>
+ */
 public class PostgresClientRunnable implements ClientRunnable {
 
+    private static final int SSL_REQUEST_MESSAGE_LENGTH = 8;
+    private static final int SSL_REQUEST_CODE = 80877103;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PostgresClientRunnable.class);
+
     @Override
-    @SuppressWarnings("EmptyTryBlock")
     public void run(ClientConfig clientConfig, URI uri) {
-        try {
-            ProviderUtils.configure(clientConfig.getSslFactory());
-            System.out.println(Arrays.toString(Security.getProviders()));
-            System.out.println(clientConfig.getSslFactory().getSslSocketFactory().getClass().getName());
-            System.out.println(SSLContext.getInstance("TLS").getSocketFactory().getClass().getName());
-            System.out.println(SSLContext.getDefault().getSocketFactory().getClass().getName());
-        } catch (Throwable throwable) {
-            throwable.printStackTrace();
-        }
+        try (Socket socket = new Socket(uri.getHost(), uri.getPort());
+             DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+             DataInputStream in = new DataInputStream(socket.getInputStream())) {
 
-        String url = String.format("jdbc:%s", uri.toString());
+            Optional<Integer> timeout = clientConfig.getTimeout()
+                    .map(Duration::toMillis)
+                    .map(Long::intValue);
 
-        try (Connection conn = DriverManager.getConnection(url)) {
-            // calling getConnection to trigger the SSL handshake
-        } catch (SQLException ignored) {
+            if (timeout.isPresent()) {
+                socket.setSoTimeout(timeout.get());
+            }
 
-        } finally {
-            ProviderUtils.remove();
+            out.writeInt(SSL_REQUEST_MESSAGE_LENGTH);
+            out.writeInt(SSL_REQUEST_CODE);
+            out.flush();
+
+            byte response = in.readByte();
+            if (response != 'S') {
+                LOGGER.debug("The server does not support SSL or refuses to connect.");
+                return;
+            }
+
+            SSLSocketFactory sslSocketFactory = clientConfig.getSslFactory().getSslSocketFactory();
+            try (SSLSocket sslSocket = (SSLSocket) sslSocketFactory.createSocket(socket, uri.getHost(), uri.getPort(), true)) {
+                sslSocket.startHandshake();
+            }
+        } catch (IOException e) {
+            LOGGER.debug(String.format("Could not connect to %s:%d", uri.getHost(), uri.getPort()), e);
         }
     }
 
