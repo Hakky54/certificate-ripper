@@ -36,10 +36,11 @@ import java.util.Optional;
  */
 public class PostgresClientRunnable implements ClientRunnable {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(PostgresClientRunnable.class);
+
     private static final int SSL_REQUEST_MESSAGE_LENGTH = 8;
     private static final int SSL_REQUEST_CODE = 80877103;
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(PostgresClientRunnable.class);
+    private static final char SECURE_CODE = 'S';
 
     @Override
     public void run(ClientConfig clientConfig, URI uri) {
@@ -60,7 +61,7 @@ public class PostgresClientRunnable implements ClientRunnable {
             out.flush();
 
             byte response = in.readByte();
-            if (response != 'S') {
+            if (response != SECURE_CODE) {
                 LOGGER.debug("The server does not support SSL or refuses to connect.");
                 return;
             }
