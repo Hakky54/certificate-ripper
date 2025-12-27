@@ -49,12 +49,13 @@ There are 3 options available to pick from: [GitHub](https://github.com/sponsors
 #### Contributed/Unofficial Installation Methods
 - Arch-Linux (AUR)
   - Install the [certificate-ripper-bin](https://aur.archlinux.org/packages/certificate-ripper-bin) AUR package
-- NixOS (nixpkgs)
+- NixOS ([nixpkgs](https://search.nixos.org/packages?channel=25.11&show=certificate-ripper&query=certificate+ripper))
   - Run `nix-shell -p certificate-ripper` or add `pkgs.certificate-ripper` to your `configuration.nix` file
+- [Sourceforge](https://sourceforge.net/projects/certificate-ripper.mirror/)
 - Windows
-  - Chocolatey 🍫 
+  - [Chocolatey](https://community.chocolatey.org/packages/crip) 🍫 
     - Run `choco install crip`
-  - Scoop 🍨
+  - [Scoop](https://scoop.sh/#/apps?q=crip&p=1) 🍨
     - Run `scoop install extras/crip`
 
 ## Build locally
