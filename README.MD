@@ -222,7 +222,7 @@ crip export pem -u=smtps://smtp-mail.outlook.com:587
 crip export pem -u=imaps://outlook.office365.com:993
 
 # PostgreSQL server
-crip export pem -u="postgresql://localhost:5432/"
+crip export pem -u=postgresql://localhost:5432/
 ```
 
 ### Filter on certificate types
