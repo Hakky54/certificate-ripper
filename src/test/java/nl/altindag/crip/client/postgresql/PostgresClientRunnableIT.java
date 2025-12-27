@@ -34,7 +34,8 @@ class PostgresClientRunnableIT {
         Process process = new ProcessBuilder("docker", "run", "--rm",
                 "-e" ,"POSTGRES_PASSWORD=password",
                 "-p", "5432:5432", "postgres:15",
-                "-c", "ssl=on", "-c", "ssl_cert_file=/etc/ssl/certs/ssl-cert-snakeoil.pem",
+                "-c", "ssl=on",
+                "-c", "ssl_cert_file=/etc/ssl/certs/ssl-cert-snakeoil.pem",
                 "-c", "ssl_key_file=/etc/ssl/private/ssl-cert-snakeoil.key"
         ).start();
 
