@@ -39,11 +39,13 @@
         <version.simple-java-mail>8.12.6</version.simple-java-mail>
         <version.junit>5.14.1</version.junit>
         <version.assertj-core>3.27.6</version.assertj-core>
+        <version.awaitility>4.3.0</version.awaitility>
         <version.consolecaptor>1.0.4</version.consolecaptor>
         <version.logcaptor>2.12.1</version.logcaptor>
         <version.ssl-server>1.0.8</version.ssl-server>
         <version.maven-compiler-plugin>3.14.1</version.maven-compiler-plugin>
         <version.maven-surefire-plugin>3.5.4</version.maven-surefire-plugin>
+        <version.maven-fail-safe>3.5.4</version.maven-fail-safe>
         <version.exec-maven-plugin>3.6.2</version.exec-maven-plugin>
         <version.maven-shade-plugin>3.6.1</version.maven-shade-plugin>
         <version.jacoco-maven-plugin>0.8.14</version.jacoco-maven-plugin>
@@ -55,6 +57,7 @@
         <version.maven-gpg-plugin>3.2.8</version.maven-gpg-plugin>
         <version.maven-release-plugin>3.3.0</version.maven-release-plugin>
         <version.nexus-staging-maven-plugin>1.7.0</version.nexus-staging-maven-plugin>
+        <skipITs>true</skipITs>
         <license.git.copyrightYears>2021</license.git.copyrightYears>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -107,14 +110,12 @@
             <version>${version.junit}</version>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
             <version>${version.assertj-core}</version>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>io.github.hakky54</groupId>
             <artifactId>consolecaptor</artifactId>
@@ -127,11 +128,16 @@
             <version>${version.logcaptor}</version>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>io.github.hakky54</groupId>
             <artifactId>ssl-server</artifactId>
             <version>${version.ssl-server}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.awaitility</groupId>
+            <artifactId>awaitility</artifactId>
+            <version>${version.awaitility}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -166,6 +172,29 @@
                     </includes>
                     <useModulePath>false</useModulePath>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>${version.maven-fail-safe}</version>
+                <configuration>
+                    <useModulePath>false</useModulePath>
+                    <skipTests>${skipITs}</skipTests>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>integration-test</id>
+                        <goals>
+                            <goal>integration-test</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>verify</id>
+                        <goals>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
 
             <plugin>

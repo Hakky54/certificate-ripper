@@ -13,27 +13,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.altindag.crip.localserver;
+package nl.altindag.crip.client.postgresql;
 
+import nl.altindag.console.ConsoleCaptor;
 import nl.altindag.crip.CertificateRipper;
+import nl.altindag.crip.request.Request;
+import org.awaitility.Awaitility;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-public class LocalPostgreSQL {
+import static org.assertj.core.api.Assertions.assertThat;
 
-    public static void main(String... args) throws InterruptedException, IOException {
+class PostgresClientRunnableIT {
+
+    @Test
+    void shouldPrintCertificates() throws IOException {
+        ConsoleCaptor consoleCaptor = new ConsoleCaptor();
         Process process = new ProcessBuilder("docker", "run", "--rm",
                 "-e" ,"POSTGRES_PASSWORD=password",
                 "-p", "5432:5432", "postgres:15",
                 "-c", "ssl=on", "-c", "ssl_cert_file=/etc/ssl/certs/ssl-cert-snakeoil.pem",
-                "-c", "ssl_key_file=/etc/ssl/private/ssl-cert-snakeoil.key")
-                .start();
+                "-c", "ssl_key_file=/etc/ssl/private/ssl-cert-snakeoil.key"
+        ).start();
 
-        TimeUnit.SECONDS.sleep(5);
-        CertificateRipper.print("postgresql://localhost:5432/").build().run();
+        Request request = CertificateRipper.print("postgresql://localhost:5432/").build();
+
+        Awaitility.await()
+                .atMost(60, TimeUnit.SECONDS)
+                .pollInterval(1, TimeUnit.SECONDS)
+                .untilAsserted(() -> {
+                    request.run();
+                    assertThat(consoleCaptor.getStandardOutput()).contains("* 1: postgresql://localhost:5432/");
+                });
 
         process.destroy();
+        consoleCaptor.close();
     }
 
 }
