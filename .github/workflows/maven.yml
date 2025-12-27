@@ -41,6 +41,6 @@ jobs:
           cache: 'maven'
 
       - name: Build, test and quality scan
-        run: mvn clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.organization=hakky54 -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${{ secrets.SONAR_TOKEN }} --no-transfer-progress
+        run: mvn clean verify -DskipITs=false org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.organization=hakky54 -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${{ secrets.SONAR_TOKEN }} --no-transfer-progress
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
