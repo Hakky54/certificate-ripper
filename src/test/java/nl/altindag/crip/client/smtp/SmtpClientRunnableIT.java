@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.altindag.crip.client.postgresql;
+package nl.altindag.crip.client.smtp;
 
 import nl.altindag.console.ConsoleCaptor;
 import nl.altindag.crip.CertificateRipper;
@@ -21,28 +21,19 @@ import nl.altindag.crip.request.Request;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class PostgresClientRunnableIT {
+class SmtpClientRunnableIT {
 
-    private static final Pattern CAPTURED_CERTIFICATES = Pattern.compile("\\* [1-9]+: postgresql://localhost:5432/");
+    private static final Pattern CAPTURED_CERTIFICATES = Pattern.compile("\\* [1-9]+: smtps://smtp-mail\\.outlook\\.com:587");
 
     @Test
-    void shouldPrintCertificates() throws IOException {
+    void shouldPrintCertificates() {
         ConsoleCaptor consoleCaptor = new ConsoleCaptor();
-        Process process = new ProcessBuilder("docker", "run", "--rm",
-                "-e" ,"POSTGRES_PASSWORD=password",
-                "-p", "5432:5432", "postgres:15",
-                "-c", "ssl=on",
-                "-c", "ssl_cert_file=/etc/ssl/certs/ssl-cert-snakeoil.pem",
-                "-c", "ssl_key_file=/etc/ssl/private/ssl-cert-snakeoil.key"
-        ).start();
-
-        Request request = CertificateRipper.print("postgresql://localhost:5432/").build();
+        Request request = CertificateRipper.print("smtps://smtp-mail.outlook.com:587").build();
 
         Awaitility.await()
                 .atMost(60, TimeUnit.SECONDS)
@@ -53,7 +44,6 @@ class PostgresClientRunnableIT {
                     assertThat(CAPTURED_CERTIFICATES.matcher(standardOutput).find()).isTrue();
                 });
 
-        process.destroy();
         consoleCaptor.close();
     }
 
