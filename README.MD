@@ -38,6 +38,8 @@ There are 3 options available to pick from: [GitHub](https://github.com/sponsors
   - ftps (File Transfer Protocol Secure)
   - smtps (Simple Mail Transfer Protocol Secure)
   - imaps (Internet Message Access Protocol Secure)
+  - Database:
+    - PostgreSQL
 
 ## Installing
 
