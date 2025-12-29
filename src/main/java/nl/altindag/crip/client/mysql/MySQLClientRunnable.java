@@ -54,8 +54,7 @@ public final class MySQLClientRunnable implements ClientRunnable {
 
     @Override
     public void run(ClientConfig clientConfig, URI uri) {
-        try {
-            Socket socket = new Socket(uri.getHost(), uri.getPort());
+        try(Socket socket = new Socket(uri.getHost(), uri.getPort())) {
             Optional<Integer> timeout = clientConfig.getTimeout()
                     .map(Duration::toMillis)
                     .map(Long::intValue);
