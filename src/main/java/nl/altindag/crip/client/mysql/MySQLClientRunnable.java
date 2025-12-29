@@ -101,10 +101,6 @@ public final class MySQLClientRunnable implements ClientRunnable {
             throw new IOException("Only MySQL protocol version 10 is supported");
         }
 
-        return getFlags(bytesRead, buffer);
-    }
-
-    private static int getFlags(int bytesRead, byte[] buffer) throws IOException {
         int pos = 5;
         // server version[string+NULL]
         while (pos < bytesRead && buffer[pos] != 0) {
