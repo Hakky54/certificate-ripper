@@ -21,6 +21,7 @@ import nl.altindag.sude.Logger;
 import nl.altindag.sude.LoggerFactory;
 
 import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.URI;
@@ -77,7 +78,8 @@ public final class MySQLClientRunnable implements ClientRunnable {
             socket.getOutputStream().write(SSL_REQUEST);
             socket.getOutputStream().flush();
 
-            try(SSLSocket sslSocket = (SSLSocket) clientConfig.getSslFactory().getSslSocketFactory().createSocket(socket, uri.getHost(), uri.getPort(), true)) {
+            SSLSocketFactory sslSocketFactory = clientConfig.getSslFactory().getSslSocketFactory();
+            try(SSLSocket sslSocket = (SSLSocket) sslSocketFactory.createSocket(socket, uri.getHost(), uri.getPort(), true)) {
                 sslSocket.startHandshake();
             }
         } catch (Exception e) {
