@@ -40,6 +40,7 @@ There are 3 options available to pick from: [GitHub](https://github.com/sponsors
   - imaps (Internet Message Access Protocol Secure)
   - Database:
     - PostgreSQL
+    - MySQL
 
 ## Installing
 
@@ -225,6 +226,9 @@ crip export pem -u=imaps://outlook.office365.com:993
 
 # PostgreSQL server
 crip export pem -u=postgresql://localhost:5432/
+
+# MySQL server
+crip export pem -u=mysql://localhost:3306/
 ```
 
 ### Filter on certificate types
