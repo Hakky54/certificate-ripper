@@ -80,6 +80,7 @@ public final class MySQLClientRunnable implements ClientRunnable {
             SSLSocket sslSocket = (SSLSocket) clientConfig.getSslFactory().getSslSocketFactory().createSocket(socket, uri.getHost(), uri.getPort(), true);
             sslSocket.setUseClientMode(true);
             sslSocket.startHandshake();
+            sslSocket.close();
         } catch (Exception e) {
             LOGGER.debug(String.format("Could not connect to %s:%d", uri.getHost(), uri.getPort()), e);
         }
