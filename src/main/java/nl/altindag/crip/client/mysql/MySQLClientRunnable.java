@@ -77,10 +77,9 @@ public final class MySQLClientRunnable implements ClientRunnable {
             socket.getOutputStream().write(SSL_REQUEST);
             socket.getOutputStream().flush();
 
-            SSLSocket sslSocket = (SSLSocket) clientConfig.getSslFactory().getSslSocketFactory().createSocket(socket, uri.getHost(), uri.getPort(), true);
-            sslSocket.setUseClientMode(true);
-            sslSocket.startHandshake();
-            sslSocket.close();
+            try(SSLSocket sslSocket = (SSLSocket) clientConfig.getSslFactory().getSslSocketFactory().createSocket(socket, uri.getHost(), uri.getPort(), true)) {
+                sslSocket.startHandshake();
+            }
         } catch (Exception e) {
             LOGGER.debug(String.format("Could not connect to %s:%d", uri.getHost(), uri.getPort()), e);
         }
