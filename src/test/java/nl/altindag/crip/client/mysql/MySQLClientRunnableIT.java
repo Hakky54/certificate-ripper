@@ -22,6 +22,7 @@ import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
@@ -33,11 +34,14 @@ class MySQLClientRunnableIT {
 
     @Test
     void shouldPrintCertificates() throws IOException {
+        URL dockerComposeFile = MySQLClientRunnableIT.class.getClassLoader().getResource("docker-compose/mysql/docker-compose.yaml");
+        assertThat(dockerComposeFile).isNotNull();
+
         ConsoleCaptor consoleCaptor = new ConsoleCaptor();
         Process process = new ProcessBuilder(
                 "docker",
                 "compose",
-                "--file=/Users/thunderberry/projects/hakky54/certificate-ripper/src/test/resources/docker-compose/mysql/docker-compose.yaml",
+                "--file=" + dockerComposeFile.getPath(),
                 "up"
         ).start();
 
