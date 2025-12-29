@@ -17,6 +17,7 @@ package nl.altindag.crip.command;
 
 import nl.altindag.crip.client.ftp.FtpsClientRunnable;
 import nl.altindag.crip.client.imap.ImapClientRunnable;
+import nl.altindag.crip.client.mysql.MySQLClientRunnable;
 import nl.altindag.crip.client.postgres.PostgresClientRunnable;
 import nl.altindag.crip.client.smtp.SmtpClientRunnable;
 import nl.altindag.crip.client.websocket.WebSocketClientRunnable;
@@ -158,6 +159,7 @@ public class SharedProperties {
             case "smtps" -> clientBuilder.withClientRunnable(new SmtpClientRunnable());
             case "imaps" -> clientBuilder.withClientRunnable(new ImapClientRunnable());
             case "postgresql" -> clientBuilder.withClientRunnable(new PostgresClientRunnable());
+            case "mysql" -> clientBuilder.withClientRunnable(new MySQLClientRunnable());
             default -> {}
         }
 
