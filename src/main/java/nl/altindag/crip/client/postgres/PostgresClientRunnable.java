@@ -33,7 +33,7 @@ import java.util.Optional;
  * <a href="https://www.postgresql.org/docs/current/protocol-flow.html#PROTOCOL-FLOW-SSL">Protocol - SSL Flow</a>
  * <a href="https://www.postgresql.org/docs/current/protocol-message-formats.html#PROTOCOL-MESSAGE-FORMATS-SSLREQUEST">Protocol message format - SSL request</a>
  */
-public class PostgresClientRunnable implements ClientRunnable {
+public final class PostgresClientRunnable implements ClientRunnable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PostgresClientRunnable.class);
 
