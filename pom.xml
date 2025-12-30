@@ -180,7 +180,7 @@
                 <configuration>
                     <useModulePath>false</useModulePath>
                     <skipTests>${skipITs}</skipTests>
-                    <argLine>-Xmx2048024m</argLine>
+                    <argLine>-Xmx2048m</argLine>
                 </configuration>
                 <executions>
                     <execution>
