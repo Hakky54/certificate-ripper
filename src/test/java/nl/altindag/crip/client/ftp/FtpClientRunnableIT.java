@@ -53,6 +53,8 @@ class FtpClientRunnableIT {
                 .untilAsserted(() -> {
                     request.run();
                     String standardOutput = String.join(System.lineSeparator(), consoleCaptor.getStandardOutput());
+                    System.out.println(">>>>");
+                    System.out.println(standardOutput);
                     assertThat(CAPTURED_CERTIFICATES.matcher(standardOutput).find()).isTrue();
                 });
 
