@@ -4,8 +4,8 @@ services:
   mysql:
     image: mysql:8.0
     volumes:
-      - ../../../../../target/docker-temp/data:/var/lib/mysql
-      - ../../../../../target/docker-temp/certs:/etc/mysql/certs
+      - ../../../../../target/docker-temp/mysql/data:/var/lib/mysql
+      - ../../../../../target/docker-temp/mysql/certs:/etc/mysql/certs
     environment:
       - MYSQL_ROOT_PASSWORD=Abc123
       - MYSQL_DATABASE=test
@@ -23,7 +23,7 @@ services:
   cert-gen:
     image: alpine
     volumes:
-      - ../../../../../target/docker-temp/certs:/certs
+      - ../../../../../target/docker-temp/mysql/certs:/certs
     entrypoint:
       - /bin/sh
       - -c

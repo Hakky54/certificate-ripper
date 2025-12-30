@@ -56,7 +56,13 @@ class MySQLClientRunnableIT {
                     assertThat(CAPTURED_CERTIFICATES.matcher(standardOutput).find()).isTrue();
                 });
 
-        process.destroy();
+        new ProcessBuilder(
+                "docker",
+                "compose",
+                "--file=" + dockerComposeFile.getPath(),
+                "down"
+        ).start();
+
         consoleCaptor.close();
     }
 
