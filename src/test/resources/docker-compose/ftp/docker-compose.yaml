@@ -1,4 +1,4 @@
-version: '3'
+# https://github.com/fmidev/ftp-test-containers/blob/main/docker-compose.yaml
 services:
   ftps:
     image: delfer/alpine-ftp-server
