@@ -2,9 +2,9 @@
 services:
   ftps:
     image: delfer/alpine-ftp-server
-    ports:
-      - "2231:21"
-      - "22000-22010:22000-22010"
+    volumes:
+      - ../../../../../target/docker-temp/ftp/certs:/certs
+      - ../../../../../target/docker-temp/ftp/upload:/home/ftpuser
     environment:
       - USERS=ftpuser|ftppass|/home/ftpuser
       - ADDRESS=localhost
@@ -12,9 +12,9 @@ services:
       - MAX_PORT=22010
       - TLS_CERT=/certs/ftp-local.crt
       - TLS_KEY=/certs/ftp-local.key
-    volumes:
-      - ../../../../../target/docker-temp/ftp/certs:/certs
-      - ../../../../../target/docker-temp/ftp/upload:/home/ftpuser
+    ports:
+      - "2231:21"
+      - "22000-22010:22000-22010"
 
   cert-gen:
     image: alpine
