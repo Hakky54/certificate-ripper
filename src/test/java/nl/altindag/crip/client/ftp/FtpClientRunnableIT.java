@@ -38,7 +38,7 @@ class FtpClientRunnableIT {
         assertThat(dockerComposeFile).isNotNull();
 
         ConsoleCaptor consoleCaptor = new ConsoleCaptor();
-        Process process = new ProcessBuilder(
+        new ProcessBuilder(
                 "docker",
                 "compose",
                 "--file=" + dockerComposeFile.getPath(),
