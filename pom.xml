@@ -33,6 +33,7 @@
     <properties>
         <version.java>21</version.java>
         <version.ayza>10.0.2</version.ayza>
+        <version.sude>2.0.2</version.sude>
         <version.slf4j>2.0.17</version.slf4j>
         <version.picocli>4.7.7</version.picocli>
         <version.commons-net>3.12.0</version.commons-net>
@@ -74,6 +75,11 @@
             <groupId>io.github.hakky54</groupId>
             <artifactId>ayza</artifactId>
             <version>${version.ayza}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.hakky54</groupId>
+            <artifactId>sude</artifactId>
+            <version>${version.sude}</version>
         </dependency>
         <dependency>
             <groupId>commons-net</groupId>

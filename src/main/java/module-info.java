@@ -21,7 +21,8 @@ module nl.altindag.certificate.ripper {
     requires transitive org.apache.commons.net;
     requires transitive org.simplejavamail;
     requires transitive org.simplejavamail.core;
-    requires org.slf4j;
+    requires transitive nl.altindag.sude;
+    requires transitive org.slf4j;
 
     exports nl.altindag.crip;
     exports nl.altindag.crip.request;
