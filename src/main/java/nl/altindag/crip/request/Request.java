@@ -27,6 +27,7 @@ public abstract class Request implements Runnable {
     private ProxyOptions proxyOptions;
     private Integer timeoutInMilliseconds;
     private Boolean resolveRootCa;
+    private Boolean resolveSiblings;
     private CertificateType certificateType;
 
     Request(List<String> urls) {
@@ -56,6 +57,10 @@ public abstract class Request implements Runnable {
         this.resolveRootCa = resolveRootCa;
     }
 
+    public void setResolveSiblings(Boolean resolveSiblings) {
+        this.resolveSiblings = resolveSiblings;
+    }
+
     void setCertificateType(CertificateType certificateType) {
         this.certificateType = certificateType;
     }
@@ -76,6 +81,9 @@ public abstract class Request implements Runnable {
         }
         if (resolveRootCa != null) {
             requestBuilder.append(" --resolve-ca=").append(resolveRootCa);
+        }
+        if (resolveSiblings != null) {
+            requestBuilder.append(" --resolve-siblings=").append(resolveSiblings);
         }
         if (certificateType != null) {
             requestBuilder.append(" --cert-type=").append(certificateType);

@@ -77,6 +77,9 @@ public class SharedProperties {
     @Option(names = {"--resolve-ca"}, description = "Indicator to automatically resolve the root ca%nPossible options: true, false")
     private Boolean resolveRootCa = true;
 
+    @Option(names = {"--resolve-siblings"}, description = "Indicator to automatically resolve the certificates from DNS names%nPossible options: true, false")
+    private Boolean resolveSiblings = false;
+
     @Option(names = {"--cert-type"},
             description = "To be extracted certificate types%nAvailable Formats: root, inter, leaf, all%nDefault: all")
     private CertificateType certificateType = CertificateType.ALL;
@@ -92,6 +95,7 @@ public class SharedProperties {
                 .map(Optional::get)
                 .collect(Collectors.collectingAndThen(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (key1, key2) -> key1, LinkedHashMap::new), HashMap::new));
 
+        urlsToCertificates = getSiblingsIfNeeded(urlsToCertificates);
         urlsToCertificates = filterCertificatesIfNeeded(urlsToCertificates, certificateType);
 
         if (urls.contains(SYSTEM)) {
@@ -140,7 +144,7 @@ public class SharedProperties {
 
     private Optional<Map.Entry<String, List<X509Certificate>>> getCertificates(String url) {
         try {
-            CertificateExtractingClient client = createClient(url);
+            CertificateExtractingClient client = createClient(url).build();
             List<X509Certificate> certificates = client.get(url);
             return Optional.of(Map.entry(url, certificates));
         } catch (Exception e) {
@@ -149,9 +153,8 @@ public class SharedProperties {
         }
     }
 
-    private CertificateExtractingClient createClient(String url) {
-        CertificateExtractingClient.Builder clientBuilder = CertificateExtractingClient.builder().withResolvedRootCa(resolveRootCa);
-
+    private CertificateExtractingClient.Builder createClient(String url) {
+        CertificateExtractingClient.Builder clientBuilder = createClient();
         URI uri = URI.create(url);
         switch (uri.getScheme()) {
             case "wss" -> clientBuilder.withClientRunnable(new WebSocketClientRunnable());
@@ -162,6 +165,12 @@ public class SharedProperties {
             case "mysql" -> clientBuilder.withClientRunnable(new MySQLClientRunnable());
             default -> {}
         }
+
+        return clientBuilder;
+    }
+
+    private CertificateExtractingClient.Builder createClient() {
+        CertificateExtractingClient.Builder clientBuilder = CertificateExtractingClient.builder().withResolvedRootCa(resolveRootCa);
 
         if (isNotBlank(proxyHost) && proxyPort != null) {
             clientBuilder.withProxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, proxyPort)));
@@ -175,7 +184,29 @@ public class SharedProperties {
             clientBuilder.withTimeout(timeout);
         }
 
-        return clientBuilder.build();
+        return clientBuilder;
+    }
+
+    private Map<String, List<X509Certificate>> getSiblingsIfNeeded(Map<String, List<X509Certificate>> urlsToCertificates) {
+        if (!resolveSiblings) {
+            return urlsToCertificates;
+        }
+
+        Map<String, List<X509Certificate>> siblings = urlsToCertificates.values().stream()
+                .parallel()
+                .map(this::getSiblings)
+                .flatMap(map -> map.entrySet().stream())
+                .collect(Collectors.collectingAndThen(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (key1, key2) -> key1, LinkedHashMap::new), HashMap::new));
+
+        Map<String, List<X509Certificate>> combined = new HashMap<>();
+        combined.putAll(urlsToCertificates);
+        combined.putAll(siblings);
+        return combined;
+    }
+
+    private Map<String, List<X509Certificate>> getSiblings(List<X509Certificate> certificates) {
+        CertificateExtractingClient client = createClient().build();
+        return client.getSiblings(certificates);
     }
 
     Map<String, List<X509Certificate>> filterCertificatesIfNeeded(Map<String, List<X509Certificate>> urlsToCertificates, CertificateType type) {

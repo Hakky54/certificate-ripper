@@ -32,7 +32,7 @@
 
     <properties>
         <version.java>21</version.java>
-        <version.ayza>10.0.2</version.ayza>
+        <version.ayza>10.0.3</version.ayza>
         <version.sude>2.0.2</version.sude>
         <version.slf4j>2.0.17</version.slf4j>
         <version.picocli>4.7.7</version.picocli>
