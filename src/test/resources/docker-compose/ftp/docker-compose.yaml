@@ -1,0 +1,34 @@
+# https://github.com/fmidev/ftp-test-containers/blob/main/docker-compose.yaml
+services:
+  ftps:
+    image: delfer/alpine-ftp-server
+    volumes:
+      - ../../../../../target/docker-temp/ftp/certs:/certs
+      - ../../../../../target/docker-temp/ftp/upload:/home/ftpuser
+    environment:
+      - USERS=ftpuser|ftppass|/home/ftpuser
+      - ADDRESS=localhost
+      - MIN_PORT=22000
+      - MAX_PORT=22010
+      - TLS_CERT=/certs/ftp-local.crt
+      - TLS_KEY=/certs/ftp-local.key
+    ports:
+      - "2231:21"
+      - "22000-22010:22000-22010"
+
+  cert-gen:
+    image: alpine
+    volumes:
+      - ../../../../../target/docker-temp/ftp/certs:/certs
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        apk add --no-cache openssl &&
+        openssl genpkey -algorithm RSA -out /certs/ftp-local.key -pkeyopt rsa_keygen_bits:2048 &&
+        openssl req -new -key /certs/ftp-local.key -out /certs/ftp-local.csr -subj "/CN=ftp/O=myorg/C=US" &&
+        openssl x509 -req -in /certs/ftp-local.csr -signkey /certs/ftp-local.key -out /certs/ftp-local.crt -days 365 &&
+        openssl genpkey -algorithm RSA -out /certs/ca.key -pkeyopt rsa_keygen_bits:2048 &&
+        openssl req -new -x509 -key /certs/ca.key -out /certs/ca.crt -days 1095 -subj "/CN=Certificate Authority/O=myorg/C=US" &&
+        chmod 600 /certs/* && chown 999:999 /certs/*
+    restart: "no"

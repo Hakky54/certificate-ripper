@@ -20,6 +20,7 @@ import nl.altindag.ssl.exception.GenericIOException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
 /**
@@ -29,6 +30,8 @@ import java.nio.file.StandardOpenOption;
  * @author Hakan Altindag
  */
 public final class IOUtils {
+
+    private static final Path CURRENT_DIRECTORY = Paths.get(System.getProperty("user.dir"));
 
     private IOUtils() {}
 
@@ -46,6 +49,47 @@ public final class IOUtils {
         if (Files.notExists(parentDirectories)) {
             Files.createDirectories(parentDirectories);
         }
+    }
+
+    public static Path resolveDestination(Path path) {
+        if (Files.isDirectory(path)) {
+            return path.normalize().toAbsolutePath();
+        }
+
+        if (!path.isAbsolute()) {
+            return resolveDestination(path.toAbsolutePath().normalize());
+        }
+
+        if (path.getParent() != null) {
+            return path;
+        }
+
+        return getCurrentDirectory();
+    }
+
+    public static Path resolveDestination(Path path, String fileName) {
+        if (Files.isDirectory(path)) {
+            return path.resolve(fileName);
+        }
+
+        Path normalisedPath = path.normalize();
+        if (!normalisedPath.isAbsolute() && normalisedPath.getParent() == null) {
+            return resolveDestination(normalisedPath.toAbsolutePath(), fileName);
+        }
+
+        return path;
+    }
+
+    public static Path getDirectory(Path path) {
+        if (Files.isDirectory(path)) {
+            return path;
+        } else {
+            return path.getParent();
+        }
+    }
+
+    public static Path getCurrentDirectory() {
+        return CURRENT_DIRECTORY;
     }
 
 }

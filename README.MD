@@ -38,6 +38,9 @@ There are 3 options available to pick from: [GitHub](https://github.com/sponsors
   - ftps (File Transfer Protocol Secure)
   - smtps (Simple Mail Transfer Protocol Secure)
   - imaps (Internet Message Access Protocol Secure)
+  - Database:
+    - PostgreSQL
+    - MySQL
 
 ## Installing
 
@@ -49,12 +52,13 @@ There are 3 options available to pick from: [GitHub](https://github.com/sponsors
 #### Contributed/Unofficial Installation Methods
 - Arch-Linux (AUR)
   - Install the [certificate-ripper-bin](https://aur.archlinux.org/packages/certificate-ripper-bin) AUR package
-- NixOS (nixpkgs)
+- NixOS ([nixpkgs](https://search.nixos.org/packages?channel=25.11&show=certificate-ripper&query=certificate+ripper))
   - Run `nix-shell -p certificate-ripper` or add `pkgs.certificate-ripper` to your `configuration.nix` file
+- [Sourceforge](https://sourceforge.net/projects/certificate-ripper.mirror/)
 - Windows
-  - Chocolatey 🍫 
+  - [Chocolatey](https://community.chocolatey.org/packages/crip) 🍫 
     - Run `choco install crip`
-  - Scoop 🍨
+  - [Scoop](https://scoop.sh/#/apps?q=crip&p=1) 🍨
     - Run `scoop install extras/crip`
 
 ## Build locally
@@ -203,9 +207,28 @@ Works only with the combined option while only specifying a single url.
 crip export pem -u=https://github.com --combined=true --destination=/path/to/export/github-chain.crt
 ```
 
-### Extract system certificates
+### Export other sources
 ```bash
+# Operating System trusted certificates
 crip export pem -u=system
+
+# Websocket server
+crip export pem -u=wss://echo.websocket.org
+
+# FTP server
+crip export pem -u=ftps://my-drive.com:21
+
+# SMTP server
+crip export pem -u=smtps://smtp-mail.outlook.com:587
+
+# IMAP server
+crip export pem -u=imaps://outlook.office365.com:993
+
+# PostgreSQL server
+crip export pem -u=postgresql://localhost:5432/
+
+# MySQL server
+crip export pem -u=mysql://localhost:3306/
 ```
 
 ### Filter on certificate types
@@ -214,26 +237,6 @@ The to be extracted certificates can be filtered to include only root ca, interm
 crip export der -u=https://google.com --cert-type=root
 ```
 Other values for the cert-type option are: inter and leaf. When the option is not provided all of the certificates are extracted.
-
-### Extract from a websocket server
-```bash
-crip export pem -u=wss://echo.websocket.org
-```
-
-### Extract from a ftp server
-```bash
-crip export pem -u=ftps://my-drive.com:21
-```
-
-### Extract from a SMTP server
-```bash
-crip export pem -u=smtps://smtp-mail.outlook.com:587
-```
-
-### Extract from a IMAP server
-```bash
-crip export pem -u=imaps://outlook.office365.com:993
-```
 
 ### Extracting with Java DSL
 Include the following dependency:

@@ -33,28 +33,32 @@
     <properties>
         <version.java>21</version.java>
         <version.ayza>10.0.3</version.ayza>
+        <version.sude>2.0.2</version.sude>
         <version.slf4j>2.0.17</version.slf4j>
         <version.picocli>4.7.7</version.picocli>
         <version.commons-net>3.12.0</version.commons-net>
         <version.simple-java-mail>8.12.6</version.simple-java-mail>
         <version.junit>5.14.1</version.junit>
         <version.assertj-core>3.27.6</version.assertj-core>
+        <version.awaitility>4.3.0</version.awaitility>
         <version.consolecaptor>1.0.4</version.consolecaptor>
         <version.logcaptor>2.12.1</version.logcaptor>
-        <version.ssl-server>1.0.8</version.ssl-server>
+        <version.ssl-server>1.0.9</version.ssl-server>
         <version.maven-compiler-plugin>3.14.1</version.maven-compiler-plugin>
         <version.maven-surefire-plugin>3.5.4</version.maven-surefire-plugin>
-        <version.exec-maven-plugin>3.6.2</version.exec-maven-plugin>
+        <version.maven-fail-safe>3.5.4</version.maven-fail-safe>
+        <version.exec-maven-plugin>3.6.3</version.exec-maven-plugin>
         <version.maven-shade-plugin>3.6.1</version.maven-shade-plugin>
         <version.jacoco-maven-plugin>0.8.14</version.jacoco-maven-plugin>
         <version.graalvm>21.2.0</version.graalvm>
         <application-main-class>nl.altindag.crip.CertificateRipper</application-main-class>
         <version.license-maven-plugin>5.0.0</version.license-maven-plugin>
         <version.maven-javadoc-plugin>3.12.0</version.maven-javadoc-plugin>
-        <version.maven-source-plugin>3.3.1</version.maven-source-plugin>
+        <version.maven-source-plugin>3.4.0</version.maven-source-plugin>
         <version.maven-gpg-plugin>3.2.8</version.maven-gpg-plugin>
-        <version.maven-release-plugin>3.2.0</version.maven-release-plugin>
+        <version.maven-release-plugin>3.3.1</version.maven-release-plugin>
         <version.nexus-staging-maven-plugin>1.7.0</version.nexus-staging-maven-plugin>
+        <skipITs>true</skipITs>
         <license.git.copyrightYears>2021</license.git.copyrightYears>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -71,6 +75,11 @@
             <groupId>io.github.hakky54</groupId>
             <artifactId>ayza</artifactId>
             <version>${version.ayza}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.hakky54</groupId>
+            <artifactId>sude</artifactId>
+            <version>${version.sude}</version>
         </dependency>
         <dependency>
             <groupId>commons-net</groupId>
@@ -107,14 +116,12 @@
             <version>${version.junit}</version>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
             <version>${version.assertj-core}</version>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>io.github.hakky54</groupId>
             <artifactId>consolecaptor</artifactId>
@@ -127,11 +134,16 @@
             <version>${version.logcaptor}</version>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>io.github.hakky54</groupId>
             <artifactId>ssl-server</artifactId>
             <version>${version.ssl-server}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.awaitility</groupId>
+            <artifactId>awaitility</artifactId>
+            <version>${version.awaitility}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -160,11 +172,35 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${version.maven-surefire-plugin}</version>
                 <configuration>
+                    <useModulePath>false</useModulePath>
                     <includes>
                         <include>%regex[.*Should.*]</include>
                     </includes>
                     <useModulePath>false</useModulePath>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>${version.maven-fail-safe}</version>
+                <configuration>
+                    <useModulePath>false</useModulePath>
+                    <skipTests>${skipITs}</skipTests>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>integration-test</id>
+                        <goals>
+                            <goal>integration-test</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>verify</id>
+                        <goals>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
 
             <plugin>

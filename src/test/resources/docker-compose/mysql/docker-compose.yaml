@@ -1,0 +1,37 @@
+# https://peterkellner.net/2023-08-02-enforcing-ssl-connections-in-mysql-using-docker/
+services:
+  mysql:
+    image: mysql:8.0
+    volumes:
+      - ../../../../../target/docker-temp/mysql/data:/var/lib/mysql
+      - ../../../../../target/docker-temp/mysql/certs:/etc/mysql/certs
+    environment:
+      - MYSQL_ROOT_PASSWORD=Abc123
+      - MYSQL_DATABASE=test
+      - MYSQL_USER=test
+      - MYSQL_PASSWORD=test
+    command:
+      - --ssl-ca=/etc/mysql/certs/ca.crt
+      - --ssl-cert=/etc/mysql/certs/mysql.crt
+      - --ssl-key=/etc/mysql/certs/mysql.key
+      - --ssl=1
+      - --bind-address=0.0.0.0
+    ports:
+      - "3306:3306"
+
+  cert-gen:
+    image: alpine
+    volumes:
+      - ../../../../../target/docker-temp/mysql/certs:/certs
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        apk add --no-cache openssl &&
+        openssl genpkey -algorithm RSA -out /certs/mysql.key -pkeyopt rsa_keygen_bits:2048 &&
+        openssl req -new -key /certs/mysql.key -out /certs/mysql.csr -subj "/CN=mysql/O=myorg/C=US" &&
+        openssl x509 -req -in /certs/mysql.csr -signkey /certs/mysql.key -out /certs/mysql.crt -days 365 &&
+        openssl genpkey -algorithm RSA -out /certs/ca.key -pkeyopt rsa_keygen_bits:2048 &&
+        openssl req -new -x509 -key /certs/ca.key -out /certs/ca.crt -days 1095 -subj "/CN=Certificate Authority/O=myorg/C=US" &&
+        chmod 600 /certs/* && chown 999:999 /certs/*
+    restart: "no"

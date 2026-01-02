@@ -23,7 +23,6 @@ import nl.altindag.crip.util.UriUtils;
 import nl.altindag.ssl.util.CertificateUtils;
 import picocli.CommandLine.Command;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.cert.CertPath;
 import java.security.cert.CertificateException;
@@ -77,8 +76,8 @@ public class DerExportCommand extends CombinableFileExport implements Runnable {
                                 .orElse(key) + ".p7b";
 
                         destination = getDestination()
-                                .map(path -> Files.isDirectory(path) ? path.resolve(fileName) : path)
-                                .orElseGet(() -> getCurrentDirectory().resolve(fileName));
+                                .map(path -> IOUtils.resolveDestination(path, fileName))
+                                .orElseGet(() -> IOUtils.getCurrentDirectory().resolve(fileName));
 
                         IOUtils.write(destination, certPath.getEncoded("PKCS7"));
                     }
@@ -115,7 +114,7 @@ public class DerExportCommand extends CombinableFileExport implements Runnable {
                 }
             }
 
-            Path directory = getDestination().orElseGet(this::getCurrentDirectory);
+            Path directory = getDestination().map(IOUtils::resolveDestination).map(IOUtils::getDirectory).orElseGet(IOUtils::getCurrentDirectory);
             for (Entry<String, byte[]> certificateEntry : filenameToFileContent.entrySet()) {
                 Path certificatePath = directory.resolve(certificateEntry.getKey());
                 IOUtils.write(certificatePath, certificateEntry.getValue());
