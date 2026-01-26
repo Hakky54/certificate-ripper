@@ -39,7 +39,7 @@
         <version.commons-net>3.12.0</version.commons-net>
         <version.simple-java-mail>8.12.6</version.simple-java-mail>
         <version.junit>5.14.2</version.junit>
-        <version.assertj-core>3.27.6</version.assertj-core>
+        <version.assertj-core>3.27.7</version.assertj-core>
         <version.awaitility>4.3.0</version.awaitility>
         <version.consolecaptor>1.0.4</version.consolecaptor>
         <version.logcaptor>2.12.2</version.logcaptor>
