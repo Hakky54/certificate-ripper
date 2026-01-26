@@ -244,7 +244,7 @@ Include the following dependency:
 <dependency>
     <groupId>io.github.hakky54</groupId>
     <artifactId>certificate-ripper</artifactId>
-    <version>2.6.1</version>
+    <version>2.7.0</version>
 </dependency>
 ```
 
