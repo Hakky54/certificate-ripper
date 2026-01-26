@@ -135,15 +135,14 @@ Export the extracted certificate to a base64 encoded string also known as PEM
   -d, --destination         Destination of the to be stored file. Default is current directory if none is provided.
       --include-header      Indicator to either omit or include additional information above the BEGIN statement.
       
-Proxy options applicable for all commands
+Other additional options applicable for all commands
       --proxy-host          Proxy host
       --proxy-port          Proxy port
       --proxy-password      Password for authenticating the user for the given proxy
       --proxy-user          User for authenticating the user for the given proxy
-
-Other additional options applicable for all commands
   -t, --timeout             Amount of milliseconds till the ripping should timeout
       --resolve-ca          Indicator to automatically resolve the root ca. Possible options: true, false
+      --resolve-siblings    Indicator to automatically resolve the certificates from DNS names. Possible options: true, false
       --cert-type           To be extracted certificate types. Available Formats: root, inter, leaf, all. Default: all
 ```
 
