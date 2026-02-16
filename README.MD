@@ -44,7 +44,7 @@ There are 3 options available to pick from: [GitHub](https://github.com/sponsors
 
 ## Installing
 
-- Mac OS X - Homebrew 🍺
+- Mac OS X & Linux - Homebrew 🍺
   - Run `brew tap hakky54/crip && brew install crip`
 - Linux & Windows
   - Download the latest binary here: [Releases](https://github.com/Hakky54/certificate-ripper/releases)
