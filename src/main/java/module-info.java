@@ -23,6 +23,7 @@ module nl.altindag.certificate.ripper {
     requires transitive org.simplejavamail.core;
     requires transitive nl.altindag.sude;
     requires transitive org.slf4j;
+    requires transitive me.tongfei.progressbar;
 
     exports nl.altindag.crip;
     exports nl.altindag.crip.request;

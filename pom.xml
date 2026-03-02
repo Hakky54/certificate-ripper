@@ -36,6 +36,7 @@
         <version.sude>2.0.2</version.sude>
         <version.slf4j>2.0.17</version.slf4j>
         <version.picocli>4.7.7</version.picocli>
+        <version.progressbar>0.10.2</version.progressbar>
         <version.commons-net>3.12.0</version.commons-net>
         <version.simple-java-mail>8.12.6</version.simple-java-mail>
         <version.junit>5.14.3</version.junit>
@@ -102,6 +103,12 @@
             <artifactId>picocli-codegen</artifactId>
             <version>${version.picocli}</version>
             <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>me.tongfei</groupId>
+            <artifactId>progressbar</artifactId>
+            <version>${version.progressbar}</version>
         </dependency>
 
         <dependency>

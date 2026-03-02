@@ -15,6 +15,9 @@
  */
 package nl.altindag.crip.command;
 
+import me.tongfei.progressbar.ProgressBar;
+import me.tongfei.progressbar.ProgressBarBuilder;
+import me.tongfei.progressbar.ProgressBarStyle;
 import nl.altindag.crip.client.ftp.FtpsClientRunnable;
 import nl.altindag.crip.client.imap.ImapClientRunnable;
 import nl.altindag.crip.client.mysql.MySQLClientRunnable;
@@ -45,6 +48,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static nl.altindag.crip.util.StringUtils.isNotBlank;
 
@@ -87,9 +91,16 @@ public class SharedProperties {
     public CertificateHolder getCertificateHolder() {
         List<String> resolvedUrls = getUrls();
 
-        Map<String, List<X509Certificate>> urlsToCertificates = resolvedUrls.stream()
-                .distinct()
-                .parallel()
+        Stream<String> certificateExtractingStream = resolvedUrls.stream().distinct().parallel();
+        if (resolvedUrls.size() > 1) {
+            ProgressBarBuilder progressBarBuilder = new ProgressBarBuilder()
+                    .setStyle(ProgressBarStyle.COLORFUL_UNICODE_BAR)
+                    .hideEta()
+                    .setTaskName("Extracting certificates").showSpeed();
+            certificateExtractingStream = ProgressBar.wrap(certificateExtractingStream, progressBarBuilder);
+        }
+
+        Map<String, List<X509Certificate>> urlsToCertificates = certificateExtractingStream
                 .map(this::getCertificates)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
@@ -192,16 +203,21 @@ public class SharedProperties {
             return urlsToCertificates;
         }
 
-        Map<String, List<X509Certificate>> siblings = urlsToCertificates.values().stream()
-                .parallel()
-                .map(this::getSiblings)
-                .flatMap(map -> map.entrySet().stream())
+        ProgressBarBuilder pbb = new ProgressBarBuilder()
+                .hideEta()
+                .continuousUpdate()
+                .setStyle(ProgressBarStyle.COLORFUL_UNICODE_BAR)
+                .setTaskName("Resolving sibling certificates").showSpeed();
+
+        Map<String, List<X509Certificate>> siblings = ProgressBar.wrap(urlsToCertificates.values().parallelStream(), pbb)
+                .flatMap(certificates -> getSiblings(certificates).entrySet().parallelStream())
+                .distinct()
                 .collect(Collectors.collectingAndThen(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (key1, key2) -> key1, LinkedHashMap::new), HashMap::new));
 
-        Map<String, List<X509Certificate>> combined = new HashMap<>();
-        combined.putAll(urlsToCertificates);
-        combined.putAll(siblings);
-        return combined;
+        Map<String, List<X509Certificate>> combinedUrlsToCertificates = new HashMap<>();
+        combinedUrlsToCertificates.putAll(urlsToCertificates);
+        combinedUrlsToCertificates.putAll(siblings);
+        return combinedUrlsToCertificates;
     }
 
     private Map<String, List<X509Certificate>> getSiblings(List<X509Certificate> certificates) {
