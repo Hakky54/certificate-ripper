@@ -48,7 +48,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static nl.altindag.crip.util.StringUtils.isNotBlank;
 
@@ -91,16 +90,7 @@ public class SharedProperties {
     public CertificateHolder getCertificateHolder() {
         List<String> resolvedUrls = getUrls();
 
-        Stream<String> certificateExtractingStream = resolvedUrls.stream().distinct().parallel();
-        if (resolvedUrls.size() > 1) {
-            ProgressBarBuilder progressBarBuilder = new ProgressBarBuilder()
-                    .setStyle(ProgressBarStyle.COLORFUL_UNICODE_BAR)
-                    .hideEta()
-                    .setTaskName("Extracting certificates").showSpeed();
-            certificateExtractingStream = ProgressBar.wrap(certificateExtractingStream, progressBarBuilder);
-        }
-
-        Map<String, List<X509Certificate>> urlsToCertificates = certificateExtractingStream
+        Map<String, List<X509Certificate>> urlsToCertificates = resolvedUrls.stream().distinct().parallel()
                 .map(this::getCertificates)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
