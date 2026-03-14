@@ -15,6 +15,7 @@
  */
 package nl.altindag.crip.command.export;
 
+import nl.altindag.crip.client.CertificateRipperClient;
 import nl.altindag.crip.command.VersionProvider;
 import nl.altindag.crip.model.CertificateHolder;
 import nl.altindag.crip.util.IOUtils;
@@ -49,7 +50,9 @@ public class DerExportCommand extends CombinableFileExport implements Runnable {
 
     @Override
     public void run() {
-        CertificateHolder certificateHolder = sharedProperties.getCertificateHolder();
+        CertificateRipperClient client = new CertificateRipperClient(clientConfig);
+        CertificateHolder certificateHolder = client.getCertificateHolder();
+
         if (certificateHolder.getUrlsToCertificates().isEmpty()) {
             return;
         }

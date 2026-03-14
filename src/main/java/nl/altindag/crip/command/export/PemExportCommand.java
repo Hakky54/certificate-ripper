@@ -17,6 +17,7 @@ package nl.altindag.crip.command.export;
 
 import nl.altindag.crip.command.VersionProvider;
 import nl.altindag.crip.model.CertificateHolder;
+import nl.altindag.crip.client.CertificateRipperClient;
 import nl.altindag.crip.util.IOUtils;
 import nl.altindag.crip.util.StatisticsUtils;
 import nl.altindag.crip.util.UriUtils;
@@ -53,8 +54,11 @@ public class PemExportCommand extends CombinableFileExport implements Runnable {
 
     public void run() {
         Map<String, String> filenameToCertificate;
-        CertificateHolder certificateHolder = sharedProperties.getCertificateHolder();
+
+        CertificateRipperClient clientUtils = new CertificateRipperClient(clientConfig);
+        CertificateHolder certificateHolder = clientUtils.getCertificateHolder();
         Map<String, List<X509Certificate>> urlsToCertificates = certificateHolder.getUrlsToCertificates();
+
         if (urlsToCertificates.isEmpty()) {
             return;
         }

@@ -15,7 +15,7 @@
  */
 package nl.altindag.crip.command.export;
 
-import nl.altindag.crip.command.SharedProperties;
+import nl.altindag.crip.model.ClientConfig;
 import picocli.CommandLine.Mixin;
 import picocli.CommandLine.Option;
 
@@ -26,7 +26,7 @@ import java.util.Optional;
 class FileExport {
 
     @Mixin
-    protected SharedProperties sharedProperties;
+    protected ClientConfig clientConfig;
 
     @Option(names = {"-d", "--destination"}, description = "Destination of the to be stored file. Default is current directory if none is provided.")
     private String destination;

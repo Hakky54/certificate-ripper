@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.altindag.crip.command;
+package nl.altindag.crip.client;
 
 import nl.altindag.crip.model.CertificateType;
 import nl.altindag.ssl.util.CertificateUtils;
@@ -29,11 +29,11 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class SharedPropertiesShould {
+class CertificateRipperClientShould {
 
     private static final String CertificatePath = "reference-files/der/google/";
     private static Map<String, List<X509Certificate>> urlsToCertificates;
-    private SharedProperties victim = new SharedProperties();
+    private final CertificateRipperClient victim = new CertificateRipperClient(null);
 
     @BeforeAll
     static void loadCertificates() {

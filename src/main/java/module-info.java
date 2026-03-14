@@ -32,5 +32,6 @@ module nl.altindag.certificate.ripper {
     opens nl.altindag.crip.command to info.picocli;
     opens nl.altindag.crip.command.print to info.picocli;
     opens nl.altindag.crip.command.export to info.picocli;
+    opens nl.altindag.crip.model to info.picocli;
 
 }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package nl.altindag.crip.command;
+package nl.altindag.crip.client;
 
 import me.tongfei.progressbar.ProgressBar;
 import me.tongfei.progressbar.ProgressBarBuilder;
@@ -24,14 +24,11 @@ import nl.altindag.crip.client.mysql.MySQLClientRunnable;
 import nl.altindag.crip.client.postgres.PostgresClientRunnable;
 import nl.altindag.crip.client.smtp.SmtpClientRunnable;
 import nl.altindag.crip.client.websocket.WebSocketClientRunnable;
+import nl.altindag.crip.model.ClientConfig;
 import nl.altindag.crip.model.CertificateHolder;
 import nl.altindag.crip.model.CertificateType;
 import nl.altindag.crip.util.UriUtils;
 import nl.altindag.ssl.util.CertificateExtractingClient;
-import nl.altindag.ssl.util.CertificateUtils;
-import nl.altindag.sude.Logger;
-import nl.altindag.sude.LoggerFactory;
-import picocli.CommandLine.Option;
 
 import java.net.InetSocketAddress;
 import java.net.PasswordAuthentication;
@@ -45,51 +42,30 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
+import nl.altindag.ssl.util.CertificateUtils;
+import nl.altindag.sude.Logger;
+import nl.altindag.sude.LoggerFactory;
+
 import static nl.altindag.crip.util.StringUtils.isNotBlank;
 
-@SuppressWarnings({"unused", "FieldCanBeLocal", "FieldMayBeFinal"})
-public class SharedProperties {
+public class CertificateRipperClient {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SharedProperties.class);
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(CertificateRipperClient.class);
     private static final String SYSTEM = "system";
 
-    @Option(names = {"-u", "--url"}, description = "Url of the target server to extract the certificates", required = true)
-    private List<String> urls = new ArrayList<>();
-    private List<String> uniqueUrls;
+    private final ClientConfig clientConfig;
 
-    @Option(names = {"--proxy-host"}, description = "Proxy host")
-    private String proxyHost;
-
-    @Option(names = {"--proxy-port"}, description = "Proxy port")
-    private Integer proxyPort;
-
-    @Option(names = {"--proxy-user"}, description = "User for authenticating the user for the given proxy")
-    private String proxyUser;
-
-    @Option(names = {"--proxy-password"}, interactive = true, description = "Password for authenticating the user for the given proxy")
-    private String proxyPassword;
-
-    @Option(names = {"-t", "--timeout"}, description = "Amount of milliseconds till the ripping should timeout")
-    private Integer timeoutInMilliseconds;
-
-    @Option(names = {"--resolve-ca"}, description = "Indicator to automatically resolve the root ca%nPossible options: true, false")
-    private Boolean resolveRootCa = true;
-
-    @Option(names = {"--resolve-siblings"}, description = "Indicator to automatically resolve the certificates from DNS names%nPossible options: true, false")
-    private Boolean resolveSiblings = false;
-
-    @Option(names = {"--cert-type"},
-            description = "To be extracted certificate types%nAvailable Formats: root, inter, leaf, all%nDefault: all")
-    private CertificateType certificateType = CertificateType.ALL;
+    public CertificateRipperClient(ClientConfig clientConfig) {
+        this.clientConfig = clientConfig;
+    }
 
     public CertificateHolder getCertificateHolder() {
-        List<String> resolvedUrls = getUrls();
-
+        List<String> resolvedUrls = getUniqueUrls(clientConfig.getUrls());
         Map<String, List<X509Certificate>> urlsToCertificates = resolvedUrls.stream().distinct().parallel()
                 .map(this::getCertificates)
                 .filter(Optional::isPresent)
@@ -97,9 +73,9 @@ public class SharedProperties {
                 .collect(Collectors.collectingAndThen(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (key1, key2) -> key1, LinkedHashMap::new), HashMap::new));
 
         urlsToCertificates = getSiblingsIfNeeded(urlsToCertificates);
-        urlsToCertificates = filterCertificatesIfNeeded(urlsToCertificates, certificateType);
+        urlsToCertificates = filterCertificatesIfNeeded(urlsToCertificates, clientConfig.getCertificateType());
 
-        if (urls.contains(SYSTEM)) {
+        if (clientConfig.getUrls().contains(SYSTEM)) {
             try {
                 List<X509Certificate> systemTrustedCertificates = CertificateUtils.getSystemTrustedCertificates();
                 urlsToCertificates.put(SYSTEM, systemTrustedCertificates);
@@ -109,38 +85,6 @@ public class SharedProperties {
         }
 
         return new CertificateHolder(urlsToCertificates);
-    }
-
-    private List<String> getUrls() {
-        if (uniqueUrls != null) {
-            return uniqueUrls;
-        }
-
-        uniqueUrls = new ArrayList<>();
-        Map<String, List<Integer>> hostToPort = new HashMap<>();
-
-        for (String url : urls) {
-            if (SYSTEM.equals(url)) {
-                continue;
-            }
-
-            String host = UriUtils.extractHost(url);
-            int port = UriUtils.extractPort(url);
-
-            if (hostToPort.containsKey(host)) {
-                List<Integer> ports = hostToPort.get(host);
-                if (ports.contains(port)) {
-                    continue;
-                }
-            }
-
-            List<Integer> ports = hostToPort.getOrDefault(host, new ArrayList<>());
-            ports.add(port);
-
-            hostToPort.put(host, ports);
-            uniqueUrls.add(url);
-        }
-        return uniqueUrls;
     }
 
     private Optional<Map.Entry<String, List<X509Certificate>>> getCertificates(String url) {
@@ -171,25 +115,53 @@ public class SharedProperties {
     }
 
     private CertificateExtractingClient.Builder createClient() {
-        CertificateExtractingClient.Builder clientBuilder = CertificateExtractingClient.builder().withResolvedRootCa(resolveRootCa);
+        CertificateExtractingClient.Builder clientBuilder = CertificateExtractingClient.builder().withResolvedRootCa(clientConfig.getResolveRootCa());
 
-        if (isNotBlank(proxyHost) && proxyPort != null) {
-            clientBuilder.withProxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, proxyPort)));
+        if (isNotBlank(clientConfig.getProxyHost()) && clientConfig.getProxyPort() != null) {
+            clientBuilder.withProxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(clientConfig.getProxyHost(), clientConfig.getProxyPort())));
         }
-        if (isNotBlank(proxyUser) && isNotBlank(proxyPassword)) {
-            clientBuilder.withPasswordAuthentication(new PasswordAuthentication(proxyUser, proxyPassword.toCharArray()));
+        if (isNotBlank(clientConfig.getProxyUser()) && isNotBlank(clientConfig.getProxyPassword())) {
+            clientBuilder.withPasswordAuthentication(new PasswordAuthentication(clientConfig.getProxyUser(), clientConfig.getProxyPassword().toCharArray()));
         }
 
-        if (timeoutInMilliseconds != null && timeoutInMilliseconds > 0) {
-            Duration timeout = Duration.of(timeoutInMilliseconds, ChronoUnit.MILLIS);
+        if (clientConfig.getTimeoutInMilliseconds() != null && clientConfig.getTimeoutInMilliseconds() > 0) {
+            Duration timeout = Duration.of(clientConfig.getTimeoutInMilliseconds(), ChronoUnit.MILLIS);
             clientBuilder.withTimeout(timeout);
         }
 
         return clientBuilder;
     }
 
+    private List<String> getUniqueUrls(List<String> urls) {
+        List<String> uniqueUrls = new ArrayList<>();
+        Map<String, List<Integer>> hostToPort = new HashMap<>();
+
+        for (String url : urls) {
+            if (SYSTEM.equals(url)) {
+                continue;
+            }
+
+            String host = UriUtils.extractHost(url);
+            int port = UriUtils.extractPort(url);
+
+            if (hostToPort.containsKey(host)) {
+                List<Integer> ports = hostToPort.get(host);
+                if (ports.contains(port)) {
+                    continue;
+                }
+            }
+
+            List<Integer> ports = hostToPort.getOrDefault(host, new ArrayList<>());
+            ports.add(port);
+
+            hostToPort.put(host, ports);
+            uniqueUrls.add(url);
+        }
+        return uniqueUrls;
+    }
+
     private Map<String, List<X509Certificate>> getSiblingsIfNeeded(Map<String, List<X509Certificate>> urlsToCertificates) {
-        if (!resolveSiblings) {
+        if (!clientConfig.getResolveSiblings()) {
             return urlsToCertificates;
         }
 
@@ -199,20 +171,27 @@ public class SharedProperties {
                 .setStyle(ProgressBarStyle.COLORFUL_UNICODE_BAR)
                 .setTaskName("Resolving sibling certificates").showSpeed();
 
-        Map<String, List<X509Certificate>> siblings = ProgressBar.wrap(urlsToCertificates.values().parallelStream(), pbb)
-                .flatMap(certificates -> getSiblings(certificates).entrySet().parallelStream())
+        List<String> urls = urlsToCertificates.values().stream().parallel()
+                .flatMap(certificates -> UriUtils.getDnsNames(certificates).stream())
                 .distinct()
+                .toList();
+
+        CertificateExtractingClient client = createClient().build();
+        Map<String, List<X509Certificate>> siblings = ProgressBar.wrap(urls.stream(), pbb)
+                .map(url -> {
+                    try {
+                        return Map.entry(url, client.get(url));
+                    } catch (Exception e) {
+                        return null;
+                    }
+                })
+                .filter(Objects::nonNull)
                 .collect(Collectors.collectingAndThen(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (key1, key2) -> key1, LinkedHashMap::new), HashMap::new));
 
         Map<String, List<X509Certificate>> combinedUrlsToCertificates = new HashMap<>();
         combinedUrlsToCertificates.putAll(urlsToCertificates);
         combinedUrlsToCertificates.putAll(siblings);
         return combinedUrlsToCertificates;
-    }
-
-    private Map<String, List<X509Certificate>> getSiblings(List<X509Certificate> certificates) {
-        CertificateExtractingClient client = createClient().build();
-        return client.getSiblings(certificates);
     }
 
     Map<String, List<X509Certificate>> filterCertificatesIfNeeded(Map<String, List<X509Certificate>> urlsToCertificates, CertificateType type) {

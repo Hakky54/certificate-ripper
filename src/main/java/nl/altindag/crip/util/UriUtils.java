@@ -17,6 +17,11 @@ package nl.altindag.crip.util;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.security.cert.CertificateParsingException;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * <strong>NOTE:</strong>
@@ -25,6 +30,9 @@ import java.net.URISyntaxException;
  * @author Hakan Altindag
  */
 public final class UriUtils {
+
+    private static final Integer DNS_NAME_ID = 2;
+    private static final String ASTERISKS_AND_DOT = "\\*\\.";
 
     private UriUtils() {}
 
@@ -44,6 +52,27 @@ public final class UriUtils {
         } catch (URISyntaxException e) {
             throw new IllegalArgumentException(e);
         }
+    }
+
+    public static List<String> getDnsNames(List<X509Certificate> certificates) {
+        List<String> dnsNames = new ArrayList<>();
+        for (X509Certificate certificate : certificates) {
+            try {
+                if (certificate.getSubjectAlternativeNames() == null) {
+                    continue;
+                }
+
+                certificate.getSubjectAlternativeNames().stream()
+                        .filter(sanEntry -> sanEntry.size() == 2)
+                        .filter(sanEntry -> DNS_NAME_ID.equals(sanEntry.get(0)))
+                        .map(sanEntry -> sanEntry.get(1))
+                        .map(dnsName -> ((String) dnsName).replaceFirst(ASTERISKS_AND_DOT, ""))
+                        .map(dnsName -> "https://" + dnsName)
+                        .forEach(dnsNames::add);
+
+            } catch (CertificateParsingException ignored) {}
+        }
+        return Collections.unmodifiableList(dnsNames);
     }
 
 }

@@ -15,7 +15,8 @@
  */
 package nl.altindag.crip.command.print;
 
-import nl.altindag.crip.command.SharedProperties;
+import nl.altindag.crip.client.CertificateRipperClient;
+import nl.altindag.crip.model.ClientConfig;
 import nl.altindag.crip.command.VersionProvider;
 import nl.altindag.crip.model.CertificateHolder;
 import nl.altindag.crip.model.Format;
@@ -41,15 +42,16 @@ public class PrintCommand implements Runnable {
     private static final String CERTIFICATE_DELIMITER = "%n%n<========== Next certificate for %s ==========>%n%n";
 
     @Mixin
-    private SharedProperties sharedProperties;
+    private ClientConfig clientConfig;
 
-    @Option(names = {"-f", "--format"},
-            description = "To be printed certificate format%nAvailable Formats: x509, pem")
+    @Option(names = {"-f", "--format"}, description = "To be printed certificate format%nAvailable Formats: x509, pem")
     private Format format = Format.X509;
 
     @Override
     public void run() {
-        CertificateHolder certificateHolder = sharedProperties.getCertificateHolder();
+        CertificateRipperClient clientUtils = new CertificateRipperClient(clientConfig);
+        CertificateHolder certificateHolder = clientUtils.getCertificateHolder();
+
         Map<String, List<X509Certificate>> urlsToCertificates = certificateHolder.getUrlsToCertificates();
         if (urlsToCertificates.isEmpty()) {
             return;

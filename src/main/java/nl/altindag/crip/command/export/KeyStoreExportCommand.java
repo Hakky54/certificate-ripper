@@ -15,6 +15,7 @@
  */
 package nl.altindag.crip.command.export;
 
+import nl.altindag.crip.client.CertificateRipperClient;
 import nl.altindag.crip.model.CertificateHolder;
 import nl.altindag.crip.util.IOUtils;
 import nl.altindag.crip.util.StatisticsUtils;
@@ -31,7 +32,9 @@ abstract class KeyStoreExportCommand extends FileExport implements Runnable {
 
     @Override
     public void run() {
-        CertificateHolder certificateHolder = sharedProperties.getCertificateHolder();
+        CertificateRipperClient clientUtils = new CertificateRipperClient(clientConfig);
+        CertificateHolder certificateHolder = clientUtils.getCertificateHolder();
+
         if (certificateHolder.getUrlsToCertificates().isEmpty()) {
             return;
         }
