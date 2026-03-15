@@ -66,25 +66,21 @@ public class CertificateRipperClient {
 
     public CertificateHolder getCertificateHolder() {
         List<String> resolvedUrls = getUniqueUrls(clientConfig.getUrls());
-        Map<String, List<X509Certificate>> urlsToCertificates = resolvedUrls.stream().distinct().parallel()
+        Map<String, List<X509Certificate>> urlsToCertificates = getCertificates(resolvedUrls);
+
+        addSiblingsIfNeeded(urlsToCertificates);
+        urlsToCertificates = filterCertificatesIfNeeded(urlsToCertificates, clientConfig.getCertificateType());
+        addSystemCertificatesIfNeeded(urlsToCertificates);
+
+        return new CertificateHolder(urlsToCertificates);
+    }
+
+    private Map<String, List<X509Certificate>> getCertificates(List<String> urls) {
+        return urls.stream().distinct().parallel()
                 .map(this::getCertificates)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.collectingAndThen(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (key1, key2) -> key1, LinkedHashMap::new), HashMap::new));
-
-        urlsToCertificates = getSiblingsIfNeeded(urlsToCertificates);
-        urlsToCertificates = filterCertificatesIfNeeded(urlsToCertificates, clientConfig.getCertificateType());
-
-        if (clientConfig.getUrls().contains(SYSTEM)) {
-            try {
-                List<X509Certificate> systemTrustedCertificates = CertificateUtils.getSystemTrustedCertificates();
-                urlsToCertificates.put(SYSTEM, systemTrustedCertificates);
-            } catch (UnsatisfiedLinkError error) {
-                LOGGER.debug(String.format("Unable to extract system certificates for %s", System.getProperty("os.name")));
-            }
-        }
-
-        return new CertificateHolder(urlsToCertificates);
     }
 
     private Optional<Map.Entry<String, List<X509Certificate>>> getCertificates(String url) {
@@ -160,9 +156,9 @@ public class CertificateRipperClient {
         return uniqueUrls;
     }
 
-    private Map<String, List<X509Certificate>> getSiblingsIfNeeded(Map<String, List<X509Certificate>> urlsToCertificates) {
+    private void addSiblingsIfNeeded(Map<String, List<X509Certificate>> urlsToCertificates) {
         if (!clientConfig.getResolveSiblings()) {
-            return urlsToCertificates;
+            return;
         }
 
         ProgressBarBuilder pbb = new ProgressBarBuilder()
@@ -188,10 +184,18 @@ public class CertificateRipperClient {
                 .filter(Objects::nonNull)
                 .collect(Collectors.collectingAndThen(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (key1, key2) -> key1, LinkedHashMap::new), HashMap::new));
 
-        Map<String, List<X509Certificate>> combinedUrlsToCertificates = new HashMap<>();
-        combinedUrlsToCertificates.putAll(urlsToCertificates);
-        combinedUrlsToCertificates.putAll(siblings);
-        return combinedUrlsToCertificates;
+        urlsToCertificates.putAll(siblings);
+    }
+
+    private void addSystemCertificatesIfNeeded(Map<String, List<X509Certificate>> urlsToCertificates) {
+        if (clientConfig.getUrls().contains(SYSTEM)) {
+            try {
+                List<X509Certificate> systemTrustedCertificates = CertificateUtils.getSystemTrustedCertificates();
+                urlsToCertificates.put(SYSTEM, systemTrustedCertificates);
+            } catch (UnsatisfiedLinkError error) {
+                LOGGER.debug(String.format("Unable to extract system certificates for %s", System.getProperty("os.name")));
+            }
+        }
     }
 
     Map<String, List<X509Certificate>> filterCertificatesIfNeeded(Map<String, List<X509Certificate>> urlsToCertificates, CertificateType type) {
