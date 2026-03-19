@@ -36,6 +36,7 @@ import java.util.Optional;
 public final class PostgresClientRunnable implements ClientRunnable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PostgresClientRunnable.class);
+    private static final PostgresClientRunnable INSTANCE = new PostgresClientRunnable();
 
     private static final int SSL_REQUEST_MESSAGE_LENGTH = 8;
     private static final int SSL_REQUEST_CODE = 80877103;
@@ -71,6 +72,10 @@ public final class PostgresClientRunnable implements ClientRunnable {
         } catch (IOException e) {
             LOGGER.debug(String.format("Could not connect to %s:%d", uri.getHost(), uri.getPort()), e);
         }
+    }
+
+    public static PostgresClientRunnable getInstance() {
+        return INSTANCE;
     }
 
 }

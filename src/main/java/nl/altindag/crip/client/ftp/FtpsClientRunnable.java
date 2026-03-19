@@ -29,6 +29,7 @@ import java.time.Duration;
 public final class FtpsClientRunnable implements ClientRunnable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FtpsClientRunnable.class);
+    private static final FtpsClientRunnable INSTANCE = new FtpsClientRunnable();
 
     @Override
     public void run(ClientConfig clientConfig, URI uri) {
@@ -57,6 +58,10 @@ public final class FtpsClientRunnable implements ClientRunnable {
                 LOGGER.debug(String.format("Could not disconnect from %s:%d", uri.getHost(), uri.getPort()), e);
             }
         }
+    }
+
+    public static FtpsClientRunnable getInstance() {
+        return INSTANCE;
     }
 
 }

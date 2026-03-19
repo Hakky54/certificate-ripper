@@ -32,6 +32,8 @@ import java.util.concurrent.CountDownLatch;
 
 public final class WebSocketClientRunnable implements ClientRunnable {
 
+    private static final WebSocketClientRunnable INSTANCE = new WebSocketClientRunnable();
+
     @Override
     public void run(ClientConfig clientConfig, URI uri) {
         HttpClient.Builder clientBuilder = HttpClient.newBuilder()
@@ -67,6 +69,10 @@ public final class WebSocketClientRunnable implements ClientRunnable {
 
             }
         };
+    }
+
+    public static WebSocketClientRunnable getInstance() {
+        return INSTANCE;
     }
 
 }

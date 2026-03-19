@@ -35,6 +35,7 @@ import java.util.Optional;
 public final class MySQLClientRunnable implements ClientRunnable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MySQLClientRunnable.class);
+    private static final MySQLClientRunnable INSTANCE = new MySQLClientRunnable();
 
     private static final int SSL_FLAG = 0x800;
     private static final byte[] SSL_REQUEST = {
@@ -120,6 +121,10 @@ public final class MySQLClientRunnable implements ClientRunnable {
 
         // capability flags[2]
         return (buffer[pos] & 0xFF) + ((buffer[pos + 1] & 0xFF) << 8);
+    }
+
+    public static MySQLClientRunnable getInstance() {
+        return INSTANCE;
     }
 
 }

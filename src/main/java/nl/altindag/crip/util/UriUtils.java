@@ -54,7 +54,11 @@ public final class UriUtils {
         }
     }
 
-    public static List<String> getDnsNames(List<X509Certificate> certificates) {
+    /**
+     * Extracts the DNS Names from the Subject Alternative Name extension of the provided certificates.
+     * And appends "https://" prefix to each DNS name.
+     */
+    public static List<String> extractHostsFromSAN(List<X509Certificate> certificates) {
         List<String> dnsNames = new ArrayList<>();
         for (X509Certificate certificate : certificates) {
             try {

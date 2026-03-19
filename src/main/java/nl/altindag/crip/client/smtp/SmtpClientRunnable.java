@@ -28,6 +28,7 @@ import java.time.Duration;
 public final class SmtpClientRunnable implements ClientRunnable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SmtpClientRunnable.class);
+    private static final SmtpClientRunnable INSTANCE = new SmtpClientRunnable();
 
     @Override
     public void run(ClientConfig clientConfig, URI uri) {
@@ -58,6 +59,10 @@ public final class SmtpClientRunnable implements ClientRunnable {
         } catch (Exception e) {
             LOGGER.debug("Could not close the smtp client", e);
         }
+    }
+
+    public static SmtpClientRunnable getInstance() {
+        return INSTANCE;
     }
 
 }

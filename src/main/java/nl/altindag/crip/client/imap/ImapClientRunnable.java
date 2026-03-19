@@ -28,6 +28,7 @@ import java.time.Duration;
 public final class ImapClientRunnable implements ClientRunnable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ImapClientRunnable.class);
+    private static final ImapClientRunnable INSTANCE = new ImapClientRunnable();
 
     @Override
     public void run(ClientConfig clientConfig, URI uri) {
@@ -43,6 +44,10 @@ public final class ImapClientRunnable implements ClientRunnable {
         } catch (Exception e) {
             LOGGER.debug(String.format("Could not connect to %s:%d", uri.getHost(), uri.getPort()), e);
         }
+    }
+
+    public static ImapClientRunnable getInstance() {
+        return INSTANCE;
     }
 
 }

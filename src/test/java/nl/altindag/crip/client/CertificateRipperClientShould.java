@@ -54,14 +54,14 @@ class CertificateRipperClientShould {
 
     @Test
     void doNotFilterCertificatesWhenAllCertificateTypeIsSpecified() {
-        Map<String, List<X509Certificate>> filteredUrlsToCertificates = victim.filterCertificatesIfNeeded(urlsToCertificates, CertificateType.ALL);
+        Map<String, List<X509Certificate>> filteredUrlsToCertificates = victim.filterCertificates(urlsToCertificates, CertificateType.ALL);
         assertThat(filteredUrlsToCertificates).hasSize(1).hasKeySatisfying(new Condition<>("https://google.com"::equals, "Key is https://google.com"));
         assertThat(filteredUrlsToCertificates.get("https://google.com")).hasSize(4);
     }
 
     @Test
     void filterCertificatesWhenRootCertificateTypeIsSpecified() {
-        Map<String, List<X509Certificate>> filteredUrlsToCertificates = victim.filterCertificatesIfNeeded(urlsToCertificates, CertificateType.ROOT);
+        Map<String, List<X509Certificate>> filteredUrlsToCertificates = victim.filterCertificates(urlsToCertificates, CertificateType.ROOT);
         assertThat(filteredUrlsToCertificates).hasSize(1).hasKeySatisfying(new Condition<>("https://google.com"::equals, "Key is https://google.com"));
         assertThat(filteredUrlsToCertificates.get("https://google.com")).hasSize(1);
 
@@ -71,7 +71,7 @@ class CertificateRipperClientShould {
 
     @Test
     void filterCertificatesWhenLeafCertificateTypeIsSpecified() {
-        Map<String, List<X509Certificate>> filteredUrlsToCertificates = victim.filterCertificatesIfNeeded(urlsToCertificates, CertificateType.LEAF);
+        Map<String, List<X509Certificate>> filteredUrlsToCertificates = victim.filterCertificates(urlsToCertificates, CertificateType.LEAF);
         assertThat(filteredUrlsToCertificates).hasSize(1).hasKeySatisfying(new Condition<>("https://google.com"::equals, "Key is https://google.com"));
         assertThat(filteredUrlsToCertificates.get("https://google.com")).hasSize(1);
 
@@ -81,7 +81,7 @@ class CertificateRipperClientShould {
 
     @Test
     void filterCertificatesWhenInterCertificateTypeIsSpecified() {
-        Map<String, List<X509Certificate>> filteredUrlsToCertificates = victim.filterCertificatesIfNeeded(urlsToCertificates, CertificateType.INTER);
+        Map<String, List<X509Certificate>> filteredUrlsToCertificates = victim.filterCertificates(urlsToCertificates, CertificateType.INTER);
         assertThat(filteredUrlsToCertificates).hasSize(1).hasKeySatisfying(new Condition<>("https://google.com"::equals, "Key is https://google.com"));
         assertThat(filteredUrlsToCertificates.get("https://google.com")).hasSize(2);
 
