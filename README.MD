@@ -44,7 +44,11 @@ There are 3 options available to pick from: [GitHub](https://github.com/sponsors
 
 ## Installing
 
+The executables are available for download in the [Releases](https://github.com/Hakky54/certificate-ripper/releases). Alternatively you can also install the tool using one of the following methods:
+
 - Mac OS X & Linux - Homebrew 🍺
+  - Run `brew install crip`
+- Mac OS X & Linux - Homebrew with native binary 🍺
   - Run `brew tap hakky54/crip && brew install crip`
 - Linux & Windows
   - Download the latest binary here: [Releases](https://github.com/Hakky54/certificate-ripper/releases)
