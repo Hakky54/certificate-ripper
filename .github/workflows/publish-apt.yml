@@ -1,0 +1,171 @@
+name: Publish to Launchpad PPA
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag to publish'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  build-tarball:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.tag }}
+    steps:
+      - name: Determine version
+        id: version
+        env:
+          INPUT_TAG: ${{ inputs.tag }}
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          if [ "${EVENT_NAME}" = "workflow_dispatch" ]; then
+            echo "tag=${INPUT_TAG}" >> "$GITHUB_OUTPUT"
+          else
+            echo "tag=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Download Linux native binaries from release
+        env:
+          VERSION: ${{ steps.version.outputs.tag }}
+          REPO: ${{ github.repository }}
+        run: |
+          echo "Downloading crip binaries for version ${VERSION}"
+
+          curl -fsSL "https://github.com/${REPO}/releases/download/${VERSION}/crip-linux-amd64.tar.gz" -o crip-linux-amd64.tar.gz
+          mkdir -p binary/amd64
+          tar -xzf crip-linux-amd64.tar.gz -C binary/amd64
+
+          curl -fsSL "https://github.com/${REPO}/releases/download/${VERSION}/crip-linux-aarch64.tar.gz" -o crip-linux-aarch64.tar.gz
+          mkdir -p binary/aarch64
+          tar -xzf crip-linux-aarch64.tar.gz -C binary/aarch64
+
+      - name: Create orig tarball
+        env:
+          VERSION: ${{ steps.version.outputs.tag }}
+        run: |
+          SOURCE_DIR="crip-${VERSION}"
+          mkdir -p "${SOURCE_DIR}/binaries"
+          cp binary/amd64/crip "${SOURCE_DIR}/binaries/crip-amd64"
+          cp binary/aarch64/crip "${SOURCE_DIR}/binaries/crip-arm64"
+          tar -czf "crip_${VERSION}.orig.tar.gz" "${SOURCE_DIR}"
+
+      - name: Upload orig tarball and binaries
+        uses: actions/upload-artifact@v4
+        with:
+          name: orig-tarball
+          path: |
+            crip_${{ steps.version.outputs.tag }}.orig.tar.gz
+            binary/
+          retention-days: 1
+
+  publish-ppa-primary:
+    runs-on: ubuntu-latest
+    needs: build-tarball
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Download orig tarball
+        uses: actions/download-artifact@v4
+        with:
+          name: orig-tarball
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y devscripts debhelper dput gpg
+
+      - name: Import GPG key
+        id: gpg
+        env:
+          GPG_PASSPHRASE: ${{ secrets.LAUNCHPAD_GPG_PASSPHRASE }}
+        run: |
+          mkdir -p ~/.gnupg
+          chmod 700 ~/.gnupg
+          echo "allow-loopback-pinentry" > ~/.gnupg/gpg-agent.conf
+          echo "allow-preset-passphrase" >> ~/.gnupg/gpg-agent.conf
+          chmod 600 ~/.gnupg/gpg-agent.conf
+          gpgconf --kill gpg-agent
+
+          echo "${{ secrets.LAUNCHPAD_GPG_PRIVATE_KEY }}" | gpg --batch --import
+          GPG_FINGERPRINT=$(gpg --list-secret-keys --with-colons | awk -F: '/^fpr:/ {print $10; exit}')
+          echo "key_id=${GPG_FINGERPRINT}" >> "$GITHUB_OUTPUT"
+
+          KEYGRIP=$(gpg --list-secret-keys --with-colons --with-keygrip | awk -F: '/^grp:/ {print $10; exit}')
+          PASSPHRASE_HEX=$(echo -n "${GPG_PASSPHRASE}" | xxd -p -c 256)
+          gpg-connect-agent "PRESET_PASSPHRASE ${KEYGRIP} -1 ${PASSPHRASE_HEX}" /bye
+
+      - name: Build source package and upload to PPA (with orig tarball)
+        continue-on-error: true
+        env:
+          DEBFULLNAME: "Hakan Altindag"
+          DEBEMAIL: ${{ secrets.LAUNCHPAD_EMAIL }}
+          VERSION: ${{ needs.build-tarball.outputs.version }}
+          GPG_KEY_ID: ${{ steps.gpg.outputs.key_id }}
+        run: |
+          chmod +x scripts/build-source-package.sh
+          scripts/build-source-package.sh "${VERSION}" "noble" "${GPG_KEY_ID}" true
+
+          dput ppa:hakky554/apps "crip_${VERSION}-1~noble_source.changes"
+
+  publish-ppa-others:
+    runs-on: ubuntu-latest
+    needs: [build-tarball, publish-ppa-primary]
+    if: always() && needs.build-tarball.result == 'success'
+    strategy:
+      fail-fast: false
+      matrix:
+        distro: [jammy, focal]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Download orig tarball
+        uses: actions/download-artifact@v4
+        with:
+          name: orig-tarball
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y devscripts debhelper dput gpg
+
+      - name: Import GPG key
+        id: gpg
+        env:
+          GPG_PASSPHRASE: ${{ secrets.LAUNCHPAD_GPG_PASSPHRASE }}
+        run: |
+          mkdir -p ~/.gnupg
+          chmod 700 ~/.gnupg
+          echo "allow-loopback-pinentry" > ~/.gnupg/gpg-agent.conf
+          echo "allow-preset-passphrase" >> ~/.gnupg/gpg-agent.conf
+          chmod 600 ~/.gnupg/gpg-agent.conf
+          gpgconf --kill gpg-agent
+
+          echo "${{ secrets.LAUNCHPAD_GPG_PRIVATE_KEY }}" | gpg --batch --import
+          GPG_FINGERPRINT=$(gpg --list-secret-keys --with-colons | awk -F: '/^fpr:/ {print $10; exit}')
+          echo "key_id=${GPG_FINGERPRINT}" >> "$GITHUB_OUTPUT"
+
+          KEYGRIP=$(gpg --list-secret-keys --with-colons --with-keygrip | awk -F: '/^grp:/ {print $10; exit}')
+          PASSPHRASE_HEX=$(echo -n "${GPG_PASSPHRASE}" | xxd -p -c 256)
+          gpg-connect-agent "PRESET_PASSPHRASE ${KEYGRIP} -1 ${PASSPHRASE_HEX}" /bye
+
+      - name: Build source package and upload to PPA (without orig tarball)
+        env:
+          DEBFULLNAME: "Hakan Altindag"
+          DEBEMAIL: ${{ secrets.LAUNCHPAD_EMAIL }}
+          VERSION: ${{ needs.build-tarball.outputs.version }}
+          DISTRO: ${{ matrix.distro }}
+          GPG_KEY_ID: ${{ steps.gpg.outputs.key_id }}
+        run: |
+          chmod +x scripts/build-source-package.sh
+          scripts/build-source-package.sh "${VERSION}" "${DISTRO}" "${GPG_KEY_ID}" false
+
+          dput ppa:hakky554/apps "crip_${VERSION}-1~${DISTRO}_source.changes"
