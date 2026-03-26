@@ -51,7 +51,7 @@ The executables are available for download in the [Releases](https://github.com/
 - Mac OS X & Linux - Homebrew with native binary 🍺
   - Run `brew install hakky54/homebrew-apps/crip`
 - Linux - Debian/Ubuntu (apt) 📦
-  - Run `sudo add-apt-repository ppa:hakky554/apps && sudo apt-get install crip -t 'o=LP-PPA-hakky554-apps'`
+  - Run `sudo add-apt-repository ppa:hakky554/apps && sudo apt update && sudo apt-get install crip -t 'o=LP-PPA-hakky554-apps'`
 - Linux & Windows
   - Download the latest binary here: [Releases](https://github.com/Hakky54/certificate-ripper/releases)
 
