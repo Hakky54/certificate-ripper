@@ -212,6 +212,11 @@ Works only with the combined option while only specifying a single url.
 crip export pem -u=https://github.com --combined=true --destination=/path/to/export/github-chain.crt
 ```
 
+### Trust additional certificates into Java Cacerts Keystore
+```bash
+crip export p12 -d=path/to/lib/security/cacerts -p=changeit -u=https://google.com
+```
+
 ### Export other sources
 ```bash
 # Operating System trusted certificates
