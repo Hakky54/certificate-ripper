@@ -10,12 +10,11 @@ on:
         required: true
         type: string
 
-permissions:
-  contents: read
-
 jobs:
   build-tarball:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     outputs:
       version: ${{ steps.version.outputs.tag }}
     steps:
@@ -67,6 +66,8 @@ jobs:
 
   publish-ppa-primary:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     needs: build-tarball
     steps:
       - name: Checkout repository
@@ -117,6 +118,8 @@ jobs:
 
   publish-ppa-others:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     needs: [build-tarball, publish-ppa-primary]
     if: always() && needs.build-tarball.result == 'success'
     strategy:
