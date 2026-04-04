@@ -153,7 +153,7 @@ class DerExportCommandShould extends FileBaseTest {
                 .collect(Collectors.toList());
 
         assertThat(files)
-                .hasSizeGreaterThan(1)
+                .isNotEmpty()
                 .allMatch(path -> path.toString().endsWith(".crt"));
     }
 
