@@ -22,6 +22,7 @@ import nl.altindag.sude.LoggerFactory;
 import org.apache.commons.net.SocketClient;
 import org.apache.commons.net.imap.AuthenticatingIMAPClient;
 
+import java.io.IOException;
 import java.net.URI;
 import java.time.Duration;
 
@@ -43,6 +44,12 @@ public final class ImapClientRunnable implements ClientRunnable {
             client.connect(uri.getHost(), uri.getPort());
         } catch (Exception e) {
             LOGGER.debug(String.format("Could not connect to %s:%d", uri.getHost(), uri.getPort()), e);
+        } finally {
+            try {
+                client.disconnect();
+            } catch (IOException e) {
+                LOGGER.debug(String.format("Could not disconnect from %s:%d", uri.getHost(), uri.getPort()), e);
+            }
         }
     }
 
