@@ -19,7 +19,6 @@ import nl.altindag.console.ConsoleCaptor;
 import nl.altindag.crip.CertificateRipper;
 import nl.altindag.crip.request.Request;
 import org.awaitility.Awaitility;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -29,13 +28,12 @@ import java.util.regex.Pattern;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Disabled
 class FtpClientRunnableIT {
 
     private static final Pattern CAPTURED_CERTIFICATES = Pattern.compile("\\* [1-9]+: ftps://localhost:2231");
 
     @Test
-    void shouldPrintCertificates() throws IOException {
+    void shouldPrintCertificates() throws IOException, InterruptedException {
         URL dockerComposeFile = FtpClientRunnableIT.class.getClassLoader().getResource("docker-compose/ftp/docker-compose.yaml");
         assertThat(dockerComposeFile).isNotNull();
 
@@ -44,28 +42,31 @@ class FtpClientRunnableIT {
                 "docker",
                 "compose",
                 "--file=" + dockerComposeFile.getPath(),
-                "up"
+                "up",
+                "-d"
         ).start();
 
-        Request request = CertificateRipper.print("ftps://localhost:2231").build();
+        try {
+            Request request = CertificateRipper.print("ftps://localhost:2231").build();
 
-        Awaitility.await()
-                .atMost(2, TimeUnit.MINUTES)
-                .pollInterval(1, TimeUnit.SECONDS)
-                .untilAsserted(() -> {
-                    request.run();
-                    String standardOutput = String.join(System.lineSeparator(), consoleCaptor.getStandardOutput());
-                    assertThat(CAPTURED_CERTIFICATES.matcher(standardOutput).find()).isTrue();
-                });
+            Awaitility.await()
+                    .atMost(2, TimeUnit.MINUTES)
+                    .pollInterval(1, TimeUnit.SECONDS)
+                    .untilAsserted(() -> {
+                        request.run();
+                        String standardOutput = String.join(System.lineSeparator(), consoleCaptor.getStandardOutput());
+                        assertThat(CAPTURED_CERTIFICATES.matcher(standardOutput).find()).isTrue();
+                    });
+        } finally {
+            new ProcessBuilder(
+                    "docker",
+                    "compose",
+                    "--file=" + dockerComposeFile.getPath(),
+                    "down"
+            ).start().waitFor();
 
-        new ProcessBuilder(
-                "docker",
-                "compose",
-                "--file=" + dockerComposeFile.getPath(),
-                "down"
-        ).start();
-
-        consoleCaptor.close();
+            consoleCaptor.close();
+        }
     }
 
 }

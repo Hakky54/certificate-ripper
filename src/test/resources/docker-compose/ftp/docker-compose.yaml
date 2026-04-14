@@ -15,6 +15,9 @@ services:
     ports:
       - "2231:21"
       - "22000-22010:22000-22010"
+    depends_on:
+      cert-gen:
+        condition: service_completed_successfully
 
   cert-gen:
     image: alpine
