@@ -38,9 +38,9 @@ A CLI tool to extract server certificates
 
 The executables are available for download in the [Releases](https://github.com/Hakky54/certificate-ripper/releases). Alternatively you can also install the tool using one of the following methods:
 
-- Mac OS X & Linux - Homebrew 🍺
+- Mac OS X (ARM) & Linux - Homebrew 🍺
   - Run `brew install crip`
-- Mac OS X & Linux - Homebrew with native binary 🍺
+- Mac OS X (Intel/ARM) & Linux - Homebrew 🍺
   - Run `brew install hakky54/homebrew-apps/crip`
 - Linux - Debian/Ubuntu (apt) 📦
   - Run `sudo add-apt-repository ppa:hakky554/apps && sudo apt update && sudo apt-get install crip -t 'o=LP-PPA-hakky554-apps'`
