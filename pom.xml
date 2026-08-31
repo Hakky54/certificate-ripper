@@ -53,7 +53,7 @@
         <version.jacoco-maven-plugin>0.8.15</version.jacoco-maven-plugin>
         <version.graalvm>21.2.0</version.graalvm>
         <application-main-class>nl.altindag.crip.CertificateRipper</application-main-class>
-        <version.license-maven-plugin>5.1.1</version.license-maven-plugin>
+        <version.license-maven-plugin>5.1.2</version.license-maven-plugin>
         <version.maven-javadoc-plugin>3.12.0</version.maven-javadoc-plugin>
         <version.maven-source-plugin>3.4.0</version.maven-source-plugin>
         <version.maven-gpg-plugin>3.2.8</version.maven-gpg-plugin>
