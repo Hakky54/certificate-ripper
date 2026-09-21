@@ -48,7 +48,7 @@
         <version.maven-compiler-plugin>3.16.0</version.maven-compiler-plugin>
         <version.maven-surefire-plugin>3.6.0</version.maven-surefire-plugin>
         <version.maven-fail-safe>3.6.0</version.maven-fail-safe>
-        <version.exec-maven-plugin>3.6.3</version.exec-maven-plugin>
+        <version.exec-maven-plugin>3.6.4</version.exec-maven-plugin>
         <version.maven-shade-plugin>3.6.2</version.maven-shade-plugin>
         <version.jacoco-maven-plugin>0.8.15</version.jacoco-maven-plugin>
         <version.graalvm>21.2.0</version.graalvm>
